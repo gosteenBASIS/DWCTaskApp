@@ -1,0 +1,31 @@
+REM /**
+REM  * main.bbj
+REM  * @author gosteen
+REM  *C:\Users\gosteen\eclipse\workspaces\bbj-workspace\TaskApp\main.bbj
+REM  */
+
+rem Feature getSelectedItem 
+rem feature ON_CHECK_CHANGE
+
+rem Create the main window, define its ON_CLOSE callback, and set its layout and other CSS
+rem ================================================================================
+rem $00100093$ = resize, close box, initially visible,
+mySysGui! = BBjAPI().openSysGui("X0")
+win! = mySysGui!.addWindow("TaskApp", $01101083$)
+rem win! = BBjAPI().openSysGui("X0").addWindow("Hello BBj DWC", $01101083$)
+
+win!.setCallback(BBjAPI.ON_CLOSE, "onClose")
+win!.setPanelStyle("display","inline-grid")
+win!.setPanelStyle("grid-template-columns","1fr 2fr")
+win!.setPanelStyle("gap","5px")
+win!.setPanelStyle("padding","15px")
+
+
+st! = win!.addStaticText("Static Text")
+ed_firstname! = win!.addEditBox("")
+win!.setCallback(BBjAPI.ON_CLOSE,"exit")
+
+process_events
+
+exit:
+  release
