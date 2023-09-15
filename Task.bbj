@@ -14,7 +14,6 @@ class public Task
 
     rem Public Fields
     rem /** A unique auto-generated id for the calendar instance that may be used to distinguish between instances of the class. */
-    field protected BBjString Uuid! = java.util.UUID.randomUUID().toString()
 
     field public BBjString title$
 
@@ -22,9 +21,8 @@ class public Task
 
     rem Protected Fields
     rem /** A unique auto-generated id for the calendar instance that may be used to distinguish between instances of the class. */
+    
     field protected BBjString Uuid! = java.util.UUID.randomUUID().toString()
-
-
     rem Can we do enums in BBj? Should status just be a boolean isComplete to start with?
     field public BBjNumber status
     rem Is a "number" the best way to do priority? It should be restricted to certain values.
