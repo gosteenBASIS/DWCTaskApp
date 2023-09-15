@@ -1,18 +1,44 @@
+rem /**
+rem  * TaskApp.bbj
+rem  * @author gosteen, ndecker
+rem  *
+rem  */
+rem package TaskApp
+
+rem /**
+rem  * A DWC-specific task manager BBj program.
+rem  *
+rem  * The TaskApp program was designed to a be part of a tutorial series that covers
+rem  * how to write a graphical web-based application in BBj. It's designed to run
+rem  * in the BASIS Dynamic Web Client (DWC), and takes advantage of several DWC
+rem  * features including light/dark theme support, responsive design, and making
+rem  * use of 3rd-party web components.
+rem  */
 class public TaskApp
     rem Some sort of list of tasks:
     field public BBjArray tasks!
-    
+
     method public void run()
         rem
     methodend
-    
+
+    rem /**
+    rem  * Adds a task to the tasklist
+    rem  *
+    rem  * @param task!             The task object
+    rem  */
     method public void addTask(Task task!)
         rem Add a task object to the list of tasks
     methodend
-    
+
+    rem /**
+    rem  * Removes a task from the tasklist
+    rem  *
+    rem  * @param task!             The task object
+    rem  */
     method public void removeTask(BBjNumber id)
-        rem remove a task from the list. 
+        rem remove a task from the list.
         rem What's the best way to specify a unique task? With the actual task object, or with its unique ID?
-        
     methodend
+
 classend

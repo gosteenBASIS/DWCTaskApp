@@ -1,27 +1,49 @@
-REM /**
-REM  * Task.bbj
-REM  * @author gosteen
-REM  *C:\Users\gosteen\eclipse\workspaces\bbj-workspace\TaskApp\Task.bbj
-REM  */
+rem /**
+rem  * Task.bbj
+rem  * @author gosteen, ndecker
+rem  *
+rem  */
+rem package TaskApp
 
 use java.util.Date
 
+rem /**
+rem  * Defines the data structure for a task in the TaskApp
+rem  */
 class public Task
-    rem Fields
-    field public BBjNumber id
+
+    rem Public Fields
+    rem /** A unique auto-generated id for the calendar instance that may be used to distinguish between instances of the class. */
+    field protected BBjString Uuid! = java.util.UUID.randomUUID().toString()
+
     field public BBjString title$
+
     field public BBjString description$
+
+    rem Protected Fields
+    rem /** A unique auto-generated id for the calendar instance that may be used to distinguish between instances of the class. */
+    field protected BBjString Uuid! = java.util.UUID.randomUUID().toString()
+
+
     rem Can we do enums in BBj? Should status just be a boolean isComplete to start with?
-    field public BBjNumber status 
+    field public BBjNumber status
     rem Is a "number" the best way to do priority? It should be restricted to certain values.
     field public BBjNumber priority
     field public java.util.Date dueDate!
-    
+
+    rem /**
+    rem  * Default constructor for a task item
+    rem  *
+    rem  * @param title$            The task's title string
+    rem  * @param description$      The task's description
+    rem  * @param priority          The task's priority level (1 -5)
+    rem  * @param dueDate!          The task's due date
+    rem  */
     method public Task(BBjString title$, BBjString description$, BBjNumber priority, java.util.Date dueDate!)
         #title$ = title$
         #description$ = description$
         #priority = priority
         rem ID should be generated to ensure uniqueness, and isn't relevant to the user
     methodend
-    
+
 classend
