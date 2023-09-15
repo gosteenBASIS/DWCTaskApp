@@ -1,0 +1,53 @@
+REM /**
+REM  * docsGenerator.bbj
+REM  * @author ndecker
+REM  *
+REM  */
+
+use java.io.File
+use java.util.ArrayList
+use com.basis.bbjutilities.bbjdocsgenerator.BBjDocsGenerator
+use com.basis.bbjutilities.bbjdocsgenerator.BBjDocsParameters
+
+declare auto BBjString  toolsPath!
+declare auto BBjString  projectPath!
+declare auto File       projectFolder!
+declare auto File       outputFolder!
+declare auto File       currentFile!
+declare auto ArrayList  programFiles!
+
+rem Define this tools' folder and derive the project folder from it
+toolsPath! = dsk("")+dir("")
+if (toolsPath!.endsWith(File.separator)) then toolsPath! = toolsPath!.substring(0, toolsPath!.length() - 1)
+projectPath! = toolsPath!.substring(0, toolsPath!.lastIndexOf(File.separator))
+
+rem Get a listing of all the .bbj files in the project folder
+projectFolder! = new File(projectPath!)
+filesList! = projectFolder!.list()
+programFiles! = new ArrayList()
+FOR i = 0 TO filesList!.length - 1
+    currentFile! = new File(projectPath! + File.separator + filesList![i])
+
+    if (!currentFile!.isDirectory() AND currentFile!.getName().toLowerCase().endsWith(".bbj")) then
+        programFiles!.add(currentFile!.getCanonicalPath())
+    endif
+NEXT i
+
+rem Ensure that the output destination directory exists
+outputFolder! = new File(projectPath! + File.separator + "docs")
+outputFolder!.mkdirs()
+
+rem Generate the JavaDocs
+generator! = new BBjDocsGenerator()
+params! = new BBjDocsParameters()
+params!.enableVerbose()
+generator!.generateBBjdoc(programFiles!, outputFolder!.getCanonicalPath(), params!)
+
+rem Print out the results
+print "Generated JavaDocs for " + str(programFiles!.size()) + " program files"
+print "JavaDocs located in " + outputFolder!.getCanonicalPath()
+
+rem Open up the generated documentation in a browser
+url! = "file:///" + outputFolder!.getCanonicalPath().replaceAll(" ", "%20") + "/index.html"
+BBjAPI().getThinClient().browse(url!)
+end
