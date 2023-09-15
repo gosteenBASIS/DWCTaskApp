@@ -1,0 +1,27 @@
+REM /**
+REM  * Task.bbj
+REM  * @author gosteen
+REM  *C:\Users\gosteen\eclipse\workspaces\bbj-workspace\TaskApp\Task.bbj
+REM  */
+
+use java.util.Date
+
+class public Task
+    rem Fields
+    field public BBjNumber id
+    field public BBjString title$
+    field public BBjString description$
+    rem Can we do enums in BBj? Should status just be a boolean isComplete to start with?
+    field public BBjNumber status 
+    rem Is a "number" the best way to do priority? It should be restricted to certain values.
+    field public BBjNumber priority
+    field public java.util.Date dueDate!
+    
+    method public Task(BBjString title$, BBjString description$, BBjNumber priority, java.util.Date dueDate!)
+        #title$ = title$
+        #description$ = description$
+        #priority = priority
+        rem ID should be generated to ensure uniqueness, and isn't relevant to the user
+    methodend
+    
+classend

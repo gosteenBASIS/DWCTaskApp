@@ -1,0 +1,18 @@
+class public TaskApp
+    rem Some sort of list of tasks:
+    field public BBjArray tasks!
+    
+    method public void run()
+        rem
+    methodend
+    
+    method public void addTask(Task task!)
+        rem Add a task object to the list of tasks
+    methodend
+    
+    method public void removeTask(BBjNumber id)
+        rem remove a task from the list. 
+        rem What's the best way to specify a unique task? With the actual task object, or with its unique ID?
+        
+    methodend
+classend
