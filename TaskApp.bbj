@@ -15,29 +15,45 @@ rem  * features including light/dark theme support, responsive design, and makin
 rem  * use of 3rd-party web components.
 rem  */
 class public TaskApp
-    rem Some sort of list of tasks:
+    rem Some sort of list of tasks.
+    rem It could be a BBjVector or BBjArray of tasks.
+    rem It could also be a Java Collection class like:
+    rem     Set     https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Set.html
+    rem     List    https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html
+    rem     Map     https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html
     field public BBjArray tasks!
 
+    rem /**
+    rem  * Runs the TaskApp application
+    rem  */
     method public void run()
-        rem
+        rem Create the UI and display the tasks
     methodend
 
     rem /**
-    rem  * Adds a task to the tasklist
+    rem  * Adds a Task to the tasklist
     rem  *
-    rem  * @param task!             The task object
+    rem  * @param task!     The Task object
     rem  */
     method public void addTask(Task task!)
         rem Add a task object to the list of tasks
     methodend
 
     rem /**
-    rem  * Removes a task from the tasklist
+    rem  * Removes a Task from the tasklist by specifying the tasks's ID
     rem  *
-    rem  * @param task!             The task object
+    rem  * @param id        The task's unique ID
     rem  */
     method public void removeTask(BBjNumber id)
-        rem remove a task from the list.
+        rem What's the best way to specify a unique task? With the actual task object, or with its unique ID?
+    methodend
+
+    rem /**
+    rem  * Removes a Task from the tasklist by specifying the tasks object
+    rem  *
+    rem  * @param task!     The Task object
+    rem  */
+    method public void removeTask(Task task!)
         rem What's the best way to specify a unique task? With the actual task object, or with its unique ID?
     methodend
 

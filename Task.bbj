@@ -13,24 +13,36 @@ rem  */
 class public Task
 
     rem Public Fields
-    rem /** A unique auto-generated id for the calendar instance that may be used to distinguish between instances of the class. */
-
+    rem /** The title of the task. */
     field public BBjString title!
-
+    rem /** The description of the task. */
     field public BBjString description!
 
     rem Protected Fields
-    rem /** A unique auto-generated id for the calendar instance that may be used to distinguish between instances of the class. */
-    
+    rem /** The unique auto-generated ID for the task that may be used to distinguish between instances of the class. */
     field protected BBjString Uuid! = java.util.UUID.randomUUID().toString()
+
     rem Can we do enums in BBj? Should status just be a boolean isComplete to start with?
+    rem /** The status of the task that denotes whether the task is complete or not. */
     field public BBjNumber status
+
     rem Is a "number" the best way to do priority? It should be restricted to certain values.
+    rem /** The priority of the task as a numeric that goes from 1 to 5, where 1 = lowest priority and 5 = highest priority. */
     field public BBjNumber priority
+    rem /** The due date for the task. */
     field public java.util.Date dueDate!
 
     rem /**
-    rem  * Default constructor for a task item
+    rem  * A Task item's constructor that only takes a title parameter. The other parameters will be set to their default values.
+    rem  *
+    rem  * @param title!            The task's title string
+    rem  */
+    method public Task(BBjString title!)
+        #title$ = title!
+    methodend
+
+    rem /**
+    rem  * A Task item's full constructor that specifies all possible parameters
     rem  *
     rem  * @param title!            The task's title string
     rem  * @param description!      The task's description
