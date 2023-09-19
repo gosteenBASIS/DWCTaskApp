@@ -43,7 +43,7 @@ print "Generated JavaDocs for " + str(programFiles!.size()) + " program files"
 print "JavaDocs located in " + outputFolder!.getCanonicalPath()
 
 rem Open up the generated documentation in a browser
-url! = "file:///" + outputFolder!.getCanonicalPath().replaceAll(" ", "%20") + "/index.html"
+url! = "file:///" + outputFolder!.getCanonicalPath().replaceAll(" ", "%20").replaceAll("\\","/") + "/index.html"
 BBjAPI().getThinClient().browse(url!)
 end
 
