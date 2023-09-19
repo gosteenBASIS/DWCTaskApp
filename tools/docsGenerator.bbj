@@ -7,22 +7,28 @@ REM  */
 
 rem Define this tools' folder and derive the project folder from it
 toolsPath! = dsk("")+dir("")
-if (toolsPath!.endsWith(File.separator)) then toolsPath! = toolsPath!.substring(0, toolsPath!.length() - 1)
-projectPath! = toolsPath!.substring(0, toolsPath!.lastIndexOf(File.separator))
+
+rem Ensure that we have the correct separator
+fileSeparator! = File.separator
+if !(toolsPath!.contains(fileSeparator!)) then fileSeparator! = "/"
+
+rem Define the project path
+if (toolsPath!.endsWith(fileSeparator!)) then toolsPath! = toolsPath!.substring(0, toolsPath!.length() - 1)
+projectPath! = toolsPath!.substring(0, toolsPath!.lastIndexOf(fileSeparator!))
 
 rem Get a listing of all the .bbj files in the project folder and add them to the ArrayList
 projectFolder! = new File(projectPath!)
 filesList! = projectFolder!.list()
 programFiles! = new ArrayList()
 for i = 0 TO filesList!.length - 1
-    currentFile! = new File(projectPath! + File.separator + filesList![i])
+    currentFile! = new File(projectPath! + fileSeparator! + filesList![i])
     if (!currentFile!.isDirectory() AND currentFile!.getName().toLowerCase().endsWith(".bbj")) then
         programFiles!.add(currentFile!.getCanonicalPath())
     endif
 next i
 
 rem Ensure that the output destination directory exists
-outputFolder! = new File(projectPath! + File.separator + "docs")
+outputFolder! = new File(projectPath! + fileSeparator! + "docs")
 outputFolder!.mkdirs()
 
 rem Generate the JavaDocs
