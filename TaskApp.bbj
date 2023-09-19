@@ -28,6 +28,7 @@ class public TaskApp
     rem  */
     method public void run()
         rem Create the UI and display the tasks
+
     methodend
 
     rem /**
@@ -36,7 +37,7 @@ class public TaskApp
     rem  * @param task!     The Task object
     rem  */
     method public void addTask(Task task!)
-        rem Add a task object to the list of tasks
+
     methodend
 
     rem /**
@@ -44,8 +45,8 @@ class public TaskApp
     rem  *
     rem  * @param id        The task's unique ID
     rem  */
-    method public void removeTask(BBjNumber id)
-        rem What's the best way to specify a unique task? With the actual task object, or with its unique ID?
+    method public void removeTask(BBjString id!)
+
     methodend
 
     rem /**
@@ -54,7 +55,7 @@ class public TaskApp
     rem  * @param task!     The Task object
     rem  */
     method public void removeTask(Task task!)
-        rem What's the best way to specify a unique task? With the actual task object, or with its unique ID?
+
     methodend
 
 classend
