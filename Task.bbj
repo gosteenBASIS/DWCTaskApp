@@ -5,7 +5,13 @@ rem  *
 rem  */
 rem package TaskApp
 
-use java.util.Date
+
+rem Sample test app
+declare auto Task t!
+t! = new Task("My First Task")
+? "Task Title: ", t!.getTitle()
+end
+
 
 rem /**
 rem  * Defines the data structure for a task in the TaskApp
@@ -13,36 +19,65 @@ rem  */
 class public Task
 
     rem Public Fields
-    rem /** The title of the task. */
-    field public BBjString title!
-    rem /** The description of the task. */
-    field public BBjString description!
+    rem ========================================
+
 
     rem Protected Fields
+    rem ========================================
+    rem /** The title of the task. */
+    field protected BBjString title!
+
+    rem /** The description of the task. */
+    field protected BBjString description!
+
     rem /** The unique auto-generated ID for the task that may be used to distinguish between instances of the class. */
-    field protected BBjString Uuid! = java.util.UUID.randomUUID().toString()
+    field protected BBjString uuid!
 
     rem Can we do enums in BBj? Should status just be a boolean isComplete to start with?
     rem /** The status of the task that denotes whether the task is complete or not. */
-    field public BBjNumber status
+    field protected BBjNumber status
 
     rem Is a "number" the best way to do priority? It should be restricted to certain values.
     rem /** The priority of the task as a numeric that goes from 1 to 5, where 1 = lowest priority and 5 = highest priority. */
-    field public BBjNumber priority
-    rem /** The due date for the task. */
-    field public java.util.Date dueDate!
+    field protected BBjNumber priority
 
+    rem /** The due date for the task. */
+    field protected java.util.Date dueDate!
+
+
+    rem Constants
+    rem ========================================
+    rem /** A constant value that's used to set the Task's status to incomplete (to do) */
+    method public static BBjNumber STATUS_INCOMPLETE()
+        methodret 0
+    methodend
+    rem /** A constant value that's used to set the Task's status to complete (finished or done) */
+    method public static BBjNumber STATUS_COMPLETE()
+        methodret 1
+    methodend
+    rem /** A constant value that's used to set the Task's status to deffered (on hold) */
+    method public static BBjNumber STATUS_DEFFERRED()
+        methodret 2
+    methodend
+    rem /** A constant value that's used to set the Task's status to blocked (can not complete this task until a prerequisite has been completed) */
+    method public static BBjNumber STATUS_BLOCKED()
+        methodret 3
+    methodend
+
+
+    rem Constructors
+    rem ========================================
     rem /**
-    rem  * A Task item's constructor that only takes a title parameter. The other parameters will be set to their default values.
+    rem  * A Task item's constructor that only takes a title parameter. All other parameters will be set to their default values.
     rem  *
     rem  * @param title!            The task's title string
     rem  */
     method public Task(BBjString title!)
-        #title$ = title!
+        #this!(title!, null(), 0, null())
     methodend
 
     rem /**
-    rem  * A Task item's full constructor that specifies all possible parameters
+    rem  * A Task item's full constructor that specifies all possible parameters.
     rem  *
     rem  * @param title!            The task's title string
     rem  * @param description!      The task's description
@@ -50,10 +85,41 @@ class public Task
     rem  * @param dueDate!          The task's due date
     rem  */
     method public Task(BBjString title!, BBjString description!, BBjNumber priority, java.util.Date dueDate!)
-        #title$ = title!
-        #description$ = description!
+        #init(title!, description!, priority, dueDate!)
+    methodend
+
+    rem /**
+    rem  * Initializes a Task item and assigns defaults to its properties if they weren't specified on the constructor.
+    rem  */
+    method protected void init(BBjString title!, BBjString description!, BBjNumber priority, java.util.Date dueDate!)
+        #title! = title!
+        #description! = description!
+        #uuid! = java.util.UUID.randomUUID().toString()
         #priority = priority
-        rem ID should be generated to ensure uniqueness, and isn't relevant to the user
+        #status = Task.STATUS_INCOMPLETE()
+    methodend
+
+
+    rem Methods
+    rem ========================================
+    rem /**
+    rem  * Retrieves the title of the Task
+    rem  * @return      The tasks's title
+    rem  */
+    method public BBjString getTitle()
+        methodret #title!
+    methodend
+
+    rem /**
+    rem  * Sets the title of the Task to the provided string
+    rem  * @param BBjString title!  The task's title
+    rem  */
+    method public void setTitle(BBjString title!)
+        #title! = title!
     methodend
 
 classend
+
+
+rem USE Statements
+use java.util.Date
