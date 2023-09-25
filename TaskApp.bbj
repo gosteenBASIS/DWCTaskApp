@@ -15,20 +15,63 @@ rem  * features including light/dark theme support, responsive design, and makin
 rem  * use of 3rd-party web components.
 rem  */
 class public TaskApp
+
     rem Some sort of list of tasks.
+    rem ========================================
     rem It could be a BBjVector or BBjArray of tasks.
     rem It could also be a Java Collection class like:
     rem     Set     https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Set.html
     rem     List    https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html
     rem     Map     https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html
-    field public BBjArray tasks!
+    rem /** A collection of Task objects. */
+    field public BBjVector tasks!
 
+
+    rem Constants
+    rem ========================================
+    rem /** A constant value that's used to set the TaskApp's theme to the DWC's light theme */
+    method public static BBjString THEME_LIGHT()
+        methodret "light"
+    methodend
+    rem /** A constant value that's used to set the TaskApp's theme to the DWC's dark theme */
+    method public static BBjString THEME_DARK()
+        methodret "dark"
+    methodend
+    rem /** A constant value that's used to set the TaskApp's theme to the DWC's system theme,
+    rem  * meaning that it follows the operating system's configuration.  For example, when the
+    rem  * user's device switches to its dark theme, then the app will also switch its theme
+    rem  * to the DWC's dark theme. */
+    method public static BBjString THEME_SYSTEM()
+        methodret "system"
+    methodend
+
+
+    rem User Preferences
+    rem ========================================
+    rem /** The user's preferred DWC theme to use for the UI */
+    field protected BBjString prefsTheme! = #THEME_SYSTEM()
+    rem /** The user's preferred priority level for new Tasks that have not been assigned a priority */
+    field protected BBjNumber prefsDefaultTaskPriority!
+
+
+    rem Constructors
+    rem ========================================
+
+
+
+
+
+
+    rem Methods
+    rem ========================================
     rem /**
     rem  * Runs the TaskApp application
     rem  */
     method public void run()
-        rem Create the UI and display the tasks
+        rem Set defaults and apply user preferences
+        BBjAPI().getWebManager().setTheme(prefsTheme!)
 
+        rem Create the UI and display the tasks
     methodend
 
     rem /**
@@ -37,7 +80,6 @@ class public TaskApp
     rem  * @param task!     The Task object
     rem  */
     method public void addTask(Task task!)
-
     methodend
 
     rem /**
@@ -46,7 +88,6 @@ class public TaskApp
     rem  * @param id        The task's unique ID
     rem  */
     method public void removeTask(BBjString id!)
-
     methodend
 
     rem /**
@@ -55,7 +96,6 @@ class public TaskApp
     rem  * @param task!     The Task object
     rem  */
     method public void removeTask(Task task!)
-
     methodend
 
 classend
