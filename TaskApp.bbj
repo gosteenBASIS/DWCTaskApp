@@ -70,8 +70,24 @@ class public TaskApp
     method public void run()
         rem Set defaults and apply user preferences
         BBjAPI().getWebManager().setTheme(prefsTheme!)
+        
+        createSampleTasks(10)
 
         rem Create the UI and display the tasks
+    methodend
+    
+    rem /**
+    rem  * Creates sample tasks to use for a demo
+    rem  * 
+    rem  * @param numTasks! The number of sample tasks to create
+    rem  */
+    method public void createSampleTasks(BBjNumber numTasks!)
+        for i=0 to numTasks!
+            BBjString taskName! = "Task " + i.toString()
+            task! = Task(taskName!)
+            rem Do some random configuration of the tasks
+            #addTask(task!)
+        next i
     methodend
 
     rem /**
@@ -80,6 +96,7 @@ class public TaskApp
     rem  * @param task!     The Task object
     rem  */
     method public void addTask(Task task!)
+        #tasks!.addItem(task!)
     methodend
 
     rem /**
