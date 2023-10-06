@@ -16,6 +16,11 @@ rem  * use of 3rd-party web components.
 rem  */
 class public TaskApp
 
+    rem Protected Fields
+    rem ========================================
+    field protected BBjSysGui           sysgui!
+    field protected BBjTopLevelWindow   win!
+
     rem Some sort of list of tasks.
     rem ========================================
     rem It could be a BBjVector or BBjArray of tasks.
@@ -23,8 +28,12 @@ class public TaskApp
     rem     Set     https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Set.html
     rem     List    https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html
     rem     Map     https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html
-    rem /** A collection of Task objects. */
-    field public BBjVector tasks!
+    rem /**
+    rem  * A collection of Task objects in a Java TreeMap
+    rem  *
+    rem  * @see <a href='https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/TreeMap.html' target='_blank'>TreeMap</a> documentation
+    rem  */
+    field protected TreeMap tasksTreeMap!
 
 
     rem Constants
@@ -70,22 +79,29 @@ class public TaskApp
     method public void run()
         rem Set defaults and apply user preferences
         BBjAPI().getWebManager().setTheme(prefsTheme!)
-        
-        createSampleTasks(10)
+
+        #createSampleTasks(10)
 
         rem Create the UI and display the tasks
+
     methodend
-    
+
     rem /**
     rem  * Creates sample tasks to use for a demo
-    rem  * 
+    rem  *
     rem  * @param numTasks! The number of sample tasks to create
     rem  */
     method public void createSampleTasks(BBjNumber numTasks!)
-        for i=0 to numTasks!
-            BBjString taskName! = "Task " + i.toString()
-            task! = Task(taskName!)
+        declare auto BBjString  taskName!
+        declare auto Task       task!
+
+        for i = 0 to numTasks! - 1
+            taskName! = "Task " + str(i)
+            task! = new Task(taskName!)
+
             rem Do some random configuration of the tasks
+
+            rem Add the task to the collection of Tasks
             #addTask(task!)
         next i
     methodend
@@ -96,7 +112,7 @@ class public TaskApp
     rem  * @param task!     The Task object
     rem  */
     method public void addTask(Task task!)
-        #tasks!.addItem(task!)
+        #tasksTreeMap!.put(task!.getUuid(), task!)
     methodend
 
     rem /**
