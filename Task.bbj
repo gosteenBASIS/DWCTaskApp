@@ -121,27 +121,30 @@ class public Task
     method public BBjString getDescription()
         methodret #description!
     methodend
-    
+
     method public void setDescription(BBjString description!)
         #description! = description!
     methodend
-    
+
     method public void setPriority(BBjNumber priority!)
         #priority! = priority!
     methodend
-    
+
     method public BBjNumber getPriority()
         methodret #priority!
     methodend
-    
+
     method public java.util.Date getDueDate()
         methodret #dueDate!
     methodend
-    
+
     method public void setDueDate(java.util.Date dueDate!)
         #dueDate! = dueDate!
     methodend
-    
+
+    method public BBjString getUuid()
+        methodret #uuid!
+    methodend
 
 classend
 
