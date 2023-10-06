@@ -149,5 +149,8 @@ class public Task
 classend
 
 
-rem USE Statements
+rem BBj USE Statements
+use ::TaskApp.bbj::TaskApp
+
+rem Java USE Statements
 use java.util.Date

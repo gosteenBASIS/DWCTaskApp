@@ -5,6 +5,13 @@ rem  *
 rem  */
 rem package TaskApp
 
+
+declare auto TaskApp app!
+app! = new TaskApp()
+app!.run()
+end
+
+
 rem /**
 rem  * A DWC-specific task manager BBj program.
 rem  *
@@ -65,10 +72,12 @@ class public TaskApp
 
     rem Constructors
     rem ========================================
+    method public TaskApp()
 
+        rem Create the collection for the tasks
+        #tasksTreeMap! = new TreeMap()
 
-
-
+    methodend
 
 
     rem Methods
@@ -78,7 +87,7 @@ class public TaskApp
     rem  */
     method public void run()
         rem Set defaults and apply user preferences
-        BBjAPI().getWebManager().setTheme(prefsTheme!)
+        BBjAPI().getWebManager(err=*NEXT).setTheme(prefsTheme!,err=*NEXT)
 
         #createSampleTasks(10)
 
@@ -132,3 +141,11 @@ class public TaskApp
     methodend
 
 classend
+
+
+rem BBj USE Statements
+use ::Task.bbj::Task
+
+rem Java USE Statements
+use java.util.Date
+use java.util.TreeMap
