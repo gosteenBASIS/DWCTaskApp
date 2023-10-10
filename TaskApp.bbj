@@ -26,7 +26,10 @@ class public TaskApp
     rem Protected Fields
     rem ========================================
     field protected BBjSysGui           sysgui!
+    field protected BBjWebManager       webManager!
     field protected BBjTopLevelWindow   win!
+    field protected BBjTopLevelWindow   winSettings!
+
 
     rem Some sort of list of tasks.
     rem ========================================
@@ -74,6 +77,11 @@ class public TaskApp
     rem ========================================
     method public TaskApp()
 
+        rem Instatiate the WebManager and use it to inject the app's CSS
+        #webManager! = BBjAPI().getWebManager()
+        css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"TaskApp.css"))
+        BBjAPI().getWebManager().injectStyle(css!, 0, "name=taskapp_css")
+
         rem Create the collection for the tasks
         #tasks! = new TreeMap()
 
@@ -92,7 +100,10 @@ class public TaskApp
         #createSampleTasks(10)
 
         rem Create the UI and display the tasks
+        #sysgui! = BBjAPI().openSysGui("X0")
+        #OnShowSettings(null())
 
+        process_events
     methodend
 
     rem /**
@@ -138,6 +149,66 @@ class public TaskApp
     rem  * @param task!     The Task object
     rem  */
     method public void removeTask(Task task!)
+    methodend
+
+    rem /**
+    rem  * Shows the app's configuration window
+    rem  *
+    rem  * @param task!     The Task object
+    rem  */
+    method public void OnShowSettings(BBjButtonPushEvent event!)
+        rem To Do
+        rem 1) Define the theme color
+        themeColor! = "Tangerine"
+
+
+        rem Create the window and controls if it doesn't yet exist.  Otherwise, we'll simply display the existing one that we created and previously hid.
+        if (#winSettings! = null()) then
+            #winSettings! = #sysgui!.addWindow("Settings", $011B0010$)
+            #winSettings!.addStyle("winSettings")
+
+            rem Create the [Done] button that closes the settings window
+            title! = #winSettings!.addStaticText("Settings", $4000$)
+            title!.addStyle("settingsTitle")
+            settingsDone! = #winSettings!.addButton("Done")
+            settingsDone!.addStyle("settingsDone")
+
+            rem Personalization
+            text! = #winSettings!.addStaticText("Personalization")
+            text!.addStyle("settingsCategoryTitle")
+            win! = #winSettings!.addChildWindow("",$00108800$,#sysgui!.getAvailableContext())
+            win!.addStyle("settingsChildWindow")
+            text! = win!.addStaticText("<html><bbj-icon pool='tabler' name='palette'></bbj-icon>&&nbsp; Theme")
+            text! = win!.addStaticText(themeColor!)
+            settingsThemeColor! = win!.addButton("<html><bbj-icon pool='tabler' name='chevron-right' class='chevron'></bbj-icon>")
+
+            rem About
+            text! = #winSettings!.addStaticText("About the App")
+            text!.addStyle("settingsCategoryTitle")
+            win! = #winSettings!.addChildWindow("",$00108800$,#sysgui!.getAvailableContext())
+            win!.addStyle("settingsChildWindow")
+            text! = win!.addStaticText("<html><bbj-icon pool='tabler' name='info-circle'></bbj-icon>&&nbsp; About")
+            settingsAbout! = win!.addButton("<html><bbj-icon pool='tabler' name='chevron-right' class='chevron'></bbj-icon>")
+
+            rem Set the control callbacks
+            settingsDone!.setCallback(BBjButton.ON_BUTTON_PUSH, #this!, "onSettingsDone")
+            settingsThemeColor!.setCallback(BBjButton.ON_BUTTON_PUSH, #this!, "onSettingsThemeColor")
+            settingsAbout!.setCallback(BBjButton.ON_BUTTON_PUSH, #this!, "onSettingsAbout")
+        endif
+
+        rem Since we created the window from BBj as hidden, we have to show it.  
+        rem The actual visibility will be a combination of BBj's setVisible() and CSS to animate the opacity.
+        #winSettings!.setVisible(1)
+    methodend
+
+    method public void onSettingsDone(BBjButtonPushEvent event!)
+        #winSettings!.setVisible(0)
+    methodend
+    method public void onSettingsThemeColor(BBjButtonPushEvent event!)
+        temp = msgbox("Net Yet Implemented")
+    methodend
+    method public void onSettingsAbout(BBjButtonPushEvent event!)
+        temp = msgbox("TaskApp is current at version 0.0!")
     methodend
 
 classend
