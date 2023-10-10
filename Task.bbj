@@ -63,7 +63,16 @@ class public Task
     method public static BBjNumber STATUS_BLOCKED()
         methodret 3
     methodend
+    
+    rem /** A constant value that represents the minimum allowed priority value */
+    method public static BBjNumber PRIORITY_MIN()
+        methodret 0
+    methodend
 
+    rem /** A constant value that represents the maximum allowed priority value */
+    method public static BBjNumber PRIORITY_MAX()
+        methodret 5
+    methodend
 
     rem Constructors
     rem ========================================
@@ -126,6 +135,12 @@ class public Task
     rem  * @param BBjNumber priority!  The task's priority
     rem  */       
     method public void setPriority(BBjNumber priority!)
+        if priority! > #PRIORITY_MAX() then 
+            priority! = #PRIORITY_MAX()
+        endif 
+        if priority! < #PRIORITY_MIN() then 
+            priority! = #PRIORITY_MIN()
+        endif
         #priority! = priority!
     methodend
     
