@@ -40,7 +40,7 @@ class public TaskApp
     rem  *
     rem  * @see <a href='https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/TreeMap.html' target='_blank'>TreeMap</a> documentation
     rem  */
-    field protected TreeMap tasksTreeMap!
+    field protected TreeMap tasks!
 
 
     rem Constants
@@ -75,7 +75,7 @@ class public TaskApp
     method public TaskApp()
 
         rem Create the collection for the tasks
-        #tasksTreeMap! = new TreeMap()
+        #tasks! = new TreeMap()
 
     methodend
 
@@ -121,7 +121,7 @@ class public TaskApp
     rem  * @param task!     The Task object
     rem  */
     method public void addTask(Task task!)
-        #tasksTreeMap!.put(task!.getUuid(), task!)
+        #tasks!.put(task!.getUuid(), task!)
     methodend
 
     rem /**
