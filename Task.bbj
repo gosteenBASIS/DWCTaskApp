@@ -6,10 +6,10 @@ rem  */
 rem package TaskApp
 
 
-rem Sample test app
+rem Test program that creates a task and prints out its details
 declare auto Task t!
 t! = new Task("My First Task")
-? "Task Title: ", t!.getTitle()
+t!.printDetails()
 end
 
 
@@ -44,6 +44,11 @@ class public Task
     rem /** The due date for the task. */
     field protected java.util.Date dueDate!
 
+    rem /** The instant in time that the user created the task */
+    field protected Instant created!
+
+    rem /** The SQL timestamp version of the instant in time that the user created the task */
+    field protected Timestamp createdTimestamp!
 
     rem Constants
     rem ========================================
@@ -82,7 +87,7 @@ class public Task
     rem  * @param title!            The task's title string
     rem  */
     method public Task(BBjString title!)
-        #this!(title!, null(), 0, null())
+        #this!(title!, "", 0, null())
     methodend
 
     rem /**
@@ -106,11 +111,10 @@ class public Task
         #uuid! = java.util.UUID.randomUUID().toString()
         #priority = priority
         #status = Task.STATUS_INCOMPLETE()
+        #created! = Instant.now()
+        #createdTimestamp! = Timestamp.from(#created!)
     methodend
 
-
-    rem Methods
-    rem ========================================
 
     rem Setters
     rem ========================================
@@ -194,6 +198,22 @@ class public Task
         methodret #uuid!
     methodend
 
+    rem Misc utility methods
+    rem ========================================
+    rem /**
+    rem  * Gets the uuid of the Task as a BBjString
+    rem  * @return The Task's uuid
+    rem  */  
+    method public void printDetails()
+        ? "Title: ", #title!
+        ? "Description: ", #description!
+        ? "Status: ", #status
+        ? "Priority: ", #priority
+        ? "Due Date: ", #dueDate!
+        ? "Creation Timestamp: ", #created!.toString()
+        ? "Creation SQL Timestamp: ", #createdTimestamp!
+    methodend
+
 classend
 
 
@@ -201,4 +221,7 @@ rem BBj USE Statements
 use ::TaskApp.bbj::TaskApp
 
 rem Java USE Statements
-use java.util.Date
+use java.util.Date;     rem https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Date.html
+use java.time.Instant;  rem https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Instant.html
+use java.util.UUID;     rem https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/UUID.html
+use java.sql.Timestamp; rem https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Timestamp.html
