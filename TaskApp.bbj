@@ -82,6 +82,11 @@ class public TaskApp
         css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"TaskApp.css"))
         BBjAPI().getWebManager().injectStyle(css!, 0, "name=taskapp_css")
 
+        rem Set the app's icon in the browser's tab
+        url! = "https://public.basis.cloud/images/DWCTaskApp.svg"
+        attrib! = "rel=icon,type=image/svg,id=dwc_taskapp_icon"
+        #webManager!.injectLinkUrl(url!, 1, attrib!,err=*NEXT)
+
         rem Create the collection for the tasks
         #tasks! = new TreeMap()
 
@@ -164,8 +169,9 @@ class public TaskApp
 
         rem Create the window and controls if it doesn't yet exist.  Otherwise, we'll simply display the existing one that we created and previously hid.
         if (#winSettings! = null()) then
-            #winSettings! = #sysgui!.addWindow("Settings", $011B0010$)
+            #winSettings! = #sysgui!.addWindow("TaskApp Settings", $011B0010$)
             #winSettings!.addStyle("winSettings")
+            #winSettings!.setIcon(dsk("")+dir("")+"images/DWCTaskApp.png")
 
             rem Create the [Done] button that closes the settings window
             title! = #winSettings!.addStaticText("Settings", $4000$)
@@ -178,7 +184,7 @@ class public TaskApp
             text!.addStyle("settingsCategoryTitle")
             win! = #winSettings!.addChildWindow("",$00108800$,#sysgui!.getAvailableContext())
             win!.addStyle("settingsChildWindow")
-            text! = win!.addStaticText("<html><bbj-icon pool='tabler' name='palette'></bbj-icon>&&nbsp; Theme")
+            text! = win!.addStaticText("<html><bbj-icon pool='tabler' name='palette' class='icon'></bbj-icon>&&nbsp; Theme")
             text! = win!.addStaticText(themeColor!)
             settingsThemeColor! = win!.addButton("<html><bbj-icon pool='tabler' name='chevron-right' class='chevron'></bbj-icon>")
 
@@ -187,7 +193,7 @@ class public TaskApp
             text!.addStyle("settingsCategoryTitle")
             win! = #winSettings!.addChildWindow("",$00108800$,#sysgui!.getAvailableContext())
             win!.addStyle("settingsChildWindow")
-            text! = win!.addStaticText("<html><bbj-icon pool='tabler' name='info-circle'></bbj-icon>&&nbsp; About")
+            text! = win!.addStaticText("<html><bbj-icon pool='tabler' name='info-circle' class='icon'></bbj-icon>&&nbsp; About")
             settingsAbout! = win!.addButton("<html><bbj-icon pool='tabler' name='chevron-right' class='chevron'></bbj-icon>")
 
             rem Set the control callbacks

@@ -1,26 +1,60 @@
 /* The CSS file that accompanies the TaskApp DWC application */
 
 
-/* The TaskApp's CSS custom properties */
+/* The TaskApp's CSS custom properties       */
 /* ========================================  */
 :root {
-    --app-color-h: 115;
+    --app-color-h: 15;
     --app-color-s: 75%;
     --app-color-b: 35%;
     --app-color-primary: hsl(var(--app-color-h), var(--app-color-s), var(--app-color-b));
+    --app-color-window-bg: hsl(0, 0%, 95%);
+}
+
+/* Overriding the DWC's default CSS custom properties */
+/* ========================================  */
+:root {
+    --bbj-color-primary-h: var(--app-color-h);
+    --bbj-color-default-s: 5%;
+    --bbj-font-family: 'AR One Sans', 'Gabarito', 'K2D', 'Overlock', 'Encode Sans Semicondensed', 'Aller', 'Alatsi', 'Akrobat', var(--bbj-font-family-sans);
 }
 
 
-/* Setting Window and Controls */
+
+/* Global definitions for multiple controls  */
+/* ========================================  */
+
+/* Modify the entire DOM */
+html, body {
+    background: var(--bbj-color-black);
+}
+
+/* Modify ALL BBjButtons by setting their color and font size & weight */
+bbj-button::part(label) {
+    color: var(--app-color-primary);
+    font-size: var(--bbj-font-size-l);
+    font-weight: var(--bbj-font-weight-bold);
+}
+
+/* Modify the Windows */
+.BBjTopLevelWindow {
+    overflow: hidden;
+    border-radius: var(--bbj-border-radius-xl);
+}
+
+
+
+
+/* Settings Window and Controls               */
 /* ========================================  */
 .winSettings .BBjPanel {
     display: flex;
     flex-flow: column;
     align-items: start;
     justify-content: flex-start;
-    padding: var(--bbj-space);
+    padding: var(--bbj-space-m);
     gap: var(--bbj-space-xl);
-    background-color: var(--bbj-color-gray-90);
+    background-color: var(--app-color-window-bg);
     min-width: 300px;
 }
 
@@ -35,13 +69,8 @@
 bbj-button.settingsDone {
     position: absolute;
     right: var(--bbj-space-m);
-    top: 0.25rem;
+    top: 0.65rem;
     align-self: end;
-    font-size: var(--bbj-font-size-l);
-    font-weight: var(--bbj-font-weight-semibold);
-}
-bbj-button.settingsDone::part(label) {
-    color: var(--app-color-primary);
 }
 
 /* The chevron icons on setttings buttons */
@@ -51,8 +80,9 @@ bbj-icon.chevron {
 }
 
 /* The icons for the settings items that aren't chevrons */
-bbj-icon:not(chevron) {
+bbj-icon.icon {
     color: var(--app-color-primary);
+    margin-left: var(--bbj-space);
 }
 
 /* The title for each category or section in the settings screen */
@@ -65,7 +95,7 @@ bbj-icon:not(chevron) {
 
 /* The BBjChildWindow in the settings that contains controls for a single setting */
 .settingsChildWindow {
-    background: var(--bbj-window-background);
+    background: var(--bbj-color-white);
     width: 100%;
     display: flex;
     flex-flow: row;
