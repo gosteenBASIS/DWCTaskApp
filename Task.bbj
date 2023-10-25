@@ -35,11 +35,11 @@ class public Task
 
     rem Can we do enums in BBj? Should status just be a boolean isComplete to start with?
     rem /** The status of the task that denotes whether the task is complete or not. */
-    field protected BBjNumber status
+    field protected BBjNumber status!
 
     rem Is a "number" the best way to do priority? It should be restricted to certain values.
     rem /** The priority of the task as a numeric that goes from 1 to 5, where 1 = lowest priority and 5 = highest priority. */
-    field protected BBjNumber priority
+    field protected BBjNumber priority!
 
     rem /** The due date for the task. */
     field protected java.util.Date dueDate!
@@ -95,22 +95,22 @@ class public Task
     rem  *
     rem  * @param title!            The task's title string
     rem  * @param description!      The task's description
-    rem  * @param priority          The task's priority level (1 -5)
+    rem  * @param priority!          The task's priority level (1 -5)
     rem  * @param dueDate!          The task's due date
     rem  */
-    method public Task(BBjString title!, BBjString description!, BBjNumber priority, java.util.Date dueDate!)
-        #init(title!, description!, priority, dueDate!)
+    method public Task(BBjString title!, BBjString description!, BBjNumber priority!, java.util.Date dueDate!)
+        #init(title!, description!, priority!, dueDate!)
     methodend
 
     rem /**
     rem  * Initializes a Task item and assigns defaults to its properties if they weren't specified on the constructor.
     rem  */
-    method protected void init(BBjString title!, BBjString description!, BBjNumber priority, java.util.Date dueDate!)
+    method protected void init(BBjString title!, BBjString description!, BBjNumber priority!, java.util.Date dueDate!)
         #title! = title!
         #description! = description!
         #uuid! = java.util.UUID.randomUUID().toString()
-        #priority = priority
-        #status = Task.STATUS_INCOMPLETE()
+        #priority! = priority!
+        #status! = Task.STATUS_INCOMPLETE()
         #created! = Instant.now()
         #createdTimestamp! = Timestamp.from(#created!)
     methodend
@@ -155,6 +155,14 @@ class public Task
     method public void setDueDate(java.util.Date dueDate!)
         #dueDate! = dueDate!
     methodend
+    
+    rem /**
+    rem  * Sets the due date of the Task to the provided value
+    rem  * @param BBjNumber status!  The status code
+    rem  */      
+    method public void setStatus(BBjNumber status!)
+        #status! = status!
+    methodend
 
     rem Getters
     rem ========================================
@@ -172,6 +180,14 @@ class public Task
     rem  */  
     method public BBjNumber getPriority()
         methodret #priority!
+    methodend
+    
+    rem /**
+    rem  * Gets the status of the Task as a BBjNumber
+    rem  * @return the Task's status
+    rem  */
+    method public BBjNumber getStatus()
+        methodret #status!
     methodend
 
     rem /**
@@ -197,6 +213,31 @@ class public Task
     method public BBjString getUuid()
         methodret #uuid!
     methodend
+    
+    rem /**
+    rem  * Gets a string representation of the status
+    rem  * @return A string description of the status value
+    rem  */
+    method public BBjString getStatusString()
+        s! = ""
+        switch #status!
+            case #STATUS_INCOMPLETE()
+            s! = "incomplete"
+            break
+            case #STATUS_COMPLETE()
+            s! = "complete"
+            break
+            case #STATUS_DEFFERRED()
+            s! = "deferred"
+            break
+            case #STATUS_BLOCKED()
+            s! = "blocked"
+            break
+            case default
+            s! = "null"
+        swend
+        methodret s!
+    methodend
 
     rem Misc utility methods
     rem ========================================
@@ -207,8 +248,8 @@ class public Task
     method public void printDetails()
         ? "Title: ", #title!
         ? "Description: ", #description!
-        ? "Status: ", #status
-        ? "Priority: ", #priority
+        ? "Status: ", #status!
+        ? "Priority: ", #priority!
         ? "Due Date: ", #dueDate!
         ? "Creation Timestamp: ", #created!.toString()
         ? "Creation SQL Timestamp: ", #createdTimestamp!

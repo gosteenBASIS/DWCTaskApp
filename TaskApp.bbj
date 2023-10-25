@@ -29,6 +29,7 @@ class public TaskApp
     field protected BBjWebManager       webManager!
     field protected BBjTopLevelWindow   win!
     field protected BBjTopLevelWindow   winSettings!
+    field protected BBjTopLevelWindow   winEdit!
 
 
     rem Some sort of list of tasks.
@@ -106,9 +107,78 @@ class public TaskApp
 
         rem Create the UI and display the tasks
         #sysgui! = BBjAPI().openSysGui("X0")
-        #OnShowSettings(null())
-
+        rem #OnShowSettings(null())
+        #createMainWindow()
+        
         process_events
+    methodend
+    
+    rem /**
+    rem  * Create the main window for the application
+    rem  */
+    method public void createMainWindow()
+        if (#win! = null()) then            
+            #win! = #sysgui!.addWindow("TaskApp", $011C0000$)
+            #win!.addStyle("win")
+            #win!.setIcon(dsk("")+dir("")+"images/DWCTaskApp.png")
+        endif
+        
+        #displayTasks()
+    methodend
+    
+    rem /**
+    rem  * Add a child window to the main window for each task
+    rem  */
+    method public void displayTasks()
+        i! = #tasks!.values().iterator()
+        while i!.hasNext()
+            t! = i!.next()
+            rem TaskWindow could be a custom object itself
+            taskWin! = #win!.addChildWindow("",$00108000$,#sysgui!.getAvailableContext())
+            taskWin!.addStaticText(t!.getTitle())
+            checkbox! = taskWin!.addCheckBox("")
+            taskWin!.addStyle("task clickable " + t!.getStatusString())
+            taskWin!.setCallback(BBjControl.ON_CLICK, #this!, "openEditWindow")
+            taskWin!.setAttribute("id",t!.getUuid())
+            checkbox!.setCallback(BBjControl.ON_CHECK_CHANGE, #this!, "onTaskCheck")
+            if (t!.getStatus() = t!.STATUS_COMPLETE()) then
+                checkbox!.setSelected(1)
+            endif
+        wend
+    methodend
+    
+    rem /**
+    rem  * Open an edit window to edit or create a new task
+    rem  * 
+    rem  * @param e!    A BBjClickEvent
+    rem  */
+    method public void openEditWindow(BBjClickEvent e!)
+        id! = e!.getControl().getAttribute("id")
+        foo! = #win!.addChildWindow("",$00108000$,#sysgui!.getAvailableContext())
+        foo!.addStaticText(id!)
+    methodend
+    
+    rem /**
+    rem  * Method to run when a task's checkbox is changed
+    rem  * 
+    rem  * @param e!    A BBjCheckChangeEvent
+    rem  */
+    method public void onTaskCheck(BBjCheckChangeEvent e!)
+        parent! = e!.getControl().getParentWindow()
+        id! = parent!.getAttribute("id")
+        task! = #tasks!.get(id!)
+        rem Maybe move these remove styles to a separate method if we need to do it again
+        parent!.removeStyle("complete")
+        parent!.removeStyle("incomplete")
+        parent!.removeStyle("blocked")
+        parent!.removeStyle("deferred")
+        if task!.getStatus() <> task!.STATUS_COMPLETE() then
+            task!.setStatus(task!.STATUS_COMPLETE())
+            parent!.addStyle("complete")
+        else
+            task!.setStatus(task!.STATUS_INCOMPLETE())
+            parent!.addStyle("incomplete")
+        endif
     methodend
 
     rem /**
@@ -123,10 +193,8 @@ class public TaskApp
         for i = 0 to numTasks! - 1
             taskName! = "Task " + str(i)
             task! = new Task(taskName!)
+            task!.setStatus(rnd(4))
 
-            rem Do some random configuration of the tasks
-
-            rem Add the task to the collection of Tasks
             #addTask(task!)
         next i
     methodend

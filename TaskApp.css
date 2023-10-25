@@ -94,7 +94,7 @@ bbj-icon.icon {
 }
 
 /* The BBjChildWindow in the settings that contains controls for a single setting */
-.settingsChildWindow {
+.settingsChildWindow, .task {
     background: var(--bbj-color-white);
     width: 100%;
     display: flex;
@@ -118,4 +118,30 @@ bbj-icon.icon {
     font-weight: var(--bbj-font-weight-bold);
     padding-right: 0;
     padding-left: calc(2 * var(--bbj-space));
+}
+
+/* Task items that are incomplete */
+.incomplete {
+    background-color: lightgray;
+}
+
+/* Task items that are complete */
+.complete  {
+    background-color: rgb(110, 161, 110);
+    text-decoration: line-through;
+}
+
+/* Task items that are deferred */
+.deferred  {
+    background-color: rgb(167, 151, 66);
+}
+
+/* Task items that are deferred */
+.blocked  {
+    background-color: rgb(197, 124, 124);
+}
+
+/* Items that are clickable, and hovered over */
+.clickable:hover {
+   filter: brightness(80%);
 }
