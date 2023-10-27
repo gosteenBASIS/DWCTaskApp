@@ -82,12 +82,12 @@ class public TaskApp
         rem Instatiate the WebManager and use it to inject the app's CSS
         #webManager! = BBjAPI().getWebManager()
         css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"TaskApp.css"))
-        BBjAPI().getWebManager().injectStyle(css!, 0, "name=taskapp_css")
+        #webManager!.injectStyle(css!, 0, "name=taskapp_css")
 
         rem Set the app's icon in the browser's tab
         url! = "https://public.basis.cloud/images/DWCTaskApp.svg"
         attrib! = "rel=icon,type=image/svg,id=dwc_taskapp_icon"
-        #webManager!.injectLinkUrl(url!, 1, attrib!,err=*NEXT)
+        #webManager!.injectLinkUrl(url!, 1, attrib!, err=*NEXT)
 
         rem Create the collection for the tasks
         #tasks! = new TreeMap()
@@ -102,7 +102,7 @@ class public TaskApp
     rem  */
     method public void run()
         rem Set defaults and apply user preferences
-        BBjAPI().getWebManager(err=*NEXT).setTheme(prefsTheme!,err=*NEXT)
+        BBjAPI().getWebManager(err=*NEXT).setTheme(prefsTheme!, err=*NEXT)
 
         #createSampleTasks(10)
 
@@ -154,10 +154,10 @@ class public TaskApp
     rem  * 
     rem  * @param e!    A BBjClickEvent
     rem  */
-    method public void openEditWindow(BBjClickEvent e!)
+    method public void onTaskClick(BBjClickEvent e!)
         rem Only open window if it doesn't exist, this should be a field variable
         id! = e!.getControl().getAttribute("id")
-        foo! = #win!.addChildWindow("",$00108000$,#sysgui!.getAvailableContext())
+        foo! = #win!.addChildWindow("", $00108000$, #sysgui!.getAvailableContext())
         foo!.addStaticText(id!)
     methodend
     
@@ -255,7 +255,7 @@ class public TaskApp
             rem Personalization
             text! = #winSettings!.addStaticText("Personalization")
             text!.addClass("settingsCategoryTitle")
-            win! = #winSettings!.addChildWindow("",$00108800$,#sysgui!.getAvailableContext())
+            win! = #winSettings!.addChildWindow("", $00108800$, #sysgui!.getAvailableContext())
             win!.addClass("settingsChildWindow")
             text! = win!.addStaticText("<html><bbj-icon pool='tabler' name='palette' class='icon'></bbj-icon>&&nbsp; Theme")
             text! = win!.addStaticText(themeColor!)
@@ -264,7 +264,7 @@ class public TaskApp
             rem About
             text! = #winSettings!.addStaticText("About the App")
             text!.addClass("settingsCategoryTitle")
-            win! = #winSettings!.addChildWindow("",$00108800$,#sysgui!.getAvailableContext())
+            win! = #winSettings!.addChildWindow("", $00108800$, #sysgui!.getAvailableContext())
             win!.addClass("settingsChildWindow")
             text! = win!.addStaticText("<html><bbj-icon pool='tabler' name='info-circle' class='icon'></bbj-icon>&&nbsp; About")
             settingsAbout! = win!.addButton("<html><bbj-icon pool='tabler' name='chevron-right' class='chevron'></bbj-icon>")
