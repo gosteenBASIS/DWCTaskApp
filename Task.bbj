@@ -68,7 +68,7 @@ class public Task
     method public static BBjNumber STATUS_BLOCKED()
         methodret 3
     methodend
-    
+
     rem /** A constant value that represents the minimum allowed priority value */
     method public static BBjNumber PRIORITY_MIN()
         methodret 0
@@ -125,11 +125,11 @@ class public Task
     method public void setTitle(BBjString title!)
         #title! = title!
     methodend
- 
+
     rem /**
     rem  * Sets the description of the Task to the provided string
     rem  * @param BBjString description!  The task's description
-    rem  */   
+    rem  */
     method public void setDescription(BBjString description!)
         #description! = description!
     methodend
@@ -137,29 +137,29 @@ class public Task
     rem /**
     rem  * Sets the priority of the Task to the provided value
     rem  * @param BBjNumber priority!  The task's priority
-    rem  */       
+    rem  */
     method public void setPriority(BBjNumber priority!)
-        if priority! > #PRIORITY_MAX() then 
+        if priority! > #PRIORITY_MAX() then
             priority! = #PRIORITY_MAX()
-        endif 
-        if priority! < #PRIORITY_MIN() then 
+        endif
+        if priority! < #PRIORITY_MIN() then
             priority! = #PRIORITY_MIN()
         endif
         #priority! = priority!
     methodend
-    
+
     rem /**
     rem  * Sets the due date of the Task to the provided value
     rem  * @param java.util.Date dueDate!  The task's due date
-    rem  */  
+    rem  */
     method public void setDueDate(java.util.Date dueDate!)
         #dueDate! = dueDate!
     methodend
-    
+
     rem /**
     rem  * Sets the due date of the Task to the provided value
     rem  * @param BBjNumber status!  The status code
-    rem  */      
+    rem  */
     method public void setStatus(BBjNumber status!)
         #status! = status!
     methodend
@@ -169,19 +169,19 @@ class public Task
     rem /**
     rem  * Gets the description of the Task as a BBjString
     rem  * @return The Task's description
-    rem  */      
+    rem  */
     method public BBjString getDescription()
         methodret #description!
     methodend
-    
+
     rem /**
     rem  * Gets the priority of the Task as a BBjNumber
     rem  * @return The Task's priority
-    rem  */  
+    rem  */
     method public BBjNumber getPriority()
         methodret #priority!
     methodend
-    
+
     rem /**
     rem  * Gets the status of the Task as a BBjNumber
     rem  * @return the Task's status
@@ -193,11 +193,11 @@ class public Task
     rem /**
     rem  * Gets the due date of the Task as a Java Date
     rem  * @return The Task's due date
-    rem  */  
+    rem  */
     method public java.util.Date getDueDate()
         methodret #dueDate!
     methodend
-    
+
     rem /**
     rem  * Gets the title of the Task as a BBjString
     rem  * @return      The tasks's title
@@ -205,15 +205,15 @@ class public Task
     method public BBjString getTitle()
         methodret #title!
     methodend
-    
+
     rem /**
     rem  * Gets the uuid of the Task as a BBjString
     rem  * @return The Task's uuid
-    rem  */  
+    rem  */
     method public BBjString getUuid()
         methodret #uuid!
     methodend
-    
+
     rem /**
     rem  * Gets a string representation of the status
     rem  * @return A string description of the status value
@@ -244,7 +244,7 @@ class public Task
     rem /**
     rem  * Gets the uuid of the Task as a BBjString
     rem  * @return The Task's uuid
-    rem  */  
+    rem  */
     method public void printDetails()
         ? "Title: ", #title!
         ? "Description: ", #description!
