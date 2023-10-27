@@ -119,7 +119,7 @@ class public TaskApp
     rem  */
     method public void createMainWindow()
         #win! = #sysgui!.addWindow("TaskApp", $011C0011$)
-        #win!.addClass("win")
+        rem #win!.addClass("win")
         #win!.setIcon(dsk("")+dir("")+"images/DWCTaskApp.png")
         
         #displayTasks()
@@ -134,13 +134,14 @@ class public TaskApp
         while i!.hasNext()
             t! = i!.next()
             rem TaskWindow could be a custom object itself
-            taskWin! = #win!.addChildWindow("",$00108000$,#sysgui!.getAvailableContext())
+            taskWin! = #win!.addChildWindow("", $00108000$, #sysgui!.getAvailableContext())
             taskWin!.addStaticText(t!.getTitle())
             checkbox! = taskWin!.addCheckBox("")
-            taskWin!.addClass("task clickable")
+            taskWin!.addClass("task")
+            taskWin!.addClass("clickable")
             taskWin!.addClass(t!.getStatusString())
-            taskWin!.setCallback(BBjControl.ON_CLICK, #this!, "openEditWindow")
-            taskWin!.setAttribute("id",t!.getUuid())
+            taskWin!.setCallback(BBjControl.ON_CLICK, #this!, "onTaskClick")
+            taskWin!.setAttribute("id", t!.getUuid())
             checkbox!.setCallback(BBjControl.ON_CHECK_CHANGE, #this!, "onTaskCheck")
             if (t!.getStatus() = t!.STATUS_COMPLETE()) then
                 checkbox!.setSelected(1)
@@ -154,6 +155,7 @@ class public TaskApp
     rem  * @param e!    A BBjClickEvent
     rem  */
     method public void openEditWindow(BBjClickEvent e!)
+        rem Only open window if it doesn't exist, this should be a field variable
         id! = e!.getControl().getAttribute("id")
         foo! = #win!.addChildWindow("",$00108000$,#sysgui!.getAvailableContext())
         foo!.addStaticText(id!)
@@ -173,7 +175,7 @@ class public TaskApp
         parent!.removeStyle("incomplete")
         parent!.removeStyle("blocked")
         parent!.removeStyle("deferred")
-        if task!.getStatus() <> task!.STATUS_COMPLETE() then
+        if (task!.getStatus() <> task!.STATUS_COMPLETE()) then
             task!.setStatus(task!.STATUS_COMPLETE())
             parent!.addClass("complete")
         else
@@ -215,6 +217,7 @@ class public TaskApp
     rem  * @param id        The task's unique ID
     rem  */
     method public void removeTask(BBjString id!)
+        #tasks!.remove(id!)
     methodend
 
     rem /**
@@ -223,6 +226,7 @@ class public TaskApp
     rem  * @param task!     The Task object
     rem  */
     method public void removeTask(Task task!)
+        #tasks!.remove(task!.getUuid())
     methodend
 
     rem /**
