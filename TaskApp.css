@@ -25,8 +25,12 @@
 /* ========================================  */
 
 /* Modify the entire DOM */
-html, body {
+html, body, .BBjWindowManagerDesktop {
     background: var(--bbj-color-black);
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
 }
 
 /* Modify ALL BBjButtons by setting their color and font size & weight */
@@ -36,14 +40,74 @@ bbj-button::part(label) {
     font-weight: var(--bbj-font-weight-bold);
 }
 
+.BBjWindowManagerDesktop {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    justify-content: center;
+}
+
 /* Modify the Windows */
 .BBjTopLevelWindow {
     overflow: hidden;
     border-radius: var(--bbj-border-radius-xl);
+    background-color: transparent;
+    margin: auto auto;
 }
 
+.BBjTopLevelWindow, .BBjDockedChildrenPanel, .winMain, .winMain .BBjPanel {
+    min-width: 25em;
+    max-width: 90vw;
+
+    min-height: 25vh;
+    max-height: 90vh;
+}
+
+ /* Top-level window definitions and layout for the child windows */
+.winMain .BBjPanel {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-flow: row;
+    align-items: stretch;
+    justify-content: flex-start;
+    padding: 0px;
+    gap: 0px;
+}
+
+ /* Main window's child windows */
+ .winNavBar, .winTasks {
+    background-color: hsla(0, 100%, 100%, 0.25);
+ }
+ .winNavBar {
+    min-width: 5em;
+    width: 5em;
+ }
+
+ .winTasks {
+    flex-grow: 10;
+    overflow-y: auto;
+    min-width: 20em;
+    display: flex;
+    flex-flow: column;
+    align-items: start;
+    justify-content: flex-start;
+ }
 
 
+ .labelDate {
+    color: var(--bbj-color-white);
+    font-size: var(--bbj-font-size-2xl);
+    font-weight: var(--bbj-font-weight-bolder);
+    text-align: center;
+    padding: 1em;
+    margin-bottom: 1em;
+    line-height: 1lh;
+ }
+
+ .task {
+    min-height: 3em;
+ }
 
 /* Settings Window and Controls               */
 /* ========================================  */

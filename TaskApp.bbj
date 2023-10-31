@@ -27,9 +27,12 @@ class public TaskApp
     rem ========================================
     field protected BBjSysGui           sysgui!
     field protected BBjWebManager       webManager!
-    field protected BBjTopLevelWindow   win!
+    field protected BBjTopLevelWindow   winMain!
+    field protected BBjChildWindow      winNavBar!
+    field protected BBjChildWindow      winTasks!
     field protected BBjTopLevelWindow   winSettings!
     field protected BBjTopLevelWindow   winEdit!
+    field protected BBjStaticText       labelDate!
     field protected BBjString           appName! = "TaskApp"
     field protected BBjString           version! = "0.01"
 
@@ -104,28 +107,38 @@ class public TaskApp
         rem Set defaults and apply user preferences
         BBjAPI().getWebManager(err=*NEXT).setTheme(prefsTheme!, err=*NEXT)
 
-        #createSampleTasks(10)
+        #createSampleTasks(50)
 
         rem Create the UI and display the tasks
         #sysgui! = BBjAPI().openSysGui("X0")
         rem #OnShowSettings(null())
         #createMainWindow()
-        
+
         process_events
     methodend
-    
+
     rem /**
     rem  * Create the main window for the application
     rem  */
     method public void createMainWindow()
-        #win! = #sysgui!.addWindow("TaskApp", $011C0011$)
-        rem #win!.addClass("win")
-        #win!.setIcon(dsk("")+dir("")+"images/DWCTaskApp.png")
-        
+        #winMain! = #sysgui!.addWindow("TaskApp", $011C0011$)
+        #winMain!.addClass("winMain")
+        #winMain!.setIcon(dsk("")+dir("")+"images/DWCTaskApp.png")
+        REM #winMain!.setMinimumSize(320, 400)
+
+        rem Create the child windows
+        #winNavBar! = #winMain!.addChildWindow("NavBar", $00108800$, #sysgui!.getAvailableContext())
+        #winNavBar!.addClass("winNavBar")
+
+        #winTasks! = #winMain!.addChildWindow("Tasks", $00108800$, #sysgui!.getAvailableContext())
+        #winTasks!.addClass("winTasks")
+        #labelDate! = #winTasks!.addStaticText(date(0:"%Dl, %Ml %D"))
+        #labelDate!.addClass("labelDate")
+
         #displayTasks()
-        #win!.setVisible(1)
+        #winMain!.setVisible(1)
     methodend
-    
+
     rem /**
     rem  * Add a child window to the main window for each task
     rem  */
@@ -134,7 +147,7 @@ class public TaskApp
         while i!.hasNext()
             t! = i!.next()
             rem TaskWindow could be a custom object itself
-            taskWin! = #win!.addChildWindow("", $00108000$, #sysgui!.getAvailableContext())
+            taskWin! = #winTasks!.addChildWindow("", $00108000$, #sysgui!.getAvailableContext())
             taskWin!.addStaticText(t!.getTitle())
             checkbox! = taskWin!.addCheckBox("")
             taskWin!.addClass("task")
@@ -148,22 +161,22 @@ class public TaskApp
             endif
         wend
     methodend
-    
+
     rem /**
     rem  * Open an edit window to edit or create a new task
-    rem  * 
+    rem  *
     rem  * @param e!    A BBjClickEvent
     rem  */
     method public void onTaskClick(BBjClickEvent e!)
         rem Only open window if it doesn't exist, this should be a field variable
         id! = e!.getControl().getAttribute("id")
-        foo! = #win!.addChildWindow("", $00108000$, #sysgui!.getAvailableContext())
+        foo! = #winMain!.addChildWindow("", $00108000$, #sysgui!.getAvailableContext())
         foo!.addStaticText(id!)
     methodend
-    
+
     rem /**
     rem  * Method to run when a task's checkbox is changed
-    rem  * 
+    rem  *
     rem  * @param e!    A BBjCheckChangeEvent
     rem  */
     method public void onTaskCheck(BBjCheckChangeEvent e!)
@@ -275,7 +288,7 @@ class public TaskApp
             settingsAbout!.setCallback(BBjButton.ON_BUTTON_PUSH, #this!, "onSettingsAbout")
         endif
 
-        rem Since we created the window from BBj as hidden, we have to show it.  
+        rem Since we created the window from BBj as hidden, we have to show it.
         rem The actual visibility will be a combination of BBj's setVisible() and CSS to animate the opacity.
         #winSettings!.setVisible(1)
     methodend
