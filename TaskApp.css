@@ -26,7 +26,7 @@
 
 /* Modify the entire DOM */
 html, body, .BBjWindowManagerDesktop {
-    background: var(--bbj-color-black);
+    background: var(--app-color-window-bg);
     padding: 0;
     margin: 0;
     width: 100%;
@@ -40,150 +40,56 @@ bbj-button::part(label) {
     font-weight: var(--bbj-font-weight-bold);
 }
 
-.BBjWindowManagerDesktop {
+/* Layout                                    */
+/* https://vue-grid-generator.netlify.app/
+{"areas":[["winNavBar","winToolBar"],["winNavBar","winTitle"],["winNavBar","winTasks"]],"columns":["5em","1fr"],"rows":["3em","10em","1fr"],"gridWidth":"100%","gridHeight":"100%"} 
+*/
+/* ========================================  */
+
+.BBjSimpleWindow {
+    width: 100%;
+    height: 100%;    
+}
+
+.winMain {
     display: flex;
-    flex-flow: row;
-    align-items: center;
-    justify-content: center;
 }
 
-/* Modify the Windows */
-.BBjTopLevelWindow {
-    overflow: hidden;
-    border-radius: var(--bbj-border-radius-xl);
-    background-color: transparent;
-    margin: auto auto;
-}
-
-.BBjTopLevelWindow, .BBjDockedChildrenPanel, .winMain, .winMain .BBjPanel {
-    min-width: 25em;
-    max-width: 90vw;
-
-    min-height: 25vh;
-    max-height: 90vh;
-}
-
- /* Top-level window definitions and layout for the child windows */
-.winMain .BBjPanel {
+.winMain .BBjPanel{
+    display: grid;
     width: 100%;
     height: 100%;
-    display: flex;
-    flex-flow: row;
-    align-items: stretch;
-    justify-content: flex-start;
-    padding: 0px;
-    gap: 0px;
+    grid-template-areas: "winNavBar winToolBar" "winNavBar winTitle" "winNavBar winTasks";
+    grid-template-columns: 5em 1fr;
+    grid-template-rows: 2em 2em 1fr;
+  }
+  
+  .winNavBar {
+    grid-area: winNavBar;
+    background-color: burlywood;
+  }
+  .winToolBar {
+    grid-area: winToolBar;
+  }
+  .winTitle {
+    grid-area: winTitle;
+  }
+  .winTasks {
+    grid-area: winTasks;
+    overflow: auto;
+  }
+
+  .winToolBar, .winTitle, .winTasks {
+    max-width: 20em;
+    margin: 0 auto;
+  }
+
+/* Task Styling */
+/* ============ */
+
+.task {
+    max-height: 2em;
 }
-
- /* Main window's child windows */
- .winNavBar, .winTasks {
-    background-color: hsla(0, 100%, 100%, 0.25);
- }
- .winNavBar {
-    min-width: 5em;
-    width: 5em;
- }
-
- .winTasks {
-    flex-grow: 10;
-    overflow-y: auto;
-    min-width: 20em;
-    display: flex;
-    flex-flow: column;
-    align-items: start;
-    justify-content: flex-start;
- }
-
-
- .labelDate {
-    color: var(--bbj-color-white);
-    font-size: var(--bbj-font-size-2xl);
-    font-weight: var(--bbj-font-weight-bolder);
-    text-align: center;
-    padding: 1em;
-    margin-bottom: 1em;
-    line-height: 1lh;
- }
-
- .task {
-    min-height: 3em;
- }
-
-/* Settings Window and Controls               */
-/* ========================================  */
-.winSettings .BBjPanel {
-    display: flex;
-    flex-flow: column;
-    align-items: start;
-    justify-content: flex-start;
-    padding: var(--bbj-space-m);
-    gap: var(--bbj-space-xl);
-    background-color: var(--app-color-window-bg);
-    min-width: 300px;
-}
-
-/* The title of the settings window */
-.settingsTitle {
-    width: 100%;
-    font-size: var(--bbj-font-size-xl);
-    font-weight: var(--bbj-font-weight-semibold);
-}
-
-/* Settings [Done] Button */
-bbj-button.settingsDone {
-    position: absolute;
-    right: var(--bbj-space-m);
-    top: 0.65rem;
-    align-self: end;
-}
-
-/* The chevron icons on setttings buttons */
-bbj-icon.chevron {
-    color: var(--bbj-color-gray-text);
-    padding-right: 0;
-}
-
-/* The icons for the settings items that aren't chevrons */
-bbj-icon.icon {
-    color: var(--app-color-primary);
-    margin-left: var(--bbj-space);
-}
-
-/* The title for each category or section in the settings screen */
-.settingsCategoryTitle {
-    color: var(--bbj-color-gray-30);
-    font-size: 90%;
-    font-weight: var(--bbj-font-weight-bold);
-    margin-bottom: -15px;
-}
-
-/* The BBjChildWindow in the settings that contains controls for a single setting */
-.settingsChildWindow, .task {
-    background: var(--bbj-color-white);
-    width: 100%;
-    display: flex;
-    flex-flow: row;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--bbj-focus-ring-width);
-    gap: var(--bbj-space) var(--bbj-space);
-    border-radius: var(--bbj-border-radius-xl);
-}
-
-/* All BBjButtons on the settings window */
-.winSettings bbj-button::part(control) {
-    background: transparent;
-    border-width: 0 !important;
-}
-
-/* The BBjButtons that display a chevron that bring up a setting */
-.winSettings bbj-button:not(.settingsDone)::part(label) {
-    text-align: right;
-    font-weight: var(--bbj-font-weight-bold);
-    padding-right: 0;
-    padding-left: calc(2 * var(--bbj-space));
-}
-
 /* Task items that are incomplete */
 .incomplete {
     background-color: lightgray;
@@ -208,4 +114,9 @@ bbj-icon.icon {
 /* Items that are clickable, and hovered over */
 .clickable:hover {
    filter: brightness(80%);
+}
+
+.labelDate {
+    font-size: 1.5em;
+    font-weight: bold;
 }

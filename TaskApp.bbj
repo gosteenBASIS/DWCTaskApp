@@ -29,6 +29,8 @@ class public TaskApp
     field protected BBjWebManager       webManager!
     field protected BBjTopLevelWindow   winMain!
     field protected BBjChildWindow      winNavBar!
+    field protected BBjChildWindow      winToolBar!
+    field protected BBjChildWindow      winTitle!
     field protected BBjChildWindow      winTasks!
     field protected BBjTopLevelWindow   winSettings!
     field protected BBjTopLevelWindow   winEdit!
@@ -121,18 +123,24 @@ class public TaskApp
     rem  * Create the main window for the application
     rem  */
     method public void createMainWindow()
-        #winMain! = #sysgui!.addWindow("TaskApp", $011C0011$)
+        #winMain! = #sysgui!.addWindow("TaskApp", $011C1091$)
         #winMain!.addClass("winMain")
         #winMain!.setIcon(dsk("")+dir("")+"images/DWCTaskApp.png")
-        REM #winMain!.setMinimumSize(320, 400)
 
         rem Create the child windows
         #winNavBar! = #winMain!.addChildWindow("NavBar", $00108800$, #sysgui!.getAvailableContext())
         #winNavBar!.addClass("winNavBar")
-
+        
+        #winToolBar! = #winMain!.addChildWindow("ToolBar", $00108800$, #sysgui!.getAvailableContext())
+        #winToolBar!.addClass("winToolBar")
+        
+        #winTitle! = #winMain!.addChildWindow("Title", $00108800$, #sysgui!.getAvailableContext())
+        #winTitle!.addClass("winTitle")
+        
         #winTasks! = #winMain!.addChildWindow("Tasks", $00108800$, #sysgui!.getAvailableContext())
         #winTasks!.addClass("winTasks")
-        #labelDate! = #winTasks!.addStaticText(date(0:"%Dl, %Ml %D"))
+        
+        #labelDate! = #winTitle!.addStaticText(date(0:"%Dl, %Ml %D"))
         #labelDate!.addClass("labelDate")
 
         #displayTasks()
