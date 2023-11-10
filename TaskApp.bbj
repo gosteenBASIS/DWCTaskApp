@@ -28,12 +28,12 @@ class public TaskApp
     field protected BBjSysGui           sysgui!
     field protected BBjWebManager       webManager!
     field protected BBjTopLevelWindow   winMain!
+    field protected BBjTopLevelWindow   winTask!
     field protected BBjChildWindow      winNavBar!
     field protected BBjChildWindow      winToolBar!
     field protected BBjChildWindow      winTitle!
-    field protected BBjChildWindow      winTasks!
+    field protected BBjChildWindow      winTaskList!
     field protected BBjTopLevelWindow   winSettings!
-    field protected BBjTopLevelWindow   winEdit!
     field protected BBjStaticText       labelDate!
     field protected BBjString           appName! = "TaskApp"
     field protected BBjString           version! = "0.01"
@@ -137,16 +137,65 @@ class public TaskApp
         #winTitle! = #winMain!.addChildWindow("Title", $00108800$, #sysgui!.getAvailableContext())
         #winTitle!.addClass("winTitle")
         
-        #winTasks! = #winMain!.addChildWindow("Tasks", $00108800$, #sysgui!.getAvailableContext())
-        #winTasks!.addClass("winTasks")
+        #winTaskList! = #winMain!.addChildWindow("Tasks", $00108800$, #sysgui!.getAvailableContext())
+        #winTaskList!.addClass("winTasks")
         
         #labelDate! = #winTitle!.addStaticText(date(0:"%Dl, %Ml %D"))
         #labelDate!.addClass("labelDate")
 
         #displayTasks()
         #winMain!.setVisible(1)
+        #createTaskWindow()
     methodend
 
+    rem /**
+    rem  * Create the top level window to create, view, or edit a task
+    rem  */
+    method protected void createTaskWindow()
+        if (#winTask! = null()) then
+            #winTask! = #sysgui!.addWindow(#sysgui!.getAvailableContext(),"winTask",$01190000$)
+            
+            rem title
+            editTitle! = #winTask!.addEditBox("")
+            editTitle!.setAttribute("label","Title")
+            editTitle!.setPlaceholder("Task Title")
+            rem description
+            editDescription! = #winTask!.addCEdit("",$0002$)
+            editDescription!.setAttribute("label","Description")
+            editDescription!.setPlaceholder("Task Description")
+
+            rem status 
+            listStatus! = #winTask!.addListButton("")
+            listStatus!.setAttribute("label","Status")
+            
+            rem priority
+            listPriority! = #winTask!.addListButton("")
+            listPriority!.setAttribute("label","Priority")  
+                      
+            rem due date
+            dateDue! = #winTask!.addInputD()
+            dateDue!.setAttribute("label","Due Date")
+            
+            rem cancel
+            buttonCancel! = #winTask!.addButton("Cancel")
+            
+            rem save button
+            buttonSave! = #winTask!.addButton("Save")
+            
+            rem Callbacks
+            buttonCancel!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onCancelTaskEdit")
+        endif
+        rem populate fields
+        #winTask!.setVisible(1)
+    methodend
+    
+    method protected void editTask()
+        #winTask!.setVisible(1)
+    methodend
+    
+    method public void onCancelTaskEdit(BBjButtonPushEvent e!)
+        #winTask!.setVisible(0)
+    methodend
     rem /**
     rem  * Add a child window to the main window for each task
     rem  */
@@ -155,7 +204,7 @@ class public TaskApp
         while i!.hasNext()
             t! = i!.next()
             rem TaskWindow could be a custom object itself
-            taskWin! = #winTasks!.addChildWindow("", $00108000$, #sysgui!.getAvailableContext())
+            taskWin! = #winTaskList!.addChildWindow("", $00108000$, #sysgui!.getAvailableContext())
             taskWin!.addStaticText(t!.getTitle())
             checkbox! = taskWin!.addCheckBox("")
             taskWin!.addClass("task")
