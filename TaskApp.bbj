@@ -28,7 +28,7 @@ class public TaskApp
     field protected BBjSysGui           sysgui!
     field protected BBjWebManager       webManager!
     field protected BBjTopLevelWindow   winMain!
-    field protected BBjTopLevelWindow   winTask!
+    field protected TaskProperties      taskProperties!
     field protected BBjChildWindow      winNavBar!
     field protected BBjChildWindow      winToolBar!
     field protected BBjChildWindow      winTitle!
@@ -152,49 +152,15 @@ class public TaskApp
     rem  * Create the top level window to create, view, or edit a task
     rem  */
     method protected void createTaskWindow()
-        if (#winTask! = null()) then
-            #winTask! = #sysgui!.addWindow(#sysgui!.getAvailableContext(),"winTask",$01190000$)
-            
-            rem title
-            editTitle! = #winTask!.addEditBox("")
-            editTitle!.setAttribute("label","Title")
-            editTitle!.setPlaceholder("Task Title")
-            rem description
-            editDescription! = #winTask!.addCEdit("",$0002$)
-            editDescription!.setAttribute("label","Description")
-            editDescription!.setPlaceholder("Task Description")
-
-            rem status 
-            listStatus! = #winTask!.addListButton("")
-            listStatus!.setAttribute("label","Status")
-            
-            rem priority
-            listPriority! = #winTask!.addListButton("")
-            listPriority!.setAttribute("label","Priority")  
-                      
-            rem due date
-            dateDue! = #winTask!.addInputD()
-            dateDue!.setAttribute("label","Due Date")
-            
-            rem cancel
-            buttonCancel! = #winTask!.addButton("Cancel")
-            
-            rem save button
-            buttonSave! = #winTask!.addButton("Save")
-            
-            rem Callbacks
-            buttonCancel!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onCancelTaskEdit")
-        endif
-        rem populate fields
-        #winTask!.setVisible(1)
+        #winTask! = new TaskProperties()
     methodend
     
     method protected void editTask()
-        #winTask!.setVisible(1)
+        #taskProperties!.setVisible(1)
     methodend
     
     method public void onCancelTaskEdit(BBjButtonPushEvent e!)
-        #winTask!.setVisible(0)
+        #taskProperties!.setVisible(0)
     methodend
     rem /**
     rem  * Add a child window to the main window for each task
@@ -365,6 +331,7 @@ classend
 
 rem BBj USE Statements
 use ::Task.bbj::Task
+use ::TaskProperties.bbj::TaskProperties
 
 rem Java USE Statements
 use java.util.Date
