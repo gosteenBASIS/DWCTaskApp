@@ -251,6 +251,7 @@ class public Task
         ? "Status: ", #status!
         ? "Priority: ", #priority!
         ? "Due Date: ", #dueDate!
+        ? "UUID: ", #uuid!
         ? "Creation Timestamp: ", #created!.toString()
         ? "Creation SQL Timestamp: ", #createdTimestamp!
     methodend
