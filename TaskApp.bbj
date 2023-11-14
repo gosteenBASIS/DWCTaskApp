@@ -145,7 +145,7 @@ class public TaskApp
 
         #displayTasks()
         #winMain!.setVisible(1)
-        #createTaskWindow()
+        rem #createTaskWindow()
     methodend
 
     rem /**
@@ -229,7 +229,10 @@ class public TaskApp
             taskName! = "Task " + str(i)
             task! = new Task(taskName!)
             task!.setStatus(rnd(4))
-
+            if (mod(i,2) = 0) then
+                rem Set due date for even-numbered tasks
+                task!.setDueDate(LocalDate.now())
+            endif
             #addTask(task!)
         next i
     methodend
@@ -329,5 +332,5 @@ use ::Task.bbj::Task
 use ::TaskProperties.bbj::TaskProperties
 
 rem Java USE Statements
-use java.util.Date
+use java.time.LocalDate
 use java.util.TreeMap

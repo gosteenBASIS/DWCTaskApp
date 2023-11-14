@@ -14,8 +14,8 @@
 /* Overriding the DWC's default CSS custom properties */
 /* ========================================  */
 :root {
-    --bbj-color-primary-h: var(--app-color-h);
-    --bbj-color-default-s: 5%;
+    /* --bbj-color-primary-h: var(--app-color-h); */
+    /* --bbj-color-default-s: 5%; */
     --bbj-font-family: 'AR One Sans', 'Gabarito', 'K2D', 'Overlock', 'Encode Sans Semicondensed', 'Aller', 'Alatsi', 'Akrobat', var(--bbj-font-family-sans);
 }
 
@@ -35,9 +35,9 @@ html, body, .BBjWindowManagerDesktop {
 
 /* Modify ALL BBjButtons by setting their color and font size & weight */
 bbj-button::part(label) {
-    color: var(--app-color-primary);
+    /* color: var(--app-color-primary); */
     font-size: var(--bbj-font-size-l);
-    font-weight: var(--bbj-font-weight-bold);
+    font-weight: var(--bbj-font-weight-semibold);
 }
 
 /* Layout                                    */
@@ -102,6 +102,7 @@ bbj-button::part(label) {
     flex-flow: row;
     justify-content: space-between;
     margin-top: 1em;
+    padding: var(--bbj-focus-ring-width);
   }
 
   .BBjDialogGlassPane {

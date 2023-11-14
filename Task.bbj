@@ -42,7 +42,7 @@ class public Task
     field protected BBjNumber priority!
 
     rem /** The due date for the task. */
-    field protected java.util.Date dueDate!
+    field protected LocalDate dueDate!
 
     rem /** The instant in time that the user created the task */
     field protected Instant created!
@@ -98,14 +98,14 @@ class public Task
     rem  * @param priority!          The task's priority level (1 -5)
     rem  * @param dueDate!          The task's due date
     rem  */
-    method public Task(BBjString title!, BBjString description!, BBjNumber priority!, java.util.Date dueDate!)
+    method public Task(BBjString title!, BBjString description!, BBjNumber priority!, LocalDate dueDate!)
         #init(title!, description!, priority!, dueDate!)
     methodend
 
     rem /**
     rem  * Initializes a Task item and assigns defaults to its properties if they weren't specified on the constructor.
     rem  */
-    method protected void init(BBjString title!, BBjString description!, BBjNumber priority!, java.util.Date dueDate!)
+    method protected void init(BBjString title!, BBjString description!, BBjNumber priority!, LocalDate dueDate!)
         #title! = title!
         #description! = description!
         #uuid! = java.util.UUID.randomUUID().toString()
@@ -152,7 +152,7 @@ class public Task
     rem  * Sets the due date of the Task to the provided value
     rem  * @param java.util.Date dueDate!  The task's due date
     rem  */
-    method public void setDueDate(java.util.Date dueDate!)
+    method public void setDueDate(LocalDate dueDate!)
         #dueDate! = dueDate!
     methodend
 
@@ -194,7 +194,7 @@ class public Task
     rem  * Gets the due date of the Task as a Java Date
     rem  * @return The Task's due date
     rem  */
-    method public java.util.Date getDueDate()
+    method public LocalDate getDueDate()
         methodret #dueDate!
     methodend
 
@@ -256,6 +256,17 @@ class public Task
         ? "Creation SQL Timestamp: ", #createdTimestamp!
     methodend
 
+    rem /**
+    rem  * TODO: make docs for these
+    rem  */
+    method public static LocalDate getLocalDate(BBjNumber jul!)
+        rem Julian date of 1/1/1970 is 2440588
+        methodret LocalDate.ofEpochDay(jul!-2440588)
+    methodend
+    
+    method public static BBjNumber getJulian(LocalDate ld!)
+        methodret ld!.toEpochDay()+2440588
+    methodend
 classend
 
 
@@ -263,7 +274,7 @@ rem BBj USE Statements
 use ::TaskApp.bbj::TaskApp
 
 rem Java USE Statements
-use java.util.Date;     rem https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Date.html
-use java.time.Instant;  rem https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Instant.html
-use java.util.UUID;     rem https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/UUID.html
-use java.sql.Timestamp; rem https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Timestamp.html
+use java.time.LocalDate; rem https://docs.oracle.com/javase/8/docs/api/java/time/LocalDate.html
+use java.time.Instant;   rem https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Instant.html
+use java.util.UUID;      rem https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/UUID.html
+use java.sql.Timestamp;  rem https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Timestamp.html

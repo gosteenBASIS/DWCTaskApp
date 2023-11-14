@@ -44,10 +44,15 @@ class public TaskProperties
 
         #dateDue! = #winTaskProperties!.addInputD()
         #dateDue!.setAttribute("label", "Due Date")
+        #dateDue!.setText("")
+        #dateDue!.setAttribute("visible-calender-icon","true")
         
         #winButtons! = #winTaskProperties!.addChildWindow("", $00108800$, #sysgui!.getAvailableContext())
         #buttonCancel! = #winButtons!.addButton("Cancel")
+
         #buttonSave!   = #winButtons!.addButton("Save")
+        #buttonSave!.setAttribute("theme","primary")
+        
         
         rem Callbacks
         #buttonCancel!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onCancel")
@@ -63,17 +68,21 @@ class public TaskProperties
         #task! = t!
         #editTitle!.setText(#task!.getTitle())
         #editDescription!.setText(#task!.getDescription())
+        dueDate! = #task!.getDueDate()
+        if (dueDate! <> null()) then
+            #dateDue!.setValue(Task.getJulian(dueDate!))
+        endif
     methodend
     
     rem /**
     rem  * Save the information from the current fields into the Task object in the #task! variable
     rem  */
     method public void onSave(BBjButtonPushEvent e!)
-        if (#task! = null()) then
-            return
-        endif
+        if (#task! = null()) then methodret
         #task!.setTitle(#editTitle!.getText())
         #task!.setDescription(#editDescription!.getText())
+        #task!.setDueDate(Task.getLocalDate(#dateDue!.getValue()))
+        
         #winTaskProperties!.setVisible(0)
     methodend
     
@@ -92,3 +101,5 @@ class public TaskProperties
 classend
 
 use ::Task.bbj::Task
+
+use java.time.LocalDate
