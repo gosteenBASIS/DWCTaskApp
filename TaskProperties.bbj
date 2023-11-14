@@ -18,8 +18,12 @@ class public TaskProperties
     field public BBjChildWindow    winButtons!
     field public BBjButton         buttonCancel!
     field public BBjButton         buttonSave!
+    
+    field public Task              task!
 
     method public TaskProperties()
+        #task! = null()
+        
         #sysgui! = BBjAPI().getSysGui()
         #winTaskProperties! = BBjAPI().getSysGui().addWindow(#sysgui!.getAvailableContext(),"winTask",$011F0000$)
         #winTaskProperties!.addClass("winTaskProperties")
@@ -47,12 +51,43 @@ class public TaskProperties
         
         rem Callbacks
         #buttonCancel!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onCancel")
+        #buttonSave!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onSave")
         rem populate fields
         #winTaskProperties!.setVisible(1)
     methodend
     
-    method public void onCancel(BBjButtonPushEvent e!)
+    rem /**
+    rem  * Given a task object, load its properties into the Task Properties window
+    rem  */
+    method public void loadTask(Task t!)
+        #task! = t!
+        #editTitle!.setText(#task!.getTitle())
+        #editDescription!.setText(#task!.getDescription())
+    methodend
+    
+    rem /**
+    rem  * Save the information from the current fields into the Task object in the #task! variable
+    rem  */
+    method public void onSave(BBjButtonPushEvent e!)
+        if (#task! = null()) then
+            return
+        endif
+        #task!.setTitle(#editTitle!.getText())
         #winTaskProperties!.setVisible(0)
     methodend
     
+    rem /**
+    rem  * Set window to invisible
+    rem  * TODO: should this discard information from the window?
+    rem  */
+    method public void onCancel(BBjButtonPushEvent e!)
+        #winTaskProperties!.setVisible(0)
+    methodend
+        
+    method public void setVisible(BBjNumber v)
+        #winTaskProperties!.setVisible(v)
+    methodend
+    
 classend
+
+use ::Task.bbj::Task

@@ -192,9 +192,12 @@ class public TaskApp
     rem  */
     method public void onTaskClick(BBjClickEvent e!)
         rem Only open window if it doesn't exist, this should be a field variable
-        id! = e!.getControl().getAttribute("id")
-        foo! = #winMain!.addChildWindow("", $00108000$, #sysgui!.getAvailableContext())
-        foo!.addStaticText(id!)
+        if (#taskProperties! = null()) then
+            #taskProperties! = new TaskProperties()
+        endif
+        rem Is there a way to not have to CAST this:
+        #taskProperties!.loadTask(cast(Task,#tasks!.get(e!.getControl().getAttribute("id"))))
+        #taskProperties!.setVisible(1)
     methodend
 
     rem /**
