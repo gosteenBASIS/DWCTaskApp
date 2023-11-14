@@ -152,7 +152,7 @@ class public TaskApp
     rem  * Create the top level window to create, view, or edit a task
     rem  */
     method protected void createTaskWindow()
-        #winTask! = new TaskProperties()
+        #taskProperties! = new TaskProperties()
     methodend
     
     method protected void editTask()

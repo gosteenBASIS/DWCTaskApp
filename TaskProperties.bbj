@@ -6,44 +6,53 @@ REM  */
 rem package TaskApp
 
 class public TaskProperties
-    field public BBjTopLevelWindow winTask!
+
+    field public BBjSysGui         sysgui!
+    field public BBjTopLevelWindow winTaskProperties!
     field public BBjEditBox        editTitle!
     field public BBjCEdit          editDescription!
     field public BBjListButton     listStatus!
     field public BBjListButton     listPriority!
     field public BBjInputD         dateDue!
     
+    field public BBjChildWindow    winButtons!
     field public BBjButton         buttonCancel!
     field public BBjButton         buttonSave!
 
     method public TaskProperties()
-        sysgui! = BBjAPI().getSysGui()
-        #winTask! = BBjAPI().getSysGui().addWindow(sysgui!.getAvailableContext(),"winTask",$01190000$)
+        #sysgui! = BBjAPI().getSysGui()
+        #winTaskProperties! = BBjAPI().getSysGui().addWindow(#sysgui!.getAvailableContext(),"winTask",$011F0000$)
+        #winTaskProperties!.addClass("winTaskProperties")
         
-        #editTitle! = #winTask!.addEditBox("")
+        #editTitle! = #winTaskProperties!.addEditBox("")
         #editTitle!.setAttribute("label","Title")
         #editTitle!.setPlaceholder("Task Title")
         
-        #editDescription! = #winTask!.addCEdit("",$0002$)
+        #editDescription! = #winTaskProperties!.addCEdit("",$0002$)
         #editDescription!.setAttribute("label","Description")
         #editDescription!.setPlaceholder("Task Description")
 
-        #listStatus! = #winTask!.addListButton("")
+        #listStatus! = #winTaskProperties!.addListButton("")
         #listStatus!.setAttribute("label","Status")
         
-        #listPriority! = #winTask!.addListButton("")
+        #listPriority! = #winTaskProperties!.addListButton("")
         #listPriority!.setAttribute("label","Priority")  
-                  
-        #dateDue! = #winTask!.addInputD()
+
+        #dateDue! = #winTaskProperties!.addInputD()
         #dateDue!.setAttribute("label","Due Date")
         
-        #buttonCancel! = #winTask!.addButton("Cancel")
-        
-        #buttonSave! = #winTask!.addButton("Save")
+        #winButtons! = #winTaskProperties!.addChildWindow("", $00108000$, #sysgui!.getAvailableContext())
+        #buttonCancel! = #winButtons!.addButton("Cancel")
+        #buttonSave!   = #winButtons!.addButton("Save")
         
         rem Callbacks
-        rem #buttonCancel!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onCancelTaskEdit")
+        #buttonCancel!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onCancel")
         rem populate fields
-        #winTask!.setVisible(1)
+        #winTaskProperties!.setVisible(1)
     methodend
+    
+    method public void onCancel(BBjButtonPushEvent e!)
+        #winTaskProperties!.setVisible(0)
+    methodend
+    
 classend

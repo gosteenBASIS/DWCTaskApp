@@ -84,6 +84,30 @@ bbj-button::part(label) {
     margin: 0 auto;
   }
 
+  /* Task Property Sheet Styling */
+
+  .BBjTopLevelWindow.BBjDialog {
+    margin: auto;
+  }
+
+  .winTaskProperties .BBjPanel {
+    display: flex;
+    flex-flow: column;
+    padding: var(--bbj-space-l);
+    gap: var(--bbj-space-m);
+  }
+
+  .winTaskProperties .BBjChildWindow {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    margin-top: 1em;
+  }
+
+  .BBjDialogGlassPane {
+    background-color: hsla(0,0%,0%,0.5);
+  }
+
 /* Task Styling */
 /* ============ */
 
