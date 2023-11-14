@@ -73,6 +73,7 @@ class public TaskProperties
             return
         endif
         #task!.setTitle(#editTitle!.getText())
+        #task!.setDescription(#editDescription!.getText())
         #winTaskProperties!.setVisible(0)
     methodend
     

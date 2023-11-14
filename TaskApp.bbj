@@ -155,13 +155,6 @@ class public TaskApp
         #taskProperties! = new TaskProperties()
     methodend
     
-    method protected void editTask()
-        #taskProperties!.setVisible(1)
-    methodend
-    
-    method public void onCancelTaskEdit(BBjButtonPushEvent e!)
-        #taskProperties!.setVisible(0)
-    methodend
     rem /**
     rem  * Add a child window to the main window for each task
     rem  */
@@ -210,10 +203,10 @@ class public TaskApp
         id! = parent!.getAttribute("id")
         task! = #tasks!.get(id!)
         rem Maybe move these remove styles to a separate method if we need to do it again
-        parent!.removeStyle("complete")
-        parent!.removeStyle("incomplete")
-        parent!.removeStyle("blocked")
-        parent!.removeStyle("deferred")
+        parent!.removeClass("complete")
+        parent!.removeClass("incomplete")
+        parent!.removeClass("blocked")
+        parent!.removeClass("deferred")
         if (task!.getStatus() <> task!.STATUS_COMPLETE()) then
             task!.setStatus(task!.STATUS_COMPLETE())
             parent!.addClass("complete")
@@ -277,7 +270,6 @@ class public TaskApp
         rem To Do
         rem 1) Define the theme color
         themeColor! = "Tangerine"
-
 
         rem Create the window and controls if it doesn't yet exist.  Otherwise, we'll simply display the existing one that we created and previously hid.
         if (#winSettings! = null()) then
