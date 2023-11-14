@@ -25,33 +25,33 @@ class public TaskProperties
         #task! = null()
         
         #sysgui! = BBjAPI().getSysGui()
-        #winTaskProperties! = BBjAPI().getSysGui().addWindow(#sysgui!.getAvailableContext(),"winTask",$011F0000$)
+        #winTaskProperties! = BBjAPI().getSysGui().addWindow(#sysgui!.getAvailableContext(), "winTask", $011F0000$)
         #winTaskProperties!.addClass("winTaskProperties")
         
         #editTitle! = #winTaskProperties!.addEditBox("")
-        #editTitle!.setAttribute("label","Title")
+        #editTitle!.setAttribute("label", "Title")
         #editTitle!.setPlaceholder("Task Title")
         
-        #editDescription! = #winTaskProperties!.addCEdit("",$0002$)
-        #editDescription!.setAttribute("label","Description")
+        #editDescription! = #winTaskProperties!.addCEdit("", $0002$)
+        #editDescription!.setAttribute("label", "Description")
         #editDescription!.setPlaceholder("Task Description")
 
         #listStatus! = #winTaskProperties!.addListButton("")
-        #listStatus!.setAttribute("label","Status")
+        #listStatus!.setAttribute("label", "Status")
         
         #listPriority! = #winTaskProperties!.addListButton("")
-        #listPriority!.setAttribute("label","Priority")  
+        #listPriority!.setAttribute("label", "Priority")  
 
         #dateDue! = #winTaskProperties!.addInputD()
-        #dateDue!.setAttribute("label","Due Date")
+        #dateDue!.setAttribute("label", "Due Date")
         
-        #winButtons! = #winTaskProperties!.addChildWindow("", $00108000$, #sysgui!.getAvailableContext())
+        #winButtons! = #winTaskProperties!.addChildWindow("", $00108800$, #sysgui!.getAvailableContext())
         #buttonCancel! = #winButtons!.addButton("Cancel")
         #buttonSave!   = #winButtons!.addButton("Save")
         
         rem Callbacks
-        #buttonCancel!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onCancel")
-        #buttonSave!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onSave")
+        #buttonCancel!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onCancel")
+        #buttonSave!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onSave")
         rem populate fields
         #winTaskProperties!.setVisible(1)
     methodend
