@@ -14,53 +14,53 @@ class public TaskProperties
     field public BBjListButton     listStatus!
     field public BBjListButton     listPriority!
     field public BBjInputD         dateDue!
-    
+
     field public BBjChildWindow    winButtons!
     field public BBjButton         buttonCancel!
     field public BBjButton         buttonSave!
-    
+
     field public Task              task!
 
     method public TaskProperties()
         #task! = null()
-        
+
         #sysgui! = BBjAPI().getSysGui()
         #winTaskProperties! = BBjAPI().getSysGui().addWindow(#sysgui!.getAvailableContext(), "winTask", $011F0000$)
         #winTaskProperties!.addClass("winTaskProperties")
-        
+
         #editTitle! = #winTaskProperties!.addEditBox("")
         #editTitle!.setAttribute("label", "Title")
         #editTitle!.setPlaceholder("Task Title")
-        
+
         #editDescription! = #winTaskProperties!.addCEdit("", $0002$)
         #editDescription!.setAttribute("label", "Description")
         #editDescription!.setPlaceholder("Task Description")
 
         #listStatus! = #winTaskProperties!.addListButton("")
         #listStatus!.setAttribute("label", "Status")
-        
+
         #listPriority! = #winTaskProperties!.addListButton("")
-        #listPriority!.setAttribute("label", "Priority")  
+        #listPriority!.setAttribute("label", "Priority")
 
         #dateDue! = #winTaskProperties!.addInputD()
         #dateDue!.setAttribute("label", "Due Date")
         #dateDue!.setText("")
         #dateDue!.setAttribute("visible-calender-icon","true")
-        
+
         #winButtons! = #winTaskProperties!.addChildWindow("", $00108800$, #sysgui!.getAvailableContext())
         #buttonCancel! = #winButtons!.addButton("Cancel")
 
         #buttonSave!   = #winButtons!.addButton("Save")
         #buttonSave!.setAttribute("theme","primary")
-        
-        
+
+
         rem Callbacks
         #buttonCancel!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onCancel")
         #buttonSave!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onSave")
         rem populate fields
         #winTaskProperties!.setVisible(1)
     methodend
-    
+
     rem /**
     rem  * Given a task object, load its properties into the Task Properties window
     rem  */
@@ -73,7 +73,7 @@ class public TaskProperties
             #dateDue!.setValue(Task.getJulian(dueDate!))
         endif
     methodend
-    
+
     rem /**
     rem  * Save the information from the current fields into the Task object in the #task! variable
     rem  */
@@ -82,10 +82,10 @@ class public TaskProperties
         #task!.setTitle(#editTitle!.getText())
         #task!.setDescription(#editDescription!.getText())
         #task!.setDueDate(Task.getLocalDate(#dateDue!.getValue()))
-        
+
         #winTaskProperties!.setVisible(0)
     methodend
-    
+
     rem /**
     rem  * Set window to invisible
     rem  * TODO: should this discard information from the window?
@@ -93,11 +93,11 @@ class public TaskProperties
     method public void onCancel(BBjButtonPushEvent e!)
         #winTaskProperties!.setVisible(0)
     methodend
-        
+
     method public void setVisible(BBjNumber v)
         #winTaskProperties!.setVisible(v)
     methodend
-    
+
 classend
 
 use ::Task.bbj::Task

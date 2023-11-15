@@ -130,16 +130,16 @@ class public TaskApp
         rem Create the child windows
         #winNavBar! = #winMain!.addChildWindow("NavBar", $00108800$, #sysgui!.getAvailableContext())
         #winNavBar!.addClass("winNavBar")
-        
+
         #winToolBar! = #winMain!.addChildWindow("ToolBar", $00108800$, #sysgui!.getAvailableContext())
         #winToolBar!.addClass("winToolBar")
-        
+
         #winTitle! = #winMain!.addChildWindow("Title", $00108800$, #sysgui!.getAvailableContext())
         #winTitle!.addClass("winTitle")
-        
+
         #winTaskList! = #winMain!.addChildWindow("Tasks", $00108800$, #sysgui!.getAvailableContext())
         #winTaskList!.addClass("winTasks")
-        
+
         #labelDate! = #winTitle!.addStaticText(date(0:"%Dl, %Ml %D"))
         #labelDate!.addClass("labelDate")
 
@@ -154,7 +154,7 @@ class public TaskApp
     method protected void createTaskWindow()
         #taskProperties! = new TaskProperties()
     methodend
-    
+
     rem /**
     rem  * Add a child window to the main window for each task
     rem  */

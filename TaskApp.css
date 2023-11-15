@@ -42,13 +42,13 @@ bbj-button::part(label) {
 
 /* Layout                                    */
 /* https://vue-grid-generator.netlify.app/
-{"areas":[["winNavBar","winToolBar"],["winNavBar","winTitle"],["winNavBar","winTasks"]],"columns":["5em","1fr"],"rows":["3em","10em","1fr"],"gridWidth":"100%","gridHeight":"100%"} 
+{"areas":[["winNavBar","winToolBar"],["winNavBar","winTitle"],["winNavBar","winTasks"]],"columns":["5em","1fr"],"rows":["3em","10em","1fr"],"gridWidth":"100%","gridHeight":"100%"}
 */
 /* ========================================  */
 
 .BBjSimpleWindow {
     width: 100%;
-    height: 100%;    
+    height: 100%;
 }
 
 .winMain {
@@ -63,7 +63,7 @@ bbj-button::part(label) {
     grid-template-columns: 5em 1fr;
     grid-template-rows: 2em 2em 1fr;
   }
-  
+
   .winNavBar {
     grid-area: winNavBar;
     background-color: burlywood;

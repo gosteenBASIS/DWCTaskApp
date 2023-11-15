@@ -263,7 +263,7 @@ class public Task
         rem Julian date of 1/1/1970 is 2440588
         methodret LocalDate.ofEpochDay(jul!-2440588)
     methodend
-    
+
     method public static BBjNumber getJulian(LocalDate ld!)
         methodret ld!.toEpochDay()+2440588
     methodend
