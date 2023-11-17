@@ -25,30 +25,29 @@ class public Task
     rem Protected Fields
     rem ========================================
     rem /** The title of the task. */
-    field protected BBjString title!
+    field public BBjString Title!
 
     rem /** The description of the task. */
-    field protected BBjString description!
+    field public BBjString Description!
 
     rem /** The unique auto-generated ID for the task that may be used to distinguish between instances of the class. */
-    field protected BBjString uuid!
+    field protected BBjString Uuid!
 
     rem Can we do enums in BBj? Should status just be a boolean isComplete to start with?
     rem /** The status of the task that denotes whether the task is complete or not. */
-    field protected BBjNumber status!
+    field public BBjNumber Status!
 
     rem Is a "number" the best way to do priority? It should be restricted to certain values.
     rem /** The priority of the task as a numeric that goes from 1 to 5, where 1 = lowest priority and 5 = highest priority. */
-    field protected BBjNumber priority!
+    field public BBjNumber Priority!
 
-    rem /** The due date for the task. */
-    field protected LocalDate dueDate!
+    rem /** The due date for the task as a Julian number.
+    rem   * A value of -1 indicates an undefined due date.
+    rem   */
+    field public BBjNumber DueDate!
 
     rem /** The instant in time that the user created the task */
-    field protected Instant created!
-
-    rem /** The SQL timestamp version of the instant in time that the user created the task */
-    field protected Timestamp createdTimestamp!
+    field protected Instant Created!
 
     rem Constants
     rem ========================================
@@ -87,52 +86,37 @@ class public Task
     rem  * @param title!            The task's title string
     rem  */
     method public Task(BBjString title!)
-        #this!(title!, "", 0, null())
+        #this!(title!, "", 0, -1)
     methodend
 
     rem /**
     rem  * A Task item's full constructor that specifies all possible parameters.
-    rem  *
+    rem  * TODO: Validation for constructor
     rem  * @param title!            The task's title string
     rem  * @param description!      The task's description
-    rem  * @param priority!          The task's priority level (1 -5)
+    rem  * @param priority!         The task's priority level (1 -5)
     rem  * @param dueDate!          The task's due date
     rem  */
-    method public Task(BBjString title!, BBjString description!, BBjNumber priority!, LocalDate dueDate!)
+    method public Task(BBjString title!, BBjString description!, BBjNumber priority!, BBjNumber dueDate!)
         #init(title!, description!, priority!, dueDate!)
     methodend
 
     rem /**
     rem  * Initializes a Task item and assigns defaults to its properties if they weren't specified on the constructor.
     rem  */
-    method protected void init(BBjString title!, BBjString description!, BBjNumber priority!, LocalDate dueDate!)
-        #title! = title!
-        #description! = description!
-        #uuid! = java.util.UUID.randomUUID().toString()
-        #priority! = priority!
-        #status! = Task.STATUS_INCOMPLETE()
-        #created! = Instant.now()
-        #createdTimestamp! = Timestamp.from(#created!)
+    method protected void init(BBjString title!, BBjString description!, BBjNumber priority!, BBjNumber dueDate!)
+        #Title! = title!
+        #Description! = description!
+        #Uuid! = java.util.UUID.randomUUID().toString()
+        #Priority! = priority!
+        #Status! = Task.STATUS_INCOMPLETE()
+        #DueDate! = dueDate!
+        #Created! = Instant.now()
     methodend
 
 
     rem Setters
     rem ========================================
-    rem /**
-    rem  * Sets the title of the Task to the provided string
-    rem  * @param BBjString title!  The task's title
-    rem  */
-    method public void setTitle(BBjString title!)
-        #title! = title!
-    methodend
-
-    rem /**
-    rem  * Sets the description of the Task to the provided string
-    rem  * @param BBjString description!  The task's description
-    rem  */
-    method public void setDescription(BBjString description!)
-        #description! = description!
-    methodend
 
     rem /**
     rem  * Sets the priority of the Task to the provided value
@@ -145,73 +129,18 @@ class public Task
         if priority! < #PRIORITY_MIN() then
             priority! = #PRIORITY_MIN()
         endif
-        #priority! = priority!
-    methodend
-
-    rem /**
-    rem  * Sets the due date of the Task to the provided value
-    rem  * @param java.util.Date dueDate!  The task's due date
-    rem  */
-    method public void setDueDate(LocalDate dueDate!)
-        #dueDate! = dueDate!
-    methodend
-
-    rem /**
-    rem  * Sets the due date of the Task to the provided value
-    rem  * @param BBjNumber status!  The status code
-    rem  */
-    method public void setStatus(BBjNumber status!)
-        #status! = status!
+        #Priority! = priority!
     methodend
 
     rem Getters
     rem ========================================
-    rem /**
-    rem  * Gets the description of the Task as a BBjString
-    rem  * @return The Task's description
-    rem  */
-    method public BBjString getDescription()
-        methodret #description!
-    methodend
-
-    rem /**
-    rem  * Gets the priority of the Task as a BBjNumber
-    rem  * @return The Task's priority
-    rem  */
-    method public BBjNumber getPriority()
-        methodret #priority!
-    methodend
-
-    rem /**
-    rem  * Gets the status of the Task as a BBjNumber
-    rem  * @return the Task's status
-    rem  */
-    method public BBjNumber getStatus()
-        methodret #status!
-    methodend
-
-    rem /**
-    rem  * Gets the due date of the Task as a Java Date
-    rem  * @return The Task's due date
-    rem  */
-    method public LocalDate getDueDate()
-        methodret #dueDate!
-    methodend
-
-    rem /**
-    rem  * Gets the title of the Task as a BBjString
-    rem  * @return      The tasks's title
-    rem  */
-    method public BBjString getTitle()
-        methodret #title!
-    methodend
 
     rem /**
     rem  * Gets the uuid of the Task as a BBjString
     rem  * @return The Task's uuid
     rem  */
     method public BBjString getUuid()
-        methodret #uuid!
+        methodret #Uuid!
     methodend
 
     rem /**
@@ -220,7 +149,7 @@ class public Task
     rem  */
     method public BBjString getStatusString()
         s! = ""
-        switch #status!
+        switch #Status!
             case #STATUS_INCOMPLETE()
             s! = "incomplete"
             break
@@ -246,14 +175,13 @@ class public Task
     rem  * @return The Task's uuid
     rem  */
     method public void printDetails()
-        ? "Title: ", #title!
-        ? "Description: ", #description!
-        ? "Status: ", #status!
-        ? "Priority: ", #priority!
-        ? "Due Date: ", #dueDate!
-        ? "UUID: ", #uuid!
-        ? "Creation Timestamp: ", #created!.toString()
-        ? "Creation SQL Timestamp: ", #createdTimestamp!
+        ? "Title: ", #Title!
+        ? "Description: ", #Description!
+        ? "Status: ", #Status!
+        ? "Priority: ", #Priority!
+        ? "Due Date: ", #DueDate!
+        ? "UUID: ", #Uuid!
+        ? "Creation Timestamp: ", #Created!.toString()
     methodend
 
     rem /**

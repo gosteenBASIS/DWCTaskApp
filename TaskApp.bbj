@@ -47,7 +47,8 @@ class public TaskApp
     rem     Map     https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html
     rem /**
     rem  * A collection of Task objects in a Java TreeMap
-    rem  *
+    rem  * Key:   UUID of the Task
+    rem  * Value: Task object
     rem  * @see <a href='https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/TreeMap.html' target='_blank'>TreeMap</a> documentation
     rem  */
     field protected TreeMap tasks!
@@ -231,7 +232,7 @@ class public TaskApp
             task!.setStatus(rnd(4))
             if (mod(i,2) = 0) then
                 rem Set due date for even-numbered tasks
-                task!.setDueDate(LocalDate.now())
+                task!.setDueDate(jul(date(0)))
             endif
             #addTask(task!)
         next i

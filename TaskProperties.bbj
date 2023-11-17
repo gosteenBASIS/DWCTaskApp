@@ -41,6 +41,13 @@ class public TaskProperties
 
         #listPriority! = #winTaskProperties!.addListButton("")
         #listPriority!.setAttribute("label", "Priority")
+        for i = Task.PRIORITY_MIN() to Task.PRIORITY_MAX()
+            if (i = 0) then
+                #listPriority!.addItem("No Priority")
+            else
+                #listPriority!.addItem("Priority " + str(i))
+            endif
+        next i
 
         #dateDue! = #winTaskProperties!.addInputD()
         #dateDue!.setAttribute("label", "Due Date")
@@ -52,7 +59,6 @@ class public TaskProperties
 
         #buttonSave!   = #winButtons!.addButton("Save")
         #buttonSave!.setAttribute("theme","primary")
-
 
         rem Callbacks
         #buttonCancel!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onCancel")
@@ -69,9 +75,13 @@ class public TaskProperties
         #editTitle!.setText(#task!.getTitle())
         #editDescription!.setText(#task!.getDescription())
         dueDate! = #task!.getDueDate()
-        if (dueDate! <> null()) then
-            #dateDue!.setValue(Task.getJulian(dueDate!))
+        if (dueDate! > 0) then
+            #dateDue!.setValue(#task!.getDueDate())
+        else
+            #dateDue!.setValue(-1)
         endif
+
+        #listPriority!.selectIndex(t!.getPriority())
     methodend
 
     rem /**
@@ -81,7 +91,7 @@ class public TaskProperties
         if (#task! = null()) then methodret
         #task!.setTitle(#editTitle!.getText())
         #task!.setDescription(#editDescription!.getText())
-        #task!.setDueDate(Task.getLocalDate(#dateDue!.getValue()))
+        #task!.setDueDate(#dateDue!.getValue())
 
         #winTaskProperties!.setVisible(0)
     methodend
