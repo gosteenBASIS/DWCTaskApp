@@ -169,7 +169,7 @@ class public TaskApp
             checkbox! = taskWin!.addCheckBox("")
             taskWin!.addClass("task")
             taskWin!.addClass("clickable")
-            taskWin!.addClass(t!.getStatusString())
+            taskWin!.addClass(t!.getStatusString(t!.getStatus()))
             taskWin!.setCallback(BBjControl.ON_CLICK, #this!, "onTaskClick")
             taskWin!.setAttribute("id", t!.getUuid())
             checkbox!.setCallback(BBjControl.ON_CHECK_CHANGE, #this!, "onTaskCheck")

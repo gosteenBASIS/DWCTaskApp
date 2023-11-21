@@ -147,23 +147,23 @@ class public Task
     rem  * Gets a string representation of the status
     rem  * @return A string description of the status value
     rem  */
-    method public BBjString getStatusString()
-        s! = ""
-        switch #Status!
+    method public static BBjString getStatusString(BBjNumber status!)
+        switch status!
             case #STATUS_INCOMPLETE()
-            s! = "incomplete"
-            break
+                s! = "incomplete"
+                break
             case #STATUS_COMPLETE()
-            s! = "complete"
-            break
+                s! = "complete"
+                break
             case #STATUS_DEFFERRED()
-            s! = "deferred"
-            break
+                s! = "deferred"
+                break
             case #STATUS_BLOCKED()
-            s! = "blocked"
-            break
+                s! = "blocked"
+                break
             case default
-            s! = "null"
+                throw "Invalid status provided to Task.getStatusString()",17
+                break
         swend
         methodret s!
     methodend

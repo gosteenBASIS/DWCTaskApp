@@ -49,6 +49,12 @@ class public TaskProperties
             endif
         next i
 
+        for i = 0 to 3
+            s! = Task.getStatusString(i)
+            s! = s!.substring(0,1).toUpperCase() + s!.substring(1)
+            #listStatus!.addItem(s!)
+        next i
+
         #dateDue! = #winTaskProperties!.addInputD()
         #dateDue!.setAttribute("label", "Due Date")
         #dateDue!.setText("")
