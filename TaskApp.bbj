@@ -53,7 +53,6 @@ class public TaskApp
     rem  */
     field protected TreeMap tasks!
 
-
     rem Constants
     rem ========================================
     rem /** A constant value that's used to set the TaskApp's theme to the DWC's light theme */

@@ -68,7 +68,7 @@ class public TaskProperties
 
         rem Callbacks
         #buttonCancel!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onCancel")
-        #buttonSave!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onSave")
+        #buttonSave!.setCallback(BBjControl.ON_FORM_VALIDATION, #this!, "onSave")
         rem populate fields
         #winTaskProperties!.setVisible(1)
     methodend
@@ -93,13 +93,44 @@ class public TaskProperties
     rem /**
     rem  * Save the information from the current fields into the Task object in the #task! variable
     rem  */
-    method public void onSave(BBjButtonPushEvent e!)
+    method public void onSave(BBjFormValidationEvent e!)
         if (#task! = null()) then methodret
-        #task!.setTitle(#editTitle!.getText())
-        #task!.setDescription(#editDescription!.getText())
-        #task!.setDueDate(#dateDue!.getValue())
 
+        rem validate title
+        title! = e!.getText(#editTitle!)
+        if (title!.trim().length() = 0) then
+            e!.accept(0)
+            tmp = msgbox("Title must not be empty.",BBjSysGui.MSGBOX_ICON_EXCLAMATION,"Invalid Title",mode="theme=warning")
+            methodret
+        endif
+
+        rem validate date
+        date! = e!.getValue(#dateDue!)
+        today! = jul(date(0))
+        limit! = 5*365
+        difference! = date!-today!
+
+        if (abs(difference!) > limit!) then
+            rem date out of bounds
+            e!.accept(0)
+            message! = "Date cannot be more than 5 years in the "
+            if (difference! < 0) then
+                message! = message! + "past."
+            else
+                message! = message! + "future."
+            endif
+
+            tmp = msgbox(message!,BBjSysGui.MSGBOX_ICON_EXCLAMATION,"Invalid Date",mode="theme=warning")
+            methodret
+        endif
+
+        rem passed validations; update task
+        #task!.setTitle(title!)
+        #task!.setDescription(e!.getText(#editDescription!))
+        #task!.setDueDate(date!)
+        #task!.setPriority(e!.getSelectedIndex(#listPriority!))
         #winTaskProperties!.setVisible(0)
+        e!.accept(1)
     methodend
 
     rem /**
