@@ -52,6 +52,7 @@ class public TaskApp
     rem  * @see <a href='https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/TreeMap.html' target='_blank'>TreeMap</a> documentation
     rem  */
     field protected TreeMap tasks!
+    field protected TreeMap taskViews!
 
     rem Constants
     rem ========================================
@@ -96,6 +97,7 @@ class public TaskApp
 
         rem Create the collection for the tasks
         #tasks! = new TreeMap()
+        #taskViews! = new TreeMap()
 
     methodend
 
@@ -157,24 +159,18 @@ class public TaskApp
 
     rem /**
     rem  * Add a child window to the main window for each task
+    rem  * This will eventually need to be a full-blown task manager, probably
     rem  */
     method public void displayTasks()
-        i! = #tasks!.values().iterator()
-        while i!.hasNext()
-            t! = i!.next()
-            rem TaskWindow could be a custom object itself
-            taskWin! = #winTaskList!.addChildWindow("", $00108000$, #sysgui!.getAvailableContext())
-            taskWin!.addStaticText(t!.getTitle())
-            checkbox! = taskWin!.addCheckBox("")
-            taskWin!.addClass("task")
-            taskWin!.addClass("clickable")
-            taskWin!.addClass(t!.getStatusString(t!.getStatus()))
-            taskWin!.setCallback(BBjControl.ON_CLICK, #this!, "onTaskClick")
-            taskWin!.setAttribute("id", t!.getUuid())
-            checkbox!.setCallback(BBjControl.ON_CHECK_CHANGE, #this!, "onTaskCheck")
-            if (t!.getStatus() = t!.STATUS_COMPLETE()) then
-                checkbox!.setSelected(1)
+        declare auto Task task!
+        it! = #tasks!.values().iterator()
+        while it!.hasNext()
+            task! = it!.next()
+            view! = new TaskListView(#this!, #winTaskList!, task!)
+            if (task!.isComplete()) then
+                view!.setVisible(0)
             endif
+            #taskViews!.put(task!.getUuid(), task!)
         wend
     methodend
 
@@ -185,35 +181,16 @@ class public TaskApp
     rem  */
     method public void onTaskClick(BBjClickEvent e!)
         rem Only open window if it doesn't exist, this should be a field variable
+        rem We're not using the click event as a click; it could be more efficient to pass a more useful object
+
+        declare auto Task t!
         if (#taskProperties! = null()) then
             #taskProperties! = new TaskProperties()
         endif
         rem Is there a way to not have to CAST this:
-        #taskProperties!.loadTask(cast(Task,#tasks!.get(e!.getControl().getAttribute("id"))))
+        t! = #tasks!.get(e!.getControl().getAttribute("id"))
+        #taskProperties!.loadTask(t!)
         #taskProperties!.setVisible(1)
-    methodend
-
-    rem /**
-    rem  * Method to run when a task's checkbox is changed
-    rem  *
-    rem  * @param e!    A BBjCheckChangeEvent
-    rem  */
-    method public void onTaskCheck(BBjCheckChangeEvent e!)
-        parent! = e!.getControl().getParentWindow()
-        id! = parent!.getAttribute("id")
-        task! = #tasks!.get(id!)
-        rem Maybe move these remove styles to a separate method if we need to do it again
-        parent!.removeClass("complete")
-        parent!.removeClass("incomplete")
-        parent!.removeClass("blocked")
-        parent!.removeClass("deferred")
-        if (task!.getStatus() <> task!.STATUS_COMPLETE()) then
-            task!.setStatus(task!.STATUS_COMPLETE())
-            parent!.addClass("complete")
-        else
-            task!.setStatus(task!.STATUS_INCOMPLETE())
-            parent!.addClass("incomplete")
-        endif
     methodend
 
     rem /**
@@ -243,7 +220,13 @@ class public TaskApp
     rem  * @param task!     The Task object
     rem  */
     method public void addTask(Task task!)
-        #tasks!.put(task!.getUuid(), task!)
+        uuid! = task!.getUuid()
+        #tasks!.put(uuid!, task!)
+    methodend
+
+    method public void refreshTaskView(BBjString uuid!)
+        view! = taskViews!.get(uuid!)
+        view!.refresh()
     methodend
 
     rem /**
@@ -251,8 +234,8 @@ class public TaskApp
     rem  *
     rem  * @param id        The task's unique ID
     rem  */
-    method public void removeTask(BBjString id!)
-        #tasks!.remove(id!)
+    method public void removeTask(BBjString uuid!)
+        #tasks!.remove(uuid!)
     methodend
 
     rem /**
@@ -330,6 +313,8 @@ classend
 rem BBj USE Statements
 use ::Task.bbj::Task
 use ::TaskProperties.bbj::TaskProperties
+use ::TaskListView.bbj::TaskListView
+
 
 rem Java USE Statements
 use java.time.LocalDate

@@ -1,0 +1,67 @@
+REM /**
+REM  * TaskListView.bbj
+REM  * @author gosteen
+REM  *C:\Users\gosteen\eclipse\workspaces\bbj-workspace\TaskApp\TaskListView.bbj
+REM  * TaskListView represents the childwindow of a task in a list
+REM  */
+
+class public TaskListView
+    field public TaskApp        app!
+    field public BBjChildWindow win!
+    field public Task           task!
+    field public BBjStaticText  title!
+    field public BBjCheckBox    checkbox!
+
+    method public TaskListView(TaskApp app!, BBjWindow parent!, Task t!)
+        #app! = app!
+        sysgui! = BBjAPI().getSysGui()
+        #win! = parent!.addChildWindow("", $00108000$, sysgui!.getAvailableContext())
+        #win!.addClass("task")
+        #win!.addClass("clickable")
+        #task! = t!
+        #win!.setAttribute("id", #task!.getUuid())
+        #title! = #win!.addStaticText("")
+        #checkbox! = #win!.addCheckBox("")
+        #checkbox!.setCallback(BBjControl.ON_CHECK_CHANGE, #this!, "onTaskCheck")
+        #win!.setCallback(BBjControl.ON_CLICK, #app!, "onTaskClick")
+        #refresh()
+    methodend
+
+    method public void clearStyles()
+        #win!.removeClass("complete")
+        #win!.removeClass("incomplete")
+        #win!.removeClass("blocked")
+        #win!.removeClass("deferred")
+    methodend
+
+    method public void refresh()
+        #clearStyles()
+        #title!.setText(#task!.getTitle())
+        #checkbox!.setSelected(#task!.isComplete())
+        #win!.addClass(#task!.getStatusString(#task!.getStatus()))
+    methodend
+
+    method public void setVisible(BBjNumber v!)
+        #win!.setVisible(v!)
+    methodend
+
+        rem /**
+    rem  * Method to run when a task's checkbox is changed
+    rem  *
+    rem  * @param e!    A BBjCheckChangeEvent
+    rem  */
+    method public void onTaskCheck(BBjCheckChangeEvent e!)
+        #clearStyles()
+        if (#task!.isComplete()) then
+            #task!.setStatus(#task!.STATUS_INCOMPLETE())
+            #win!.addClass("incomplete")
+        else
+            #task!.setStatus(#task!.STATUS_COMPLETE())
+            #win!.addClass("complete")
+        endif
+    methodend
+
+classend
+
+use ::Task.bbj::Task
+use ::TaskApp.bbj::TaskApp

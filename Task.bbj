@@ -168,6 +168,10 @@ class public Task
         methodret s!
     methodend
 
+    method public BBjNumber isComplete()
+        methodret #Status! = #STATUS_COMPLETE()
+    methodend
+
     rem Misc utility methods
     rem ========================================
     rem /**
