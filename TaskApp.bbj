@@ -34,9 +34,18 @@ class public TaskApp
     field protected BBjChildWindow      winTitle!
     field protected BBjChildWindow      winTaskList!
     field protected BBjTopLevelWindow   winSettings!
+    field protected BBjStaticText       labelDay!
     field protected BBjStaticText       labelDate!
+
+    rem NavBar and ToolBar controls
+    field protected BBjButton           btnAddTaskFAB!
+    field protected BBjButton           btnAddTask!
+    field protected BBjButton           btnSettings!
+    field protected BBjButton           btnReload!
+
+    rem Misc Data
     field protected BBjString           appName! = "TaskApp"
-    field protected BBjString           version! = "0.01"
+    field protected BBjString           version! = "0.02"
 
     rem Some sort of list of tasks.
     rem ========================================
@@ -115,7 +124,6 @@ class public TaskApp
 
         rem Create the UI and display the tasks
         #sysgui! = BBjAPI().openSysGui("X0")
-        rem #OnShowSettings(null())
         #createMainWindow()
 
         process_events
@@ -142,8 +150,37 @@ class public TaskApp
         #winTaskList! = #winMain!.addChildWindow("Tasks", $00108800$, #sysgui!.getAvailableContext())
         #winTaskList!.addClass("winTasks")
 
-        #labelDate! = #winTitle!.addStaticText(date(0:"%Dl, %Ml %D"))
+        #labelDay! = #winTitle!.addStaticText("Today", $4000$)
+        #labelDay!.addClass("labelDay")
+        #labelDate! = #winTitle!.addStaticText(date(0:"%Dl, %Ml %D"), $4000$)
         #labelDate!.addClass("labelDate")
+
+        rem Create the tool buttons and FAB (floating action button)
+        #btnAddTaskFAB! = #winMain!.addButton("+")
+        #btnAddTaskFAB!.addClass("btnAddTaskFAB")
+        #btnAddTaskFAB!.setAttribute("theme", "primary")
+        
+        #btnAddTask! = #winToolBar!.addButton("<html><bbj-icon pool='tabler' name='plus'></bbj-icon>")
+        #btnAddTask!.addClass("toolbar_icon")
+        #btnAddTask!.setToolTipText("Add Task")
+        #btnAddTask!.setAttribute("expanse", "xs")
+
+        #btnSettings! = #winToolBar!.addButton("<html><bbj-icon pool='tabler' name='settings'></bbj-icon>")
+        #btnSettings!.addClass("toolbar_icon")
+        #btnSettings!.setToolTipText("Settings")
+        #btnSettings!.setAttribute("expanse", "xs")
+
+        #btnReload! = #winToolBar!.addButton("<html><bbj-icon pool='tabler' name='reload'></bbj-icon>")
+        #btnReload!.addClass("toolbar_icon")
+        #btnReload!.setToolTipText("Reload")
+        #btnReload!.setAttribute("expanse", "xs")
+
+
+        rem Set callbacks for the UI controls
+        #btnAddTask!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onAddTask")
+        #btnSettings!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onShowSettings")
+        #btnReload!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onReload")
+
 
         #displayTasks()
         #winMain!.setVisible(1)
@@ -247,19 +284,39 @@ class public TaskApp
         #tasks!.remove(task!.getUuid())
     methodend
 
+
+    rem /**
+    rem  * Reloads the application at the push of a button.  
+    REM  * <p>
+    REM  * Note: This is typically only used by the application programmers during the development process.
+    REM  * <p>
+    REM  * The code creates a BBjBuiUrlCloseAction object to load the app's URL, so after doing a RELEASE the same app is loaded again.
+    rem  *
+    rem  * @param BBjButtonPushEvent e!     The BBjButtonPushEvent that BBj automatically provides
+    rem  */
+    method public void onReload(BBjButtonPushEvent e!)
+        action! = #webManager!.urlAction(#webManager!.getUrl())
+        #webManager!.setEndAction(action!)
+        release
+    methodend
+
+    method public void onAddTask(BBjButtonPushEvent e!)
+
+    methodend
+
     rem /**
     rem  * Shows the app's configuration window
     rem  *
     rem  * @param task!     The Task object
     rem  */
-    method public void OnShowSettings(BBjButtonPushEvent event!)
+    method public void onShowSettings(BBjButtonPushEvent e!)
         rem To Do
         rem 1) Define the theme color
         themeColor! = "Tangerine"
 
         rem Create the window and controls if it doesn't yet exist.  Otherwise, we'll simply display the existing one that we created and previously hid.
         if (#winSettings! = null()) then
-            #winSettings! = #sysgui!.addWindow("TaskApp Settings", $011B0010$)
+            #winSettings! = #sysgui!.addWindow(#sysgui!.getAvailableContext(), "TaskApp Settings", $011B0010$)
             #winSettings!.addClass("winSettings")
             #winSettings!.setIcon(dsk("")+dir("")+"images/DWCTaskApp.png")
 
@@ -297,13 +354,13 @@ class public TaskApp
         #winSettings!.setVisible(1)
     methodend
 
-    method public void onSettingsDone(BBjButtonPushEvent event!)
+    method public void onSettingsDone(BBjButtonPushEvent e!)
         #winSettings!.setVisible(0)
     methodend
-    method public void onSettingsThemeColor(BBjButtonPushEvent event!)
+    method public void onSettingsThemeColor(BBjButtonPushEvent e!)
         temp = msgbox("Net Yet Implemented")
     methodend
-    method public void onSettingsAbout(BBjButtonPushEvent event!)
+    method public void onSettingsAbout(BBjButtonPushEvent e!)
         temp = msgbox("TaskApp is current at version 0.0!")
     methodend
 
@@ -314,6 +371,7 @@ rem BBj USE Statements
 use ::Task.bbj::Task
 use ::TaskProperties.bbj::TaskProperties
 use ::TaskListView.bbj::TaskListView
+
 
 
 rem Java USE Statements
