@@ -184,6 +184,7 @@ bbj-button::part(label) {
 }
 .btnAddTaskFAB::part(control) {
     border-radius: 100em;
+    box-shadow: 0 0.1em 0.5em hsla(0, 0%, 0%, 0.35);
 }
 .btnAddTaskFAB::part(label) {
     font-size: 200%;
@@ -195,8 +196,10 @@ bbj-button::part(label) {
     background: transparent;
     color: var(--app-color-text-faint);
     transition: all 100ms ease;
+    border-color: transparent;
+    border-radius: 1em;
 }
 .toolbar_icon::part(control):hover {
-  border-color: transparent;
-  color: var(--app-color-text-normal);
+    border-color: transparent;
+    color: var(--app-color-text-normal);
 }
