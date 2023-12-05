@@ -1,6 +1,5 @@
 /* The CSS file that accompanies the TaskApp DWC application */
 
-
 /* The TaskApp's CSS custom properties       */
 /* ========================================  */
 :root {
@@ -9,6 +8,9 @@
     --app-color-b: 35%;
     --app-color-primary: hsl(var(--app-color-h), var(--app-color-s), var(--app-color-b));
     --app-color-window-bg: hsl(0, 0%, 95%);
+    --app-color-text-normal: hsl(0, 0%, 20%);
+    --app-color-text-light: hsl(0, 0%, 40%);
+    --app-color-text-faint:hsl(0, 0%, 60%);
 }
 
 /* Overriding the DWC's default CSS custom properties */
@@ -17,9 +19,8 @@
     /* --bbj-color-primary-h: var(--app-color-h); */
     /* --bbj-color-default-s: 5%; */
     --bbj-font-family: 'AR One Sans', 'Gabarito', 'K2D', 'Overlock', 'Encode Sans Semicondensed', 'Aller', 'Alatsi', 'Akrobat', var(--bbj-font-family-sans);
-}
-
-
+    --bbj-color-body-text: var(--app-color-text-normal);
+  }
 
 /* Global definitions for multiple controls  */
 /* ========================================  */
@@ -55,59 +56,79 @@ bbj-button::part(label) {
     display: flex;
 }
 
-.winMain .BBjPanel{
+.winMain .BBjPanel {
     display: grid;
     width: 100%;
     height: 100%;
-    grid-template-areas: "winNavBar winToolBar" "winNavBar winTitle" "winNavBar winTasks";
+    grid-template-areas: 'winNavBar winToolBar' 'winNavBar winTitle' 'winNavBar winTasks';
     grid-template-columns: 5em 1fr;
-    grid-template-rows: 2em 2em 1fr;
-  }
+    grid-template-rows: 2em 4em 1fr;
+}
 
-  .winNavBar {
-    grid-area: winNavBar;
-    background-color: burlywood;
-  }
-  .winToolBar {
-    grid-area: winToolBar;
-  }
-  .winTitle {
-    grid-area: winTitle;
-  }
-  .winTasks {
-    grid-area: winTasks;
-    overflow: auto;
-  }
-
-  .winToolBar, .winTitle, .winTasks {
+.winToolBar, .winTitle, .winTasks {
     max-width: 20em;
     margin: 0 auto;
-  }
+}
 
-  /* Task Property Sheet Styling */
+.winNavBar {
+    grid-area: winNavBar;
+    background-color: burlywood;
+}
 
-  .BBjTopLevelWindow.BBjDialog {
+.winToolBar {
+    grid-area: winToolBar;
+    max-width: 100%;
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: var(--bbj-space);
+    gap: var(--bbj-space) var(--bbj-space);
+
+    /* This keeps the buttons together and centers them on the display */
+    /* width: fit-content;
+    justify-content: space-evenly; */
+
+    /* This keeps the buttons on the far right edge of the display */
+    width: 100%;
+    justify-content: end;
+}
+
+.winTitle {
+    grid-area: winTitle;
+    display: flex;
+    flex-flow: column;
+    align-items: stretch;
+    justify-content: center;
+}
+.winTasks {
+    grid-area: winTasks;
+    overflow: auto;
+}
+
+/* Task Property Sheet Styling */
+.BBjTopLevelWindow.BBjDialog {
     margin: auto;
-  }
+}
 
-  .winTaskProperties .BBjPanel {
+.winTaskProperties .BBjPanel {
     display: flex;
     flex-flow: column;
     padding: var(--bbj-space-l);
     gap: var(--bbj-space-m);
-  }
+}
 
-  .winTaskProperties .BBjChildWindow {
+.winTaskProperties .BBjChildWindow {
     display: flex;
     flex-flow: row;
     justify-content: space-between;
     margin-top: 1em;
     padding: var(--bbj-focus-ring-width);
-  }
+}
 
-  .BBjDialogGlassPane {
-    background-color: hsla(0,0%,0%,0.5);
-  }
+.BBjDialogGlassPane {
+    background-color: hsla(0, 0%, 0%, 0.5);
+}
 
 /* Task Styling */
 /* ============ */
@@ -121,27 +142,61 @@ bbj-button::part(label) {
 }
 
 /* Task items that are complete */
-.complete  {
+.complete {
     background-color: rgb(110, 161, 110);
     text-decoration: line-through;
 }
 
 /* Task items that are deferred */
-.deferred  {
+.deferred {
     background-color: rgb(167, 151, 66);
 }
 
 /* Task items that are deferred */
-.blocked  {
+.blocked {
     background-color: rgb(197, 124, 124);
 }
 
 /* Items that are clickable, and hovered over */
 .clickable:hover {
-   filter: brightness(80%);
+    filter: brightness(80%);
 }
 
-.labelDate {
+.labelDay {
     font-size: 1.5em;
     font-weight: bold;
+}
+.labelDate {
+    color: var(--app-color-text-light);
+    font-size: 0.85em;
+    font-weight: normal;
+}
+
+/* FAB Floating Action Button  */
+/* ========================================  */
+.btnAddTaskFAB {
+    position: absolute;
+    right: 1em;
+    bottom: 1em;
+    z-index: 1000;
+    width: 3em;
+    height: 3em;
+}
+.btnAddTaskFAB::part(control) {
+    border-radius: 100em;
+}
+.btnAddTaskFAB::part(label) {
+    font-size: 200%;
+}
+
+/*  Toolbar Icons */
+/* ========================================  */
+.toolbar_icon::part(control) {
+    background: transparent;
+    color: var(--app-color-text-faint);
+    transition: all 100ms ease;
+}
+.toolbar_icon::part(control):hover {
+  border-color: transparent;
+  color: var(--app-color-text-normal);
 }
