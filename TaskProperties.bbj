@@ -60,6 +60,16 @@ class public TaskProperties
         #dateDue!.setText("")
         #dateDue!.setAttribute("visible-calender-icon","true")
 
+
+        rem Long Year
+        REM short_year$ = STBL("!COMPAT!", "SHORT_YEAR=TRUE")
+        REM DateMask$=stbl("!DATE"),DateMask=pos($00$=DateMask$),DateMask$=DateMask$(1,DateMask-1)
+        REM #dateDue!.setLocale("en-US")
+        REM #dateDue!.setMask(DateMask$)
+        REM a=msgbox("Date Mask: " + DateMask$ + $0a$ + "!COMPAT for SHORT_YEAR: " + STBL("!COMPAT"))
+
+
+
         #winButtons! = #winTaskProperties!.addChildWindow("", $00108800$, #sysgui!.getAvailableContext())
         #buttonCancel! = #winButtons!.addButton("Cancel")
 
@@ -110,7 +120,7 @@ class public TaskProperties
         limit! = 5*365
         difference! = date!-today!
 
-        if (abs(difference!) > limit!) then
+        if (abs(difference!) > limit!) AND (date! <> -1) then
             rem date out of bounds
             e!.accept(0)
             message! = "Date cannot be more than 5 years in the "
