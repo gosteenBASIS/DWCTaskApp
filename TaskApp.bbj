@@ -177,6 +177,7 @@ class public TaskApp
 
 
         rem Set callbacks for the UI controls
+        #btnAddTaskFAB!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onAddTask")
         #btnAddTask!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onAddTask")
         #btnSettings!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onShowSettings")
         #btnReload!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onReload")
@@ -302,8 +303,23 @@ class public TaskApp
     methodend
 
     method public void onAddTask(BBjButtonPushEvent e!)
+        rem Create a new task without any parameters
+        task! = new Task("")
 
+        if (#taskProperties! = null()) then
+            #taskProperties! = new TaskProperties()
+        endif
+
+        #consoleLog("Added Entry")
+
+        #taskProperties!.loadTask(task!)
+        #taskProperties!.setVisible(1)
     methodend
+
+
+
+
+
 
     rem /**
     rem  * Shows the app's configuration window
@@ -364,6 +380,14 @@ class public TaskApp
     method public void onSettingsAbout(BBjButtonPushEvent e!)
         temp = msgbox("TaskApp is current at version 0.0!")
     methodend
+
+
+
+    method protected void consoleLog(BBjString logEntry!)
+        logEntry! = logEntry!.replaceAll("'", "\'")
+        #sysgui!.executeScript("console.log('%c" + #appName! + " Log:%c%s', 'background: hsl(60, 100%, 65%); color: hsl(350, 100%, 25%); padding: 2px 4px; border-radius: 3px; border: 1px solid hsl(350, 100%, 25%); font-weight: 700;', 'background: hsl(275, 90%, 95%); color: hsl(275, 35%, 35%); padding: 2px 4px; border-radius: 3px; border: 1px solid hsl(275, 35%, 35%);', `" + logEntry! + "`); ")
+    methodend
+
 
 classend
 
