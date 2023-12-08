@@ -139,6 +139,8 @@ class public TaskProperties
         #task!.setDescription(e!.getText(#editDescription!))
         #task!.setDueDate(date!)
         #task!.setPriority(e!.getSelectedIndex(#listPriority!))
+        #task!.setStatus(e!.getSelectedIndex(#listStatus!))
+        #task!.updateViews()
         #winTaskProperties!.setVisible(0)
         e!.accept(1)
     methodend

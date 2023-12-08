@@ -120,7 +120,7 @@ class public TaskApp
         rem Set defaults and apply user preferences
         BBjAPI().getWebManager(err=*NEXT).setTheme(prefsTheme!, err=*NEXT)
 
-        #createSampleTasks(50)
+        #createSampleTasks(25)
 
         rem Create the UI and display the tasks
         #sysgui! = BBjAPI().openSysGui("X0")
@@ -159,7 +159,7 @@ class public TaskApp
         #btnAddTaskFAB! = #winMain!.addButton("+")
         #btnAddTaskFAB!.addClass("btnAddTaskFAB")
         #btnAddTaskFAB!.setAttribute("theme", "primary")
-        
+
         #btnAddTask! = #winToolBar!.addButton("<html><bbj-icon pool='tabler' name='plus'></bbj-icon>")
         #btnAddTask!.addClass("toolbar_icon")
         #btnAddTask!.setToolTipText("Add Task")
@@ -182,6 +182,7 @@ class public TaskApp
         #btnReload!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onReload")
 
 
+        #displayTasks()
         #displayTasks()
         #winMain!.setVisible(1)
         rem #createTaskWindow()
@@ -286,7 +287,7 @@ class public TaskApp
 
 
     rem /**
-    rem  * Reloads the application at the push of a button.  
+    rem  * Reloads the application at the push of a button.
     REM  * <p>
     REM  * Note: This is typically only used by the application programmers during the development process.
     REM  * <p>

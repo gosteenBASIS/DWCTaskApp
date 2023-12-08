@@ -49,6 +49,8 @@ class public Task
     rem /** The instant in time that the user created the task */
     field protected Instant Created!
 
+    field protected BBjVector views!
+
     rem Constants
     rem ========================================
     rem /** A constant value that's used to set the Task's status to incomplete (to do) */
@@ -112,6 +114,7 @@ class public Task
         #Status! = Task.STATUS_INCOMPLETE()
         #DueDate! = dueDate!
         #Created! = Instant.now()
+        #views! = BBjAPI().makeVector()
     methodend
 
 
@@ -172,6 +175,20 @@ class public Task
         methodret #Status! = #STATUS_COMPLETE()
     methodend
 
+    method public void addView(TaskListView view!)
+        #views!.addItem(view!)
+    methodend
+
+    method public void updateViews()
+        numViews = #views!.size()-1
+        for i=0 to numViews
+            view! = cast(TaskListView,#views!.getItem(i))
+            if (view! <> null()) then
+                view!.refresh()
+            endif
+        next i
+    methodend
+
     rem Misc utility methods
     rem ========================================
     rem /**
@@ -204,6 +221,7 @@ classend
 
 rem BBj USE Statements
 use ::TaskApp.bbj::TaskApp
+use ::TaskListView.bbj::TaskListView
 
 rem Java USE Statements
 use java.time.LocalDate; rem https://docs.oracle.com/javase/8/docs/api/java/time/LocalDate.html
