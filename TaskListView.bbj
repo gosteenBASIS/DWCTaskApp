@@ -26,7 +26,7 @@ class public TaskListView
         #title! = #win!.addStaticText("")
 
         #win!.setCallback(BBjControl.ON_CLICK, #app!, "onTaskClick")
-        #task!.addView(#this!)
+
         #refresh()
     methodend
 
@@ -62,9 +62,7 @@ class public TaskListView
             #task!.setStatus(#task!.STATUS_COMPLETE())
             #win!.addClass("complete")
         endif
-        #task!.updateViews()
     methodend
-
 classend
 
 use ::Task.bbj::Task

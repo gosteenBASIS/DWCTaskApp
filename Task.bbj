@@ -49,8 +49,6 @@ class public Task
     rem /** The instant in time that the user created the task */
     field protected Instant Created!
 
-    field protected BBjVector views!
-
     rem Constants
     rem ========================================
     rem /** A constant value that's used to set the Task's status to incomplete (to do) */
@@ -88,7 +86,8 @@ class public Task
     rem  * @param title!            The task's title string
     rem  */
     method public Task(BBjString title!)
-        #this!(title!, "", 0, -1)
+        #init()
+        #Title! = title!
     methodend
 
     rem /**
@@ -99,24 +98,47 @@ class public Task
     rem  * @param priority!         The task's priority level (1 -5)
     rem  * @param dueDate!          The task's due date
     rem  */
-    method public Task(BBjString title!, BBjString description!, BBjNumber priority!, BBjNumber dueDate!)
-        #init(title!, description!, priority!, dueDate!)
+    method public Task()
+        #init()
+    methodend
+
+    rem /**
+    rem  * Create a clone of a task
+    rem  */
+    method public Task(Task task!)
+        #Title! = task!.getTitle()
+        #Description! = task!.getDescription()
+        #Priority! = task!.getPriority()
+        #DueDate! = task!.getDueDate()
+        #Status! = task!.getStatus()
+
+        #Uuid! = task!.getUuid()
+        #Created! = task!.getCreated()
     methodend
 
     rem /**
     rem  * Initializes a Task item and assigns defaults to its properties if they weren't specified on the constructor.
     rem  */
-    method protected void init(BBjString title!, BBjString description!, BBjNumber priority!, BBjNumber dueDate!)
-        #Title! = title!
-        #Description! = description!
+    method protected void init()
+        #Title! = ""
+        #Description! = ""
         #Uuid! = java.util.UUID.randomUUID().toString()
-        #Priority! = priority!
+        #Priority! = 0
         #Status! = Task.STATUS_INCOMPLETE()
-        #DueDate! = dueDate!
+        #DueDate! = -1
         #Created! = Instant.now()
-        #views! = BBjAPI().makeVector()
     methodend
 
+    rem /**
+    rem  * Copy all editable info into this task from source; excluding Uuid and Created timestamp
+    rem  */
+    method public void copyInfo(Task source!)
+        #Title! = source!.getTitle()
+        #Description! = source!.getDescription()
+        #Priority! = source!.getPriority()
+        #DueDate! = source!.getDueDate()
+        #Status! = source!.getStatus()
+    methodend
 
     rem Setters
     rem ========================================
@@ -165,7 +187,7 @@ class public Task
                 s! = "blocked"
                 break
             case default
-                throw "Invalid status provided to Task.getStatusString()",17
+                throw "Invalid status provided to Task.getStatusString(): " + str(status!),17
                 break
         swend
         methodret s!
@@ -173,20 +195,6 @@ class public Task
 
     method public BBjNumber isComplete()
         methodret #Status! = #STATUS_COMPLETE()
-    methodend
-
-    method public void addView(TaskListView view!)
-        #views!.addItem(view!)
-    methodend
-
-    method public void updateViews()
-        numViews = #views!.size()-1
-        for i=0 to numViews
-            view! = cast(TaskListView,#views!.getItem(i))
-            if (view! <> null()) then
-                view!.refresh()
-            endif
-        next i
     methodend
 
     rem Misc utility methods

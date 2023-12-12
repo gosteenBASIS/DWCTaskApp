@@ -120,7 +120,7 @@ class public TaskApp
         rem Set defaults and apply user preferences
         BBjAPI().getWebManager(err=*NEXT).setTheme(prefsTheme!, err=*NEXT)
 
-        #createSampleTasks(25)
+        #createSampleTasks(50)
 
         rem Create the UI and display the tasks
         #sysgui! = BBjAPI().openSysGui("X0")
@@ -175,15 +175,12 @@ class public TaskApp
         #btnReload!.setToolTipText("Reload")
         #btnReload!.setAttribute("expanse", "xs")
 
-
         rem Set callbacks for the UI controls
         #btnAddTaskFAB!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onAddTask")
         #btnAddTask!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onAddTask")
         #btnSettings!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onShowSettings")
         #btnReload!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onReload")
 
-
-        #displayTasks()
         #displayTasks()
         #winMain!.setVisible(1)
         rem #createTaskWindow()
@@ -193,7 +190,7 @@ class public TaskApp
     rem  * Create the top level window to create, view, or edit a task
     rem  */
     method protected void createTaskWindow()
-        #taskProperties! = new TaskProperties()
+        #taskProperties! = new TaskProperties(#this!)
     methodend
 
     rem /**
@@ -209,7 +206,7 @@ class public TaskApp
             if (task!.isComplete()) then
                 view!.setVisible(0)
             endif
-            #taskViews!.put(task!.getUuid(), task!)
+            #taskViews!.put(task!.getUuid(), view!)
         wend
     methodend
 
@@ -224,9 +221,8 @@ class public TaskApp
 
         declare auto Task t!
         if (#taskProperties! = null()) then
-            #taskProperties! = new TaskProperties()
+            #createTaskWindow()
         endif
-        rem Is there a way to not have to CAST this:
         t! = #tasks!.get(e!.getControl().getAttribute("id"))
         #taskProperties!.loadTask(t!)
         #taskProperties!.setVisible(1)
@@ -243,7 +239,8 @@ class public TaskApp
 
         for i = 0 to numTasks! - 1
             taskName! = "Task " + str(i)
-            task! = new Task(taskName!)
+            task! = new Task()
+            task!.setTitle(taskName!)
             task!.setStatus(rnd(4))
             if (mod(i,2) = 0) then
                 rem Set due date for even-numbered tasks
@@ -263,9 +260,17 @@ class public TaskApp
         #tasks!.put(uuid!, task!)
     methodend
 
-    method public void refreshTaskView(BBjString uuid!)
-        view! = taskViews!.get(uuid!)
-        view!.refresh()
+    rem /**
+    rem  * Updates the task with UUID with information from copy
+    rem  */
+    method public void updateTask(BBjString uuid!, Task copy!)
+        task! = #tasks!.get(uuid!)
+        task!.copyInfo(copy!)
+        declare auto TaskListView view!
+        view! = #taskViews!.get(uuid!)
+        if (view! <> null()) then
+            view!.refresh()
+        endif
     methodend
 
     rem /**
@@ -275,6 +280,7 @@ class public TaskApp
     rem  */
     method public void removeTask(BBjString uuid!)
         #tasks!.remove(uuid!)
+        #taskViews!.remove(uuid!)
     methodend
 
     rem /**
@@ -304,10 +310,10 @@ class public TaskApp
 
     method public void onAddTask(BBjButtonPushEvent e!)
         rem Create a new task without any parameters
-        task! = new Task("")
+        task! = new Task()
 
         if (#taskProperties! = null()) then
-            #taskProperties! = new TaskProperties()
+            #createTaskWindow()
         endif
 
         #consoleLog("Added Entry")
@@ -315,9 +321,6 @@ class public TaskApp
         #taskProperties!.loadTask(task!)
         #taskProperties!.setVisible(1)
     methodend
-
-
-
 
 
 

@@ -6,7 +6,7 @@ REM  */
 rem package TaskApp
 
 class public TaskProperties
-
+    field public TaskApp           app!
     field public BBjSysGui         sysgui!
     field public BBjTopLevelWindow winTaskProperties!
     field public BBjEditBox        editTitle!
@@ -21,9 +21,9 @@ class public TaskProperties
 
     field public Task              task!
 
-    method public TaskProperties()
+    method public TaskProperties(TaskApp app!)
         #task! = null()
-
+        #app! = app!
         #sysgui! = BBjAPI().getSysGui()
         #winTaskProperties! = BBjAPI().getSysGui().addWindow(#sysgui!.getAvailableContext(), "winTask", $011F0000$)
         #winTaskProperties!.addClass("winTaskProperties")
@@ -87,7 +87,8 @@ class public TaskProperties
     rem  * Given a task object, load its properties into the Task Properties window
     rem  */
     method public void loadTask(Task t!)
-        #task! = t!
+        rem Clone the task, so it can't directly modify it
+        #task! = new Task(t!)
         #editTitle!.setText(#task!.getTitle())
         #editDescription!.setText(#task!.getDescription())
         dueDate! = #task!.getDueDate()
@@ -98,6 +99,7 @@ class public TaskProperties
         endif
 
         #listPriority!.selectIndex(t!.getPriority())
+        #listStatus!.selectIndex(t!.getStatus())
     methodend
 
     rem /**
@@ -140,15 +142,12 @@ class public TaskProperties
         #task!.setDueDate(date!)
         #task!.setPriority(e!.getSelectedIndex(#listPriority!))
         #task!.setStatus(e!.getSelectedIndex(#listStatus!))
-        #task!.updateViews()
+
+        #app!.updateTask(#task!.getUuid(),#task!)
         #winTaskProperties!.setVisible(0)
         e!.accept(1)
     methodend
 
-    rem /**
-    rem  * Set window to invisible
-    rem  * TODO: should this discard information from the window?
-    rem  */
     method public void onCancel(BBjButtonPushEvent e!)
         #winTaskProperties!.setVisible(0)
     methodend
@@ -159,6 +158,7 @@ class public TaskProperties
 
 classend
 
+use ::TaskApp.bbj::TaskApp
 use ::Task.bbj::Task
 
 use java.time.LocalDate
