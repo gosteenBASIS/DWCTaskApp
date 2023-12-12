@@ -11,6 +11,7 @@ class public TaskListView
     field public Task           task!
     field public BBjStaticText  title!
     field public BBjCheckBox    checkbox!
+    field public BBjString      uuid!
 
     method public TaskListView(TaskApp app!, BBjWindow parent!, Task t!)
         #app! = app!
@@ -18,8 +19,9 @@ class public TaskListView
         #win! = parent!.addChildWindow("", $00108000$, sysgui!.getAvailableContext())
         #win!.addClass("task")
         #win!.addClass("clickable")
-        #task! = t!
-        #win!.setAttribute("id", #task!.getUuid())
+        #task! = new Task(t!)
+        #uuid! = #task!.getUuid()
+        #win!.setAttribute("id", #uuid!)
         #checkbox! = #win!.addCheckBox("")
         #checkbox!.setCallback(BBjControl.ON_CHECK_CHANGE, #this!, "onTaskCheck")
 
@@ -38,6 +40,8 @@ class public TaskListView
     methodend
 
     method public void refresh()
+        #task!.copyInfo(#app!.getTask(#uuid!))
+
         #clearStyles()
         #title!.setText(#task!.getTitle())
         #checkbox!.setSelected(#task!.isComplete())
@@ -57,11 +61,10 @@ class public TaskListView
         #clearStyles()
         if (#task!.isComplete()) then
             #task!.setStatus(#task!.STATUS_INCOMPLETE())
-            #win!.addClass("incomplete")
         else
             #task!.setStatus(#task!.STATUS_COMPLETE())
-            #win!.addClass("complete")
         endif
+        #app!.updateTask(#task!)
     methodend
 classend
 

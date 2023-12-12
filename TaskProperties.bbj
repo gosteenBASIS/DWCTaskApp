@@ -143,7 +143,7 @@ class public TaskProperties
         #task!.setPriority(e!.getSelectedIndex(#listPriority!))
         #task!.setStatus(e!.getSelectedIndex(#listStatus!))
 
-        #app!.updateTask(#task!.getUuid(),#task!)
+        #app!.updateTask(#task!)
         #winTaskProperties!.setVisible(0)
         e!.accept(1)
     methodend

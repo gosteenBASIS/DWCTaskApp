@@ -117,7 +117,7 @@ class public Task
     methodend
 
     rem /**
-    rem  * Initializes a Task item and assigns defaults to its properties if they weren't specified on the constructor.
+    rem  * Initializes a Task item and assigns defaults to its properties.
     rem  */
     method protected void init()
         #Title! = ""

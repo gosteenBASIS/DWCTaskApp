@@ -261,11 +261,21 @@ class public TaskApp
     methodend
 
     rem /**
-    rem  * Updates the task with UUID with information from copy
+    rem  * Returns the Task with the given UUID from the TreeMap of tasks.
     rem  */
-    method public void updateTask(BBjString uuid!, Task copy!)
+    method public Task getTask(BBjString uuid!)
+        methodret cast(Task,#tasks!.get(uuid!))
+    methodend
+
+    rem /**
+    rem  * Given a task copy, update the task with the same UUID with the information given
+    rem  */
+    method public void updateTask(Task copy!)
+        uuid! = copy!.getUuid()
         task! = #tasks!.get(uuid!)
-        task!.copyInfo(copy!)
+        if (task! <> null()) then
+            task!.copyInfo(copy!)
+        endif
         declare auto TaskListView view!
         view! = #taskViews!.get(uuid!)
         if (view! <> null()) then
