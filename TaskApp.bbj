@@ -251,7 +251,7 @@ class public TaskApp
     methodend
 
     rem /**
-    rem  * Adds a Task to the tasklist
+    rem  * Adds a Task to the tasklist (the app's collection of Task objects)
     rem  *
     rem  * @param task!     The Task object
     rem  */
@@ -304,13 +304,12 @@ class public TaskApp
 
 
     rem /**
-    rem  * Reloads the application at the push of a button.
-    REM  * <p>
-    REM  * Note: This is typically only used by the application programmers during the development process.
-    REM  * <p>
-    REM  * The code creates a BBjBuiUrlCloseAction object to load the app's URL, so after doing a RELEASE the same app is loaded again.
+    rem  * Reloads the application at the push of a button, which is typically only useful in development mode
+    rem  * <p>
+    rem  * The code creates a BBjBuiUrlCloseAction object to load the app's URL.  That way, the app can
+    rem  * do a RELEASE which causes the same app to be loaded and executed again.
     rem  *
-    rem  * @param BBjButtonPushEvent e!     The BBjButtonPushEvent that BBj automatically provides
+    rem  * @param e!        The BBjButtonPushEvent that causes this method to be executed
     rem  */
     method public void onReload(BBjButtonPushEvent e!)
         action! = #webManager!.urlAction(#webManager!.getUrl())
@@ -318,22 +317,21 @@ class public TaskApp
         release
     methodend
 
+    rem /**
+    rem  * Adds a new Task object by
+    REM  *  - creating a new Task object
+    REM  *  - displaying the Task's property sheet to the user for customization
+    REM  *  - adding the configured Task to the app's collection of Task objects
+    rem  *
+    rem  * @param e!        The BBjButtonPushEvent that causes this method to be executed
+    rem  */
     method public void onAddTask(BBjButtonPushEvent e!)
-        rem Create a new task without any parameters
-        task! = new Task()
 
-        if (#taskProperties! = null()) then
-            #createTaskWindow()
-        endif
-
-        #consoleLog("Added Entry")
-
-        #taskProperties!.loadTask(task!)
-        #taskProperties!.setVisible(1)
     methodend
 
 
 
+    rem ====================  START of Settings ====================
     rem /**
     rem  * Shows the app's configuration window
     rem  *
@@ -393,14 +391,76 @@ class public TaskApp
     method public void onSettingsAbout(BBjButtonPushEvent e!)
         temp = msgbox("TaskApp is current at version 0.0!")
     methodend
+    rem ====================  END of Settings ====================
 
 
 
-    method protected void consoleLog(BBjString logEntry!)
-        logEntry! = logEntry!.replaceAll("'", "\'")
-        #sysgui!.executeScript("console.log('%c" + #appName! + " Log:%c%s', 'background: hsl(60, 100%, 65%); color: hsl(350, 100%, 25%); padding: 2px 4px; border-radius: 3px; border: 1px solid hsl(350, 100%, 25%); font-weight: 700;', 'background: hsl(275, 90%, 95%); color: hsl(275, 35%, 35%); padding: 2px 4px; border-radius: 3px; border: 1px solid hsl(275, 35%, 35%);', `" + logEntry! + "`); ")
+    rem /**
+    rem  * Returns the collection of Task objects in a JsonArray.  This is used to
+    rem  * serialize the tasks so that they can be exported, shared with another app,
+    rem  * or saved to disk.
+    rem  *
+    rem  * @return JsonArray     The tasks collection as a JsonArray
+    rem  */
+    method protected JsonArray getTasksAsJsonArray()
+        declare JsonArray array!
+        declare auto BBjString uuid!
+        declare auto Task task!
+
+        array! = new JsonArray()
+        it! = #tasks!.keySet().iterator()
+        while it!.hasNext()
+            uuid! = it!.next()
+            task! = #tasks!.get(uuid!)
+            array!.add(task!.getAsJsonObject())
+        wend
+        methodret array!
     methodend
 
+    rem /**
+    rem  * Logs the provided string into the user's browser Developer Tools console.
+    rem  *
+    rem  * Note that this is a convenience method that calls the consoleLogValues() method
+    rem  * with an empty string for the second parameter (the value).
+    rem  *
+    rem  * @param logEntry!     The information to display in the Developer Tools console
+    rem  */
+    method protected void consoleLog(BBjString logEntry!)
+        #consoleLogValues(logEntry!, "")
+    methodend
+
+    rem /**
+    rem  * Logs the provided strings, usually key/value pairs, into the user's browser Developer Tools console.
+    rem  * <p>
+    rem  * If you're developing with VS Code, you can use its debug capabilities so that the
+    rem  * browser's Developer Tools console is available in VS Code's debug console.  This
+    rem  * allows you to view the browser's console output and interact with the interpreter
+    rem  * from within VS Code.
+    rem  *
+    rem  * @param key!          The first information to display in the Developer Tools console, typically the key in a key/value pair
+    rem  * @param value!        The second information to display in the Developer Tools console, typically the value in a key/value pair
+    rem  */
+    method public static void consoleLogValues(BBjString key!, BBjString value!)
+        rem Sanitize the log entries by escaping single quotes
+        key! = key!.replaceAll("'", "\'")
+        value! = value!.replaceAll("'", "\'")
+
+        rem Define the CSS to format the console output
+        space! = " "
+        cssSpace! = "'background: white;'"
+        cssDebugPrefix! = "'background: hsl(60, 100%, 65%); color: hsl(350, 100%, 25%); padding: 2px 4px; border-radius: 3px; border: 1px solid hsl(350, 100%, 25%); font-weight: 700;'"
+        cssKey! = "'background: hsl(210, 90%, 94%); color: hsl(210, 35%, 35%); padding: 2px 4px; border-radius: 3px; border: 1px solid hsl(210, 35%, 35%);'"
+        cssValue! = "'background: hsl(115, 90%, 94%); color: hsl(115, 35%, 35%); padding: 2px 4px; border-radius: 3px; border: 1px solid hsl(115, 35%, 35%);'"
+
+        rem Define the JavaScript that logs the information
+        js! = "console.log('%cDebug Log:%c%s%c%s%c%s%c%s', " + cssDebugPrefix! + ", " + cssSpace! + ", `" + space! + "`," + cssKey! + ", `" + key! + "`," + cssSpace! + ", `" + space! + "`," + cssValue! + ",`" + value! + "`);"
+
+        rem Get the SysGui device and execute the JavaScript to log the information to the Developer Tools console
+        sg! = BBjAPI().getSysGui(err=*NEXT)
+        if (sg! = null()) then sg! = BBjAPI().openSysGui("X0"); sgChan! = sg!.getChannel()
+        sg!.executeScript(js!)
+        if (sgChan! <> null()) then close(sgChan!,err=*NEXT)
+    methodend
 
 classend
 
@@ -410,8 +470,12 @@ use ::Task.bbj::Task
 use ::TaskProperties.bbj::TaskProperties
 use ::TaskListView.bbj::TaskListView
 
-
-
 rem Java USE Statements
 use java.time.LocalDate
 use java.util.TreeMap
+
+rem Google's Gson for JSON, which is included with BBj
+use com.google.gson.Gson;           rem https://javadoc.io/static/com.google.code.gson/gson/2.10.1/com.google.gson/com/google/gson/Gson.html
+use com.google.gson.GsonBuilder;    rem https://javadoc.io/doc/com.google.code.gson/gson/latest/com.google.gson/com/google/gson/GsonBuilder.html
+use com.google.gson.JsonObject;     rem https://javadoc.io/static/com.google.code.gson/gson/2.10.1/com.google.gson/com/google/gson/JsonObject.html
+use com.google.gson.JsonArray;      rem https://javadoc.io/static/com.google.code.gson/gson/2.10.1/com.google.gson/com/google/gson/JsonArray.html
