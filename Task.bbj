@@ -103,6 +103,21 @@ class public Task
     methodend
 
     rem /**
+    rem  * A Task item's constructor that takes a JsonObject instead of individual parameters
+    rem  *
+    rem  * @param json!            The JSON representation of the Task object
+    rem  */
+    method public Task(JsonObject json!)
+        #Title! = json!.get("title",err=*NEXT).getAsString()
+        #Description! = json!.get("description",err=*NEXT).getAsString()
+        #Uuid! = json!.get("uuid").getAsString()
+        #Priority! = json!.get("priority",err=*NEXT).getAsInt()
+        #Status! = json!.get("status",err=*NEXT).getAsInt()
+        #DueDate! = json!.get("duedate",err=*NEXT).getAsInt()
+        #Created! = Instant.parse(json!.get("created").getAsString())
+    methodend
+
+    rem /**
     rem  * Create a clone of a task
     rem  */
     method public Task(Task task!)
@@ -211,6 +226,15 @@ class public Task
         ? "Due Date: ", #DueDate!
         ? "UUID: ", #Uuid!
         ? "Creation Timestamp: ", #Created!.toString()
+
+        ?
+        ? "getAsJsonObject(): "
+        ? #getAsJsonObject()
+
+        ?
+        ? "getAsFormattedString(): "
+        ? #getAsFormattedString()
+
     methodend
 
     rem /**
@@ -224,6 +248,49 @@ class public Task
     method public static BBjNumber getJulian(LocalDate ld!)
         methodret ld!.toEpochDay()+2440588
     methodend
+
+    rem /**
+    rem  * Returns the Task object as a JSON object that may be serialized
+    REM  * @return      A JsonObject version of the Task
+    rem  */
+    method public JsonObject getAsJsonObject()
+        declare JsonObject json!
+
+        json! = new JsonObject()
+        json!.addProperty("uuid", #getUuid())
+        json!.addProperty("title", iff(#getTitle() <> null(), #getTitle(), ""))
+        json!.addProperty("description", iff(#getDescription() <> null(), #getDescription(), ""))
+        json!.addProperty("status", iff(#getStatus() <> null(), str(#getStatus()), ""))
+        json!.addProperty("priority", iff(#getPriority() <> null(), str(#getPriority()), ""))
+        json!.addProperty("duedate", iff(#getDueDate() <> null(), str(#getDueDate()), ""))
+        json!.addProperty("created", #getCreated().toString())
+
+        methodret json!
+    methodend
+
+    rem /**
+    rem  * Returns the Task object as a stringified JSON object that may be serialized
+    REM  * @return      A stringified JsonObject version of the Task
+    rem  */
+    method public BBjString getAsString()
+        methodret #getAsJsonObject().toString()
+    methodend
+
+    rem /**
+    rem  * Returns the Task object as a nicely-formatted stringified JSON object that may be serialized
+    REM  * @return      A stringified JsonObject version of the Task
+    rem  */
+    method public BBjString getAsFormattedString()
+        declare auto TreeMap map!
+
+        json! = #getAsJsonObject()
+        if (json! = null()) then methodret ""
+        gson! = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create()
+        map! = gson!.fromJson(json!, TreeMap.class)
+        methodret gson!.toJson(map!)
+
+    methodend
+
 classend
 
 
@@ -235,4 +302,11 @@ rem Java USE Statements
 use java.time.LocalDate; rem https://docs.oracle.com/javase/8/docs/api/java/time/LocalDate.html
 use java.time.Instant;   rem https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Instant.html
 use java.util.UUID;      rem https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/UUID.html
+use java.util.TreeMap;   rem https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/TreeMap.html
 use java.sql.Timestamp;  rem https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Timestamp.html
+
+rem Google's Gson for JSON, which is included with BBj
+use com.google.gson.Gson;           rem https://javadoc.io/static/com.google.code.gson/gson/2.10.1/com.google.gson/com/google/gson/Gson.html
+use com.google.gson.GsonBuilder;    rem https://javadoc.io/doc/com.google.code.gson/gson/latest/com.google.gson/com/google/gson/GsonBuilder.html
+use com.google.gson.JsonObject;     rem https://javadoc.io/static/com.google.code.gson/gson/2.10.1/com.google.gson/com/google/gson/JsonObject.html
+use com.google.gson.JsonArray;      rem https://javadoc.io/static/com.google.code.gson/gson/2.10.1/com.google.gson/com/google/gson/JsonArray.html
