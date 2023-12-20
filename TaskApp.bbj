@@ -46,6 +46,7 @@ class public TaskApp
     rem Misc Data
     field protected BBjString           appName! = "TaskApp"
     field protected BBjString           version! = "0.02"
+    field protected BBjString           appPath! = dsk("") + dir("")
 
     rem Some sort of list of tasks.
     rem ========================================
@@ -120,7 +121,15 @@ class public TaskApp
         rem Set defaults and apply user preferences
         BBjAPI().getWebManager(err=*NEXT).setTheme(prefsTheme!, err=*NEXT)
 
-        #createSampleTasks(50)
+REM         if (new java.io.File(#appPath!+"tasks.json").exists()) then
+REM             #importTasks(err=*next)
+REM         else
+REM             #createSampleTasks(50)
+REM         endif
+
+        if (#tasks!.size() = 0)
+            #createSampleTasks(50)
+        endif
 
         rem Create the UI and display the tasks
         #sysgui! = BBjAPI().openSysGui("X0")
@@ -264,23 +273,24 @@ class public TaskApp
     rem  * Returns the Task with the given UUID from the TreeMap of tasks.
     rem  */
     method public Task getTask(BBjString uuid!)
-        methodret cast(Task,#tasks!.get(uuid!))
+        methodret cast(Task, #tasks!.get(uuid!))
     methodend
 
     rem /**
     rem  * Given a task copy, update the task with the same UUID with the information given
     rem  */
     method public void updateTask(Task copy!)
+        declare auto TaskListView view!
         uuid! = copy!.getUuid()
         task! = #tasks!.get(uuid!)
         if (task! <> null()) then
             task!.copyInfo(copy!)
         endif
-        declare auto TaskListView view!
         view! = #taskViews!.get(uuid!)
         if (view! <> null()) then
             view!.refresh()
         endif
+        #exportTasks()
     methodend
 
     rem /**
@@ -417,6 +427,31 @@ class public TaskApp
         methodret array!
     methodend
 
+    method public void exportTasks()
+        json! = #getTasksAsJsonArray()
+        chan = unt
+        f$ = #appPath! + "tasks.json"
+        open(chan, isz=-1, mode="O_TRUNC,O_CREATE") f$
+            write record(chan) json!.toString()
+        close(chan)
+    methodend
+
+    method public void importTasks()
+
+        chan = unt
+        f$ = #appPath! + "tasks.json"
+        open(chan, isz=-1) f$
+            read record(chan, siz=-1000000) json$
+        close(chan)
+        parser! = new JsonParser()
+        json! = parser!.parseString(json$)
+
+        gson! = new GsonBuilder().setPrettyPrinting().create()
+        map! = gson!.fromJson(json!, TreeMap.class)
+        a! = msgbox(str(map!))
+
+    methodend
+
     rem /**
     rem  * Logs the provided string into the user's browser Developer Tools console.
     rem  *
@@ -479,3 +514,4 @@ use com.google.gson.Gson;           rem https://javadoc.io/static/com.google.cod
 use com.google.gson.GsonBuilder;    rem https://javadoc.io/doc/com.google.code.gson/gson/latest/com.google.gson/com/google/gson/GsonBuilder.html
 use com.google.gson.JsonObject;     rem https://javadoc.io/static/com.google.code.gson/gson/2.10.1/com.google.gson/com/google/gson/JsonObject.html
 use com.google.gson.JsonArray;      rem https://javadoc.io/static/com.google.code.gson/gson/2.10.1/com.google.gson/com/google/gson/JsonArray.html
+use com.google.gson.JsonParser;     rem
