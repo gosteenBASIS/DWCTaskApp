@@ -121,11 +121,11 @@ class public TaskApp
         rem Set defaults and apply user preferences
         BBjAPI().getWebManager(err=*NEXT).setTheme(prefsTheme!, err=*NEXT)
 
-REM         if (new java.io.File(#appPath!+"tasks.json").exists()) then
-REM             #importTasks(err=*next)
-REM         else
-REM             #createSampleTasks(50)
-REM         endif
+        if (new java.io.File(#appPath!+"tasks.json").exists()) then
+            #importTasks(err=*next)
+        else
+            #createSampleTasks(50)
+        endif
 
         if (#tasks!.size() = 0)
             #createSampleTasks(50)
@@ -134,7 +134,6 @@ REM         endif
         rem Create the UI and display the tasks
         #sysgui! = BBjAPI().openSysGui("X0")
         #createMainWindow()
-
         process_events
     methodend
 
@@ -290,6 +289,7 @@ REM         endif
         if (view! <> null()) then
             view!.refresh()
         endif
+        rem todo: once we have an export button, remove the following line
         #exportTasks()
     methodend
 
@@ -447,9 +447,14 @@ REM         endif
         json! = parser!.parseString(json$)
 
         gson! = new GsonBuilder().setPrettyPrinting().create()
-        map! = gson!.fromJson(json!, TreeMap.class)
-        a! = msgbox(str(map!))
-
+        #consoleLog(json!.toString())
+        array! = gson!.fromJson(json!, JsonArray.class)
+        it! = array!.iterator()
+        while(it!.hasNext())
+            jsonTask! = it!.next()
+            t! = new Task(jsonTask!)
+            #addTask(t!)
+        wend
     methodend
 
     rem /**
