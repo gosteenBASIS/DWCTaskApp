@@ -42,6 +42,8 @@ class public TaskApp
     field protected BBjButton           btnAddTask!
     field protected BBjButton           btnSettings!
     field protected BBjButton           btnReload!
+    field protected BBjButton           btnExport!
+    field protected BBjButton           btnImport!
 
     rem Misc Data
     field protected BBjString           appName! = "TaskApp"
@@ -182,6 +184,16 @@ class public TaskApp
         #btnReload!.addClass("toolbar_icon")
         #btnReload!.setToolTipText("Reload")
         #btnReload!.setAttribute("expanse", "xs")
+
+        #btnExport! = #winToolBar!.addButton("<html><bbj-icon pool='tabler' name='file-download'></bbj-icon>")
+        #btnExport!.addClass("toolbar_icon")
+        #btnExport!.setToolTipText("Export tasks")
+        #btnExport!.setAttribute("expanse", "xs")
+
+        #btnImport! = #winToolBar!.addButton("<html><bbj-icon pool='tabler' name='file-upload'></bbj-icon>")
+        #btnImport!.addClass("toolbar_icon")
+        #btnImport!.setToolTipText("Import tasks")
+        #btnImport!.setAttribute("expanse", "xs")
 
         rem Set callbacks for the UI controls
         #btnAddTaskFAB!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onAddTask")
