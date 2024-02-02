@@ -59,6 +59,7 @@ class public TaskProperties
         #dateDue!.setAttribute("label", "Due Date")
         #dateDue!.setText("")
         #dateDue!.setAttribute("visible-calender-icon","true")
+        #dateDue!.setAttribute("show-weeks","true")
 
 
         rem Long Year
