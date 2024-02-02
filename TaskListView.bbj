@@ -6,28 +6,24 @@ REM  * TaskListView represents the childwindow of a task in a list
 REM  */
 
 class public TaskListView
-    field public TaskApp        app!
     field public BBjChildWindow win!
     field public Task           task!
     field public BBjStaticText  title!
     field public BBjCheckBox    checkbox!
     field public BBjString      uuid!
 
-    method public TaskListView(TaskApp app!, BBjWindow parent!, Task t!)
-        #app! = app!
+    method public TaskListView(BBjWindow parent!, Task t!)
         sysgui! = BBjAPI().getSysGui()
         #win! = parent!.addChildWindow("", $00108000$, sysgui!.getAvailableContext())
         #win!.addClass("task")
         #win!.addClass("clickable")
-        #task! = new Task(t!)
+        #task! = t!
         #uuid! = #task!.getUuid()
         #win!.setAttribute("id", #uuid!)
         #checkbox! = #win!.addCheckBox("")
         #checkbox!.setCallback(BBjControl.ON_CHECK_CHANGE, #this!, "onTaskCheck")
 
         #title! = #win!.addStaticText("")
-
-        #win!.setCallback(BBjControl.ON_CLICK, #app!, "onTaskClick")
 
         #refresh()
     methodend
@@ -40,8 +36,6 @@ class public TaskListView
     methodend
 
     method public void refresh()
-        #task!.copyInfo(#app!.getTask(#uuid!))
-
         #clearStyles()
         #title!.setText(#task!.getTitle())
         #checkbox!.setSelected(#task!.isComplete())
@@ -64,9 +58,8 @@ class public TaskListView
         else
             #task!.setStatus(#task!.STATUS_COMPLETE())
         endif
-        #app!.updateTask(#task!)
+        BBjAPI().postCustomEvent("TASK_UPDATE",#task!)
     methodend
 classend
 
 use ::Task.bbj::Task
-use ::TaskApp.bbj::TaskApp

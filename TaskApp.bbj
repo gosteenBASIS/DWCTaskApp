@@ -111,6 +111,7 @@ class public TaskApp
         #tasks! = new TreeMap()
         #taskViews! = new TreeMap()
 
+        BBjAPI().setCustomEventCallback("TASK_UPDATE",#this!,"onTaskUpdate")
     methodend
 
 
@@ -203,14 +204,6 @@ class public TaskApp
 
         #displayTasks()
         #winMain!.setVisible(1)
-        rem #createTaskWindow()
-    methodend
-
-    rem /**
-    rem  * Create the top level window to create, view, or edit a task
-    rem  */
-    method protected void createTaskWindow()
-        #taskProperties! = new TaskProperties(#this!)
     methodend
 
     rem /**
@@ -222,12 +215,22 @@ class public TaskApp
         it! = #tasks!.values().iterator()
         while it!.hasNext()
             task! = it!.next()
-            view! = new TaskListView(#this!, #winTaskList!, task!)
+            view! = #addTaskListView(task!)
             if (task!.isComplete()) then
                 view!.setVisible(0)
             endif
-            #taskViews!.put(task!.getUuid(), view!)
         wend
+    methodend
+
+    rem /**
+    rem  * Adds a TaskListView for the given Task, and returns the TaskListView
+    rem  */
+    method public TaskListView addTaskListView(Task t!)
+            view! = new TaskListView(#winTaskList!, t!)
+
+            #taskViews!.put(t!.getUuid(), view!)
+            view!.getwin().setCallback(BBjControl.ON_CLICK, #this!, "onTaskClick")
+            methodret view!
     methodend
 
     rem /**
@@ -238,14 +241,12 @@ class public TaskApp
     method public void onTaskClick(BBjClickEvent e!)
         rem Only open window if it doesn't exist, this should be a field variable
         rem We're not using the click event as a click; it could be more efficient to pass a more useful object
-
         declare auto Task t!
         if (#taskProperties! = null()) then
-            #createTaskWindow()
+            #taskProperties! = new TaskProperties()
         endif
         t! = #tasks!.get(e!.getControl().getAttribute("id"))
         #taskProperties!.loadTask(t!)
-        #taskProperties!.setVisible(1)
     methodend
 
     rem /**
@@ -288,20 +289,25 @@ class public TaskApp
     methodend
 
     rem /**
-    rem  * Given a task copy, update the task with the same UUID with the information given
+    rem  * Activated by custom event TASK_UPDATE
     rem  */
-    method public void updateTask(Task copy!)
+    method public void onTaskUpdate(BBjCustomEvent e!)
         declare auto TaskListView view!
-        uuid! = copy!.getUuid()
-        task! = #tasks!.get(uuid!)
-        if (task! <> null()) then
-            task!.copyInfo(copy!)
+        declare auto Task t!
+        task! = e!.getObject()
+        uuid! = task!.getUuid()
+        rem check if dirty
+        rem check if task is in list
+        if (#tasks!.containsKey(uuid!) = 0) then
+            #addTask(task!)
+            #addTaskListView(task!)
+        else
+            view! = #taskViews!.get(uuid!)
+            if (view! <> null()) then
+                view!.refresh()
+            endif
         endif
-        view! = #taskViews!.get(uuid!)
-        if (view! <> null()) then
-            view!.refresh()
-        endif
-        rem todo: once we have an export button, remove the following line
+        rem todo: once we have an export button, remove the following line:
         #exportTasks()
     methodend
 
@@ -322,8 +328,8 @@ class public TaskApp
     rem  */
     method public void removeTask(Task task!)
         #tasks!.remove(task!.getUuid())
+        #taskViews!.remove(task!.getUuid())
     methodend
-
 
     rem /**
     rem  * Reloads the application at the push of a button, which is typically only useful in development mode
@@ -343,14 +349,18 @@ class public TaskApp
     rem  * Adds a new Task object by
     REM  *  - creating a new Task object
     REM  *  - displaying the Task's property sheet to the user for customization
-    REM  *  - adding the configured Task to the app's collection of Task objects
     rem  *
     rem  * @param e!        The BBjButtonPushEvent that causes this method to be executed
     rem  */
     method public void onAddTask(BBjButtonPushEvent e!)
-
+        rem create a new task
+        task! = new Task()
+        rem open the edit window on that task
+        if (#taskProperties! = null()) then
+            #taskProperties! = new TaskProperties()
+        endif
+        #taskProperties!.loadTask(task!)
     methodend
-
 
 
     rem ====================  START of Settings ====================
@@ -449,7 +459,6 @@ class public TaskApp
     methodend
 
     method public void importTasks()
-
         chan = unt
         f$ = #appPath! + "tasks.json"
         open(chan, isz=-1) f$
@@ -462,6 +471,9 @@ class public TaskApp
         #consoleLog(json!.toString())
         array! = gson!.fromJson(json!, JsonArray.class)
         it! = array!.iterator()
+        rem todo: clear treemap after checking if there are any tasks to import
+        rem todo: Error handling: what if the file doesn't exist? What if tasks aren't valid?
+        rem we could return something; number of imported tasks or something
         while(it!.hasNext())
             jsonTask! = it!.next()
             t! = new Task(jsonTask!)

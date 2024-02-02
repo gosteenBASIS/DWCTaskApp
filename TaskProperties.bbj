@@ -5,8 +5,16 @@ REM  *C:\Users\gosteen\eclipse\workspaces\bbj-workspace\TaskApp\WinTask.bbj
 REM  */
 rem package TaskApp
 
+declare auto Task task!
+declare auto TaskProperties taskProperties!
+task! = new Task()
+task!.setTitle("SAMPLE 1")
+taskProperties! = new TaskProperties()
+taskProperties!.loadTask(task!)
+process_events
+end
+
 class public TaskProperties
-    field public TaskApp           app!
     field public BBjSysGui         sysgui!
     field public BBjTopLevelWindow winTaskProperties!
     field public BBjEditBox        editTitle!
@@ -21,11 +29,12 @@ class public TaskProperties
 
     field public Task              task!
 
-    method public TaskProperties(TaskApp app!)
+    method public TaskProperties()
         #task! = null()
-        #app! = app!
+        #sysgui! = BBjAPI().openSysGui("X0")
+
         #sysgui! = BBjAPI().getSysGui()
-        #winTaskProperties! = BBjAPI().getSysGui().addWindow(#sysgui!.getAvailableContext(), "winTask", $011F0000$)
+        #winTaskProperties! = #sysgui!.addWindow(#sysgui!.getAvailableContext(), "winTask", $011F0000$)
         #winTaskProperties!.addClass("winTaskProperties")
 
         #editTitle! = #winTaskProperties!.addEditBox("")
@@ -60,15 +69,12 @@ class public TaskProperties
         #dateDue!.setText("")
         #dateDue!.setAttribute("visible-calender-icon","true")
 
-
         rem Long Year
-        REM short_year$ = STBL("!COMPAT!", "SHORT_YEAR=TRUE")
-        REM DateMask$=stbl("!DATE"),DateMask=pos($00$=DateMask$),DateMask$=DateMask$(1,DateMask-1)
-        REM #dateDue!.setLocale("en-US")
-        REM #dateDue!.setMask(DateMask$)
-        REM a=msgbox("Date Mask: " + DateMask$ + $0a$ + "!COMPAT for SHORT_YEAR: " + STBL("!COMPAT"))
-
-
+REM         short_year$ = STBL("!COMPAT!", "SHORT_YEAR=TRUE")
+REM         DateMask$=stbl("!DATE"),DateMask=pos($00$=DateMask$),DateMask$=DateMask$(1,DateMask-1)
+REM         #dateDue!.setLocale("en-US")
+REM         #dateDue!.setMask(DateMask$)
+REM         a=msgbox("Date Mask: " + DateMask$ + $0a$ + "!COMPAT for SHORT_YEAR: " + STBL("!COMPAT"))
 
         #winButtons! = #winTaskProperties!.addChildWindow("", $00108800$, #sysgui!.getAvailableContext())
         #buttonCancel! = #winButtons!.addButton("Cancel")
@@ -79,16 +85,14 @@ class public TaskProperties
         rem Callbacks
         #buttonCancel!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onCancel")
         #buttonSave!.setCallback(BBjControl.ON_FORM_VALIDATION, #this!, "onSave")
-        rem populate fields
-        #winTaskProperties!.setVisible(1)
     methodend
 
     rem /**
-    rem  * Given a task object, load its properties into the Task Properties window
+    rem  * Given a task object, load its properties into the Task Properties window,
+    rem  * and make the window visible.
     rem  */
     method public void loadTask(Task t!)
-        rem Clone the task, so it can't directly modify it
-        #task! = new Task(t!)
+        #task! = t!
         #editTitle!.setText(#task!.getTitle())
         #editDescription!.setText(#task!.getDescription())
         dueDate! = #task!.getDueDate()
@@ -100,6 +104,7 @@ class public TaskProperties
 
         #listPriority!.selectIndex(t!.getPriority())
         #listStatus!.selectIndex(t!.getStatus())
+        #winTaskProperties!.setVisible(1)
     methodend
 
     rem /**
@@ -136,20 +141,22 @@ class public TaskProperties
             methodret
         endif
 
-        rem passed validations; update task
+        rem Passed validations; update task and post event
         #task!.setTitle(title!)
         #task!.setDescription(e!.getText(#editDescription!))
         #task!.setDueDate(date!)
         #task!.setPriority(e!.getSelectedIndex(#listPriority!))
         #task!.setStatus(e!.getSelectedIndex(#listStatus!))
+        #task!.setTitle(#editTitle!.getText())
 
-        #app!.updateTask(#task!)
         #winTaskProperties!.setVisible(0)
+        BBjAPI().postCustomEvent("TASK_UPDATE",#task!)
         e!.accept(1)
     methodend
 
     method public void onCancel(BBjButtonPushEvent e!)
         #winTaskProperties!.setVisible(0)
+        rem Clear fields, set task to null?
     methodend
 
     method public void setVisible(BBjNumber v)
@@ -158,7 +165,5 @@ class public TaskProperties
 
 classend
 
-use ::TaskApp.bbj::TaskApp
 use ::Task.bbj::Task
-
 use java.time.LocalDate
