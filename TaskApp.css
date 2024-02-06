@@ -113,18 +113,30 @@ bbj-button::part(label) {
 
 .winTaskProperties .BBjPanel {
     display: flex;
-    flex-flow: column;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    max-width: 40vw;
     padding: var(--bbj-space-l);
     gap: var(--bbj-space-m);
 }
 
-.winTaskProperties .BBjChildWindow {
+.winTaskProperties .BBjPanel .BBjControl {
+    width: 100%;
+}
+
+.winTaskProperties .BBjPanel .BBjButton {
+    flex: 1 1 auto;
+    min-width: 10em;
+    width: auto;
+}
+
+/* .winTaskProperties .BBjChildWindow {
     display: flex;
     flex-flow: row;
     justify-content: space-between;
     margin-top: 1em;
     padding: var(--bbj-focus-ring-width);
-}
+} */
 
 .BBjDialogGlassPane {
     background-color: hsla(0, 0%, 0%, 0.5);

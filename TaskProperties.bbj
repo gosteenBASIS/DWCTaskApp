@@ -77,12 +77,8 @@ REM         #dateDue!.setLocale("en-US")
 REM         #dateDue!.setMask(DateMask$)
 REM         a=msgbox("Date Mask: " + DateMask$ + $0a$ + "!COMPAT for SHORT_YEAR: " + STBL("!COMPAT"))
 
-        #winButtons! = #winTaskProperties!.addChildWindow("", $00108800$, #sysgui!.getAvailableContext())
-        #winButtons!.setTabTraversable(1)
-REM         #winButtons!.setFocusable(0)
-        #buttonCancel! = #winButtons!.addButton(2, "&Cancel")
-
-        #buttonSave!   = #winButtons!.addButton(1, "&Save")
+        #buttonCancel! = #winTaskProperties!.addButton(2, "&Cancel")
+        #buttonSave!   = #winTaskProperties!.addButton(1, "&Save")
         #buttonSave!.setAttribute("theme","primary")
 
         rem Callbacks
