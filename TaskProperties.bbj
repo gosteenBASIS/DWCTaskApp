@@ -68,6 +68,7 @@ class public TaskProperties
         #dateDue!.setAttribute("label", "Due Date")
         #dateDue!.setText("")
         #dateDue!.setAttribute("visible-calender-icon","true")
+        #dateDue!.setAttribute("show-weeks","true")
 
         rem Long Year
 REM         short_year$ = STBL("!COMPAT!", "SHORT_YEAR=TRUE")
