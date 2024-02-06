@@ -125,7 +125,7 @@ class public TaskApp
         BBjAPI().getWebManager(err=*NEXT).setTheme(prefsTheme!, err=*NEXT)
 
         if (new java.io.File(#appPath!+"tasks.json").exists()) then
-            #importTasks(err=*next)
+            #onImport(null(), err=*next)
         else
             #createSampleTasks(50)
         endif
@@ -201,6 +201,9 @@ class public TaskApp
         #btnAddTask!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onAddTask")
         #btnSettings!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onShowSettings")
         #btnReload!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onReload")
+
+        #btnImport!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onImport")
+        #btnExport!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onExport")
 
         #displayTasks()
         #winMain!.setVisible(1)
@@ -307,8 +310,8 @@ class public TaskApp
                 view!.refresh()
             endif
         endif
-        rem todo: once we have an export button, remove the following line:
-        #exportTasks()
+        rem Automatically export every time you save
+        #onExport(null())
     methodend
 
     rem /**
@@ -449,16 +452,22 @@ class public TaskApp
         methodret array!
     methodend
 
-    method public void exportTasks()
+    method public void onExport(BBjButtonPushEvent e!)
+        rem todo: check if e! is null
+        rem save to default location if null
+        rem open save dialog if it's the export button
+
+        rem todo: notify successful export
         json! = #getTasksAsJsonArray()
         chan = unt
         f$ = #appPath! + "tasks.json"
         open(chan, isz=-1, mode="O_TRUNC,O_CREATE") f$
             write record(chan) json!.toString()
         close(chan)
+        #consoleLog("Exported " + str(json!.size()) +  " tasks.")
     methodend
 
-    method public void importTasks()
+    method public void onImport(BBjButtonPushEvent e!)
         chan = unt
         f$ = #appPath! + "tasks.json"
         open(chan, isz=-1) f$
