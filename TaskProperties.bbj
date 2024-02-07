@@ -67,7 +67,7 @@ class public TaskProperties
         #dateDue! = #winTaskProperties!.addInputD()
         #dateDue!.setAttribute("label", "Due Date")
         #dateDue!.setText("")
-        #dateDue!.setAttribute("visible-calender-icon","true")
+        #dateDue!.setAttribute("visible-calendar-icon","true")
         #dateDue!.setAttribute("show-weeks","true")
 
         rem Long Year
