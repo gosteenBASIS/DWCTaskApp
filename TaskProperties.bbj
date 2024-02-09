@@ -36,6 +36,7 @@ class public TaskProperties
         #sysgui! = BBjAPI().getSysGui()
         #winTaskProperties! = #sysgui!.addWindow(#sysgui!.getAvailableContext(), "winTask", $011F0000$)
         #winTaskProperties!.addClass("winTaskProperties")
+        #winTaskProperties!.addOuterClass("winTaskPropertiesContainer")
 
         #editTitle! = #winTaskProperties!.addEditBox("")
         #editTitle!.setAttribute("label", "Title")
