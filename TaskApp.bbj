@@ -151,6 +151,12 @@ class public TaskApp
         rem Create the child windows
         #winNavBar! = #winMain!.addChildWindow("NavBar", $00108800$, #sysgui!.getAvailableContext())
         #winNavBar!.addClass("winNavBar")
+        userName! = System.getProperty("com.basis.jetty.company_name")
+        userInitials! = userName!.toUpperCase().substring(0,2)
+
+        lblUserName! = #winNavBar!.addStaticText(userName!)
+        lblUserName!.addClass("nav_item nav_user_name")
+        #webManager!.injectStyle(".nav_item.nav_user_name::before { content: '" + userInitials! + "';")
 
         #winToolBar! = #winMain!.addChildWindow("ToolBar", $00108800$, #sysgui!.getAvailableContext())
         #winToolBar!.addClass("winToolBar")
@@ -166,7 +172,7 @@ class public TaskApp
         #labelDate! = #winTitle!.addStaticText(date(0:"%Dl, %Ml %D"), $4000$)
         #labelDate!.addClass("labelDate")
 
-        rem Create the tool buttons and FAB (floating action button)
+        rem Create the FAB (floating action button) and the toolbar buttons
         #btnAddTaskFAB! = #winMain!.addButton("+")
         #btnAddTaskFAB!.addClass("btnAddTaskFAB")
         #btnAddTaskFAB!.setAttribute("theme", "primary")
@@ -181,11 +187,6 @@ class public TaskApp
         #btnSettings!.setToolTipText("Settings")
         #btnSettings!.setAttribute("expanse", "xs")
 
-        #btnReload! = #winToolBar!.addButton("<html><bbj-icon pool='tabler' name='reload'></bbj-icon>")
-        #btnReload!.addClass("toolbar_icon")
-        #btnReload!.setToolTipText("Reload")
-        #btnReload!.setAttribute("expanse", "xs")
-
         #btnExport! = #winToolBar!.addButton("<html><bbj-icon pool='tabler' name='file-download'></bbj-icon>")
         #btnExport!.addClass("toolbar_icon")
         #btnExport!.setToolTipText("Export tasks")
@@ -195,6 +196,11 @@ class public TaskApp
         #btnImport!.addClass("toolbar_icon")
         #btnImport!.setToolTipText("Import tasks")
         #btnImport!.setAttribute("expanse", "xs")
+
+        #btnReload! = #winToolBar!.addButton("<html><bbj-icon pool='tabler' name='reload'></bbj-icon>")
+        #btnReload!.addClass("toolbar_icon icon_reload")
+        #btnReload!.setToolTipText("Reload")
+        #btnReload!.setAttribute("expanse", "xs")
 
         rem Set callbacks for the UI controls
         #btnAddTaskFAB!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onAddTask")
