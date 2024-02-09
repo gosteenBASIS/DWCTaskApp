@@ -152,6 +152,9 @@ class public TaskApp
         #winNavBar! = #winMain!.addChildWindow("NavBar", $00108800$, #sysgui!.getAvailableContext())
         #winNavBar!.addClass("winNavBar")
         userName! = System.getProperty("com.basis.jetty.company_name")
+        if (userName! = null()) then
+            userName! = "Guest User"
+        endif
         userInitials! = userName!.toUpperCase().substring(0,2)
 
         lblUserName! = #winNavBar!.addStaticText(userName!)
