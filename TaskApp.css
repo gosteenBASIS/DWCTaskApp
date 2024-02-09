@@ -8,6 +8,7 @@
     --app-color-b: 35%;
     --app-color-primary: hsl(var(--app-color-h), var(--app-color-s), var(--app-color-b));
     --app-color-window-bg: hsl(0, 0%, 95%);
+    --app-navbar-bg: hsl(var(--app-color-h), var(--app-color-s), 97%);
     --app-color-text-normal: hsl(0, 0%, 20%);
     --app-color-text-light: hsl(0, 0%, 40%);
     --app-color-text-faint:hsl(0, 0%, 60%);
@@ -18,6 +19,7 @@
 :root {
     /* --bbj-color-primary-h: var(--app-color-h); */
     /* --bbj-color-default-s: 5%; */
+    --bbj-space: 1em;
     --bbj-font-family: 'AR One Sans', 'Gabarito', 'K2D', 'Overlock', 'Encode Sans Semicondensed', 'Aller', 'Alatsi', 'Akrobat', var(--bbj-font-family-sans);
     --bbj-color-body-text: var(--app-color-text-normal);
   }
@@ -61,8 +63,8 @@ bbj-button::part(label) {
     width: 100%;
     height: 100%;
     grid-template-areas: 'winNavBar winToolBar' 'winNavBar winTitle' 'winNavBar winTasks';
-    grid-template-columns: 5em 1fr;
-    grid-template-rows: 2em 4em 1fr;
+    grid-template-columns: 10em 1fr;
+    grid-template-rows: 3em 4em 1fr;
 }
 
 .winToolBar, .winTitle, .winTasks {
@@ -72,7 +74,12 @@ bbj-button::part(label) {
 
 .winNavBar {
     grid-area: winNavBar;
-    background-color: burlywood;
+    background-color: var(--app-navbar-bg);
+    border-right: 1px solid hsl(var(--app-color-h), var(--app-color-s), 92%) !important;
+    padding: var(--bbj-space);
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-start;
 }
 
 .winToolBar {
@@ -105,6 +112,31 @@ bbj-button::part(label) {
     grid-area: winTasks;
     overflow: auto;
 }
+
+
+/* NavBar Items */
+.nav_item {
+    width: 100%;
+}
+.nav_user_name {
+    height: 2em;
+    line-height: 2em;
+    text-indent: 2.3em;
+}
+.nav_user_name::before {
+    position: absolute;
+    top: var(--bbj-space);
+    left: var(--bbj-space);
+    width: 2em;
+    height: 2em;
+    background: var(--app-color-primary);
+    border-radius: 100%;
+    text-indent: 0.35em;
+    line-height: 2em;
+    color: var(--bbj-color-white);
+    font-weight: 700;
+}
+
 
 /* Task Property Sheet Styling */
 .BBjTopLevelWindow.BBjDialog {
@@ -209,9 +241,20 @@ bbj-button::part(label) {
     color: var(--app-color-text-faint);
     transition: all 100ms ease;
     border-color: transparent;
-    border-radius: 1em;
+    border-radius: 0.5em;
 }
 .toolbar_icon::part(control):hover {
     border-color: transparent;
     color: var(--app-color-text-normal);
+}
+
+.icon_reload.toolbar_icon::part(control) {
+    color: var(--bbj-color-danger);
+    opacity: 0.75;
+    transition: all 0.1s ease-in-out;
+}
+.icon_reload.toolbar_icon::part(control):hover {
+    opacity: 1.0;
+    background: var(--bbj-color-danger);
+    color: var(--bbj-color-white);
 }
