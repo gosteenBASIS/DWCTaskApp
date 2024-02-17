@@ -8,21 +8,23 @@
     --app-color-b: 35%;
     --app-color-primary: hsl(var(--app-color-h), var(--app-color-s), var(--app-color-b));
     --app-color-window-bg: hsl(0, 0%, 95%);
-    --app-navbar-bg: hsl(var(--app-color-h), var(--app-color-s), 97%);
+    --app-color-navbar-bg: hsl(var(--app-color-h), calc(var(--app-color-s) * 0.75), 95%);
     --app-color-text-normal: hsl(0, 0%, 20%);
     --app-color-text-light: hsl(0, 0%, 40%);
     --app-color-text-faint:hsl(0, 0%, 60%);
+     --app-font-task: var(--bbj-font-family);
 }
 
 /* Overriding the DWC's default CSS custom properties */
 /* ========================================  */
 :root {
-    /* --bbj-color-primary-h: var(--app-color-h); */
-    /* --bbj-color-default-s: 5%; */
-    --bbj-space: 1em;
     --bbj-font-family: 'AR One Sans', 'Gabarito', 'K2D', 'Overlock', 'Encode Sans Semicondensed', 'Aller', 'Alatsi', 'Akrobat', var(--bbj-font-family-sans);
     --bbj-color-body-text: var(--app-color-text-normal);
-  }
+    --bbj-color-primary-h: var(--app-color-h);
+    --bbj-color-default-h: var(--app-color-h);
+    --bbj-color-default-s: 25%;
+    --bbj-list-padding: calc(var(--bbj-space) / 2);
+}
 
 /* Global definitions for multiple controls  */
 /* ========================================  */
@@ -34,7 +36,6 @@ html, body, .BBjWindowManagerDesktop {
     margin: 0;
     width: 100%;
     height: 100%;
-    display: flex;
 }
 
 /* Modify ALL BBjButtons by setting their color and font size & weight */
@@ -64,7 +65,7 @@ bbj-button::part(label) {
     width: 100%;
     height: 100%;
     grid-template-areas: 'winNavBar winToolBar' 'winNavBar winTitle' 'winNavBar winTasks';
-    grid-template-columns: 10em 1fr;
+    grid-template-columns: 12em 1fr;
     grid-template-rows: 3em 4em 1fr;
 }
 
@@ -75,12 +76,13 @@ bbj-button::part(label) {
 
 .winNavBar {
     grid-area: winNavBar;
-    background-color: var(--app-navbar-bg);
-    border-right: 1px solid hsl(var(--app-color-h), var(--app-color-s), 92%) !important;
-    padding: var(--bbj-space);
+    background-color: var(--app-color-navbar-bg);
     display: flex;
-    align-items: stretch;
+    flex-flow: column;
+    align-items: flex-start;
     justify-content: flex-start;
+    padding: var(--bbj-space);
+    gap: calc(var(--bbj-space) * 3);
 }
 
 .winToolBar {
@@ -119,21 +121,24 @@ bbj-button::part(label) {
 .nav_item {
     width: 100%;
 }
+
 .nav_user_name {
     height: 2em;
-    line-height: 2em;
-    text-indent: 2.3em;
+    line-height: 2.5em;
+    text-indent: 2.75em;
 }
+
 .nav_user_name::before {
     position: absolute;
     top: var(--bbj-space);
     left: var(--bbj-space);
-    width: 2em;
-    height: 2em;
+    width: 2.5em;
+    height: 2.5em;
     background: var(--app-color-primary);
     border-radius: 100%;
-    text-indent: 0.35em;
-    line-height: 2em;
+    text-indent: initial;
+    text-align: center;
+    line-height: 2.5em;
     color: var(--bbj-color-white);
     font-weight: 700;
 }
@@ -177,7 +182,7 @@ bbj-button::part(label) {
     justify-content: space-between;
     margin-top: 1em;
     padding: var(--bbj-focus-ring-width);
-} */
+}
 
 .BBjDialogGlassPane {
     background-color: hsla(0, 0%, 0%, 0.5);
@@ -189,6 +194,12 @@ bbj-button::part(label) {
 .task {
     max-height: 2em;
 }
+
+.task .BBjStaticText {
+    font-family: var(--app-font-task);
+    font-weight: 500;
+}
+
 /* Task items that are incomplete */
 .incomplete {
     background-color: lightgray;
@@ -234,6 +245,7 @@ bbj-button::part(label) {
     z-index: 1000;
     width: 3em;
     height: 3em;
+    line-height: 1.25rem;
 }
 .btnAddTaskFAB::part(control) {
     border-radius: 100em;
