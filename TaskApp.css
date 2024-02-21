@@ -57,6 +57,7 @@ bbj-button::part(label) {
 
 .winMain {
     display: flex;
+    max-height: 100vh;
 }
 
 .winMain .BBjPanel {
@@ -69,8 +70,11 @@ bbj-button::part(label) {
 }
 
 .winToolBar, .winTitle, .winTasks {
-    max-width: 20em;
+    /* max-width: 20em; */
     margin: 0 auto;
+    width: 100%;
+    padding-left: 20%;
+    padding-right: 20%;
 }
 
 .winNavBar {
@@ -81,6 +85,7 @@ bbj-button::part(label) {
     display: flex;
     align-items: stretch;
     justify-content: flex-start;
+    width: 100%;
 }
 
 .winToolBar {
@@ -111,7 +116,9 @@ bbj-button::part(label) {
 }
 .winTasks {
     grid-area: winTasks;
-    overflow: auto;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width: 100%;
 }
 
 
@@ -187,27 +194,42 @@ bbj-button::part(label) {
 /* ============ */
 
 .task {
-    max-height: 2em;
+	display: grid;
+	grid-template-columns: .5fr 8fr 2fr;
+	grid-column-gap: 5px;
+    max-height: 4.5em;
+    border: transparent;
+    border-bottom-color: rgba(0, 0, 0, .2);
+    margin-bottom: 5px;
 }
+
 /* Task items that are incomplete */
-.incomplete {
-    background-color: lightgray;
+.incomplete::part(input-wrapper) {
+    border-color: gray;
+    background-color: white;
 }
 
 /* Task items that are complete */
 .complete {
-    background-color: rgb(110, 161, 110);
-    text-decoration: line-through;
+	text-decoration: line-through;	
+}
+
+.complete::part(input-wrapper) {
+	border-color: rgb(110, 161, 110);
+	background-color: rgba(110, 161, 110, .5);
+}
+
+
+/* Task items that are deferred */
+.deferred::part(input-wrapper) {
+    border-color: rgb(167, 151, 66);
+    background-color: rgba(167, 151, 66, .5);
 }
 
 /* Task items that are deferred */
-.deferred {
-    background-color: rgb(167, 151, 66);
-}
-
-/* Task items that are deferred */
-.blocked {
-    background-color: rgb(197, 124, 124);
+.blocked::part(input-wrapper) {
+    border-color: rgb(197, 124, 124);
+    background-color: rgba(197, 124, 124, .5);
 }
 
 /* Items that are clickable, and hovered over */
@@ -224,6 +246,90 @@ bbj-button::part(label) {
     font-size: 0.85em;
     font-weight: normal;
 }
+
+/* Checkbox styling on task-list-view */
+.checkbox::part(input-wrapper) {
+	border-radius: 100%;
+	color: black;
+	margin-right: 2px;
+	filter: scale(2);
+}
+
+/* Adds check mark on hover of checkbox */
+.checkbox::part(input-wrapper):hover {
+	content: url(data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20class=%22icon%20icon-tabler%20icon-tabler-check%22%20width=%2224%22%20height=%2224%22%20viewBox=%220%200%2024%2024%22%20stroke-width=%222%22%20stroke=%22currentColor%22%20fill=%22none%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20stroke=%22none%22%20d=%22M0%200h24v24H0z%22%20fill=%22none%22/%3E%3Cpath%20d=%22M5%2012l5%205l10%20-10%22%20/%3E%3C/svg%3E);
+ 	opacity: .5;
+	transition: 1s ease-in-out;
+}
+
+/* Title styling on task-list-view */
+.title-display {
+	font-weight: 700;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	max-width: 80%;
+}
+
+/* Indicator flag styling on task-list-view */
+.priority-flag {
+	font-size: 15px;
+	background-color: transparent;
+	justify-self: right;
+}
+
+/* Description styling on task-list-view */
+.description-display {
+  	white-space: nowrap;
+  	max-width: 90%;
+	opacity: .5;
+    text-overflow: ellipsis;
+}
+
+
+.due-today {
+	color: red;
+	justify-self: right;
+	white-space: nowrap;
+}
+
+.past-due {
+	font-weight: 700;
+}
+
+.priority-0 {
+	color: black;
+	opacity: .7;
+}
+
+.priority-1 {
+	color: #2c80d4;
+}
+
+.priority-2 {
+	color: #47942f;
+}
+
+.priority-3 {
+	color: #f5e102;
+}
+
+.priority-4 {
+	color: #f58402;
+}
+
+.priority-5 {
+	color: #f50202;
+}
+
+.menu-item::part(control) {
+	padding: none;
+}
+
+.menu-item::part(label) {
+	display: none;
+}
+
+
 
 /* FAB Floating Action Button  */
 /* ========================================  */
@@ -266,4 +372,8 @@ bbj-button::part(label) {
     opacity: 1.0;
     background: var(--bbj-color-danger);
     color: var(--bbj-color-white);
+}
+
+.menu_collapse::part(control) {
+    height: 3em;
 }
