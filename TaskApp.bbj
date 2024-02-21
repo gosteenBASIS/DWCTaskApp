@@ -44,11 +44,13 @@ class public TaskApp
     field protected BBjButton           btnReload!
     field protected BBjButton           btnExport!
     field protected BBjButton           btnImport!
+    field protected BBjListButton       lstFontFamily!
 
     rem Misc Data
     field protected BBjString           appName! = "TaskApp"
     field protected BBjString           version! = "0.02"
     field protected BBjString           appPath! = dsk("") + dir("")
+    field protected BBjVector           vectFontFamilies! = BBjAPI().makeVector()
 
     rem Some sort of list of tasks.
     rem ========================================
@@ -107,6 +109,22 @@ class public TaskApp
         attrib! = "rel=icon,type=image/svg,id=dwc_taskapp_icon"
         #webManager!.injectLinkUrl(url!, 1, attrib!, err=*NEXT)
 
+        rem Inject links for a number of custom Google fonts
+        fontFamily! = "?family=Asap&family=Bebas+Neue&family=Fira+Sans&family=Fredoka:wght@300..700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Marcellus+SC&family=Marko+One&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Oswald:wght@200..700&family=Rambla:ital,wght@0,400;0,700;1,400;1,700&family=Signika:wght@300;400&family=Teko:wght@300..700&family=Ubuntu&family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Work+Sans"
+        fontFamily! = fontFamily! + "&family=K2D:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800"
+        #webManager!.injectLinkUrl("https://fonts.googleapis.com", 1, "rel=preconnect")
+        #webManager!.injectLinkUrl("https://fonts.gstatic.com", 1, "crossorigin")
+        #webManager!.injectLinkUrl("https://fonts.googleapis.com/css2?" + fontFamily!, 1, "rel=stylesheet,display=swap")
+
+        rem Create a list of font families filled with Google fonts that the user will be able to choose from to style the tasks
+        DATA "Marcellus SC", "Marko One", "Merriweather", "Oswald", "Rambla", "Signika", "Teko", "Ubuntu", "Ubuntu Mono", "Work Sans", "Asap", "K2D", "Bebas Neue", "Fira Sans", "Fredoka",  "Lato"
+        while 1
+            DREAD family$,err=*BREAK
+            #vectFontFamilies!.addItem(family$)
+        wend
+        rem Sort the vector of fonts alphabetically by name
+        java.util.Collections.sort(#vectFontFamilies!)
+
         rem Create the collection for the tasks
         #tasks! = new TreeMap()
         #taskViews! = new TreeMap()
@@ -151,15 +169,28 @@ class public TaskApp
         rem Create the child windows
         #winNavBar! = #winMain!.addChildWindow("NavBar", $00108800$, #sysgui!.getAvailableContext())
         #winNavBar!.addClass("winNavBar")
-        userName! = System.getProperty("com.basis.jetty.company_name")
-        if (userName! = null()) then
-            userName! = "Guest User"
-        endif
-        userInitials! = userName!.toUpperCase().substring(0,2)
 
+        rem Determine the user's name and initials for the profile display in the NavBar
+        userName! = System.getProperty("com.basis.jetty.company_name")
+        if (userName! = null()) then userName! = "Guest User"
+        userInitials! = userName!.toUpperCase().substring(0,2)
         lblUserName! = #winNavBar!.addStaticText(userName!)
         lblUserName!.addClass("nav_item nav_user_name")
         #webManager!.injectStyle(".nav_item.nav_user_name::before { content: '" + userInitials! + "';")
+
+        rem Create a linefeed-delimited list of font families from the vectory to populate the BBjListButton
+        fontFamiliesList! = java.lang.String.join($0a$, java.util.Arrays.asList(#vectFontFamilies!))
+        fontFamiliesList! = fontFamiliesList!.replaceAll("(?mi)^(.*)$", "<html><span style='font-family:$1'>$1</span>")
+
+        rem Add the font family listbutton, add some custom classes, and set the callback
+        #lstFontFamily! = #winNavBar!.addListButton(fontFamiliesList!)
+        #lstFontFamily!.setAttribute("label", "Font Family")
+        #lstFontFamily!.setAttribute("open-height", "100%")
+        #lstFontFamily!.addClass("nav_item nav_fonts")
+        #lstFontFamily!.setCallback(BBjControl.ON_LIST_CHANGE, #this!, "onListChangeFontFamilies")
+        rem Initialize the listbutton by selecting the first item and then setting the font CSS custom property to make it take effect
+        #lstFontFamily!.selectIndex(0)
+        #setCssProperty("--app-font-task", str(#vectFontFamilies!.getItem(0)))
 
         #winToolBar! = #winMain!.addChildWindow("ToolBar", $00108800$, #sysgui!.getAvailableContext())
         #winToolBar!.addClass("winToolBar")
@@ -438,6 +469,38 @@ class public TaskApp
     rem ====================  END of Settings ====================
 
 
+    rem /**
+    rem  * Callback that's executed when the user selects a custom font family.
+    REM  * This gets the list button's selected index, then resolves that to
+    REM  * a custom font family that's stored in the #vectFontFamilies!
+    REM  * vector.  It then sets the CSS custom property for the DWC's
+    REM  * sans-serif font family to the chosen font.
+    rem  *
+    rem  * BBjListChangeEvent e!    The BBjListButton's ON_LIST_CHANGE event
+    rem  */
+    method public void onListChangeFontFamilies(BBjListChangeEvent e!)
+        #setCssProperty("--app-font-task", str(#vectFontFamilies!.getItem(e!.getSelectedIndex())))
+    methodend
+
+    rem /**
+    rem  * Utility method that sets a CSS custom property given the property and value.
+    REM  * It ensures that the CSS property is properly formatted, then builds a CSS
+    REM  * string from the iformation and adds it to the DOM, thus overriding any
+    REM  * previous setting
+    rem  *
+    rem  * BBjListChangeEvent e!    The BBjListButton's ON_LIST_CHANGE event
+    rem  */
+    method public void setCssProperty(BBjString property!, BBjString value!)
+        rem Sanitize the property by ensuring that it starts with '--' and changing all spaces to dashes
+        if !(property!.startsWith("--")) then property! = "--" + property!
+        property! = property!.replaceAll(" ", "-").trim()
+        value! = value!.trim()
+        if (value!.contains(" ")) then value! = "'" + value! + "'"
+
+        rem Build the CSS string for the root element and append it to the DOM's <body> element
+        css! = ":root { " + property! + ": " + value! + "; }"
+        #webManager!.injectStyle(css!, 0, "app_custom_css_property")
+    methodend
 
     rem /**
     rem  * Returns the collection of Task objects in a JsonArray.  This is used to
