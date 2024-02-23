@@ -36,6 +36,7 @@ html, body, .BBjWindowManagerDesktop {
     margin: 0;
     width: 100%;
     height: 100%;
+    display: flex;
 }
 
 /* Modify ALL BBjButtons by setting their color and font size & weight */
@@ -177,10 +178,32 @@ bbj-button::part(label) {
     width: 100%;
 }
 
-.winTaskProperties .BBjPanel .BBjButton {
+.winTaskProperties .BBjPanel .BBjButton,
+.winTaskProperties .BBjPanel .BBjListButton {
     flex: 1 1 auto;
     min-width: 10em;
     width: auto;
+}
+
+@media (max-height: 600px) {
+    .winTaskPropertiesContainer.BBjTopLevelWindow {
+        width: 90%; /* Expand width to 100% when screen height is too small */
+        max-width: none; /* Remove maximum width constraint */
+    }
+}
+
+@media (max-width: 500px) {
+    .winNavBar {
+        display: none;
+    }
+
+    .winMain .BBjPanel {
+        grid-template-columns: 0 1fr;
+    }
+
+    .winTasks {
+        padding: 5% 5%;
+    }
 }
 
 /* .winTaskProperties .BBjChildWindow {
@@ -190,6 +213,7 @@ bbj-button::part(label) {
     margin-top: 1em;
     padding: var(--bbj-focus-ring-width);
 }
+*/
 
 .BBjDialogGlassPane {
     background-color: hsla(0, 0%, 0%, 0.5);
