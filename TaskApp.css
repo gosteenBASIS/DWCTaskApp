@@ -85,12 +85,9 @@ bbj-button::part(label) {
     flex-flow: column;
     align-items: flex-start;
     justify-content: flex-start;
-<<<<<<< HEAD
     width: 100%;
-=======
     padding: var(--bbj-space);
     gap: calc(var(--bbj-space) * 3);
->>>>>>> 932e085407dbf4c179c7a03c10326c4ca8f105ef
 }
 
 .winToolBar {
@@ -211,14 +208,11 @@ bbj-button::part(label) {
     margin-bottom: 5px;
 }
 
-<<<<<<< HEAD
-=======
 .task .BBjStaticText {
     font-family: var(--app-font-task);
     font-weight: 500;
 }
 
->>>>>>> 932e085407dbf4c179c7a03c10326c4ca8f105ef
 /* Task items that are incomplete */
 .incomplete::part(input-wrapper) {
     border-color: gray;
