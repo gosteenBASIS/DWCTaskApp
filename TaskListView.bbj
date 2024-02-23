@@ -20,7 +20,7 @@ class public TaskListView
     field public    BBjVector       flagVector!
     field public    BBjString       flagText!
     field public    BBjPopupMenu    flagPopupMenu!
-    
+
 
     method public TaskListView(BBjWindow parent!, Task t!)
         #sysgui! = BBjAPI().getSysGui()
@@ -32,27 +32,27 @@ class public TaskListView
         #checkbox! = #win!.addCheckBox("")
         #checkbox!.addClass("checkbox")
         #checkbox!.setCallback(BBjControl.ON_CHECK_CHANGE, #this!, "onTaskCheck")
-        
+
         #priority! = #task!.getPriority()
-        
+
         #title! = #win!.addStaticText("")
-        #title!.addClass("title-display")   
-        
-        #due! = #win!.addStaticText("")   
-        
+        #title!.addClass("title-display")
+
+        #due! = #win!.addStaticText("")
+
         #win!.addStaticText("")
- 
+
         #description! = #win!.addStaticText("")
         #description!.addClass("description-display")
 
-        #createPopupMenu() 
-        #priorityFlag! = #win!.addStaticText("") 
+        #createPopupMenu()
+        #priorityFlag! = #win!.addStaticText("")
         #priorityFlag!.setPopupMenu(#flagPopupMenu!)
         #setPriorityFlag()
-        
+
         #refresh()
     methodend
-    
+
     method public void createPopupMenu()
         #flagPopupMenu! = #sysgui!.addPopupMenu()
         #flagPopupMenu!.addClass("flag-popup")
@@ -62,7 +62,7 @@ class public TaskListView
         greenFlag! = "<html><bbj-icon pool='tabler' name='flag-2-filled' id='-2' class='priority-2 menu-item' style='pointer-events: none;'></bbj-icon>"
         yellowFlag! = "<html><bbj-icon pool='tabler' name='flag-2-filled' id='-3' class='priority-3 menu-item' style='pointer-events: none;'></bbj-icon>"
         orangeFlag! = "<html><bbj-icon pool='tabler' name='flag-2-filled' id='-4' class='priority-4 menu-item' style='pointer-events: none;'></bbj-icon>"
-        redFlag! = "<html><bbj-icon pool='tabler' name='flag-2-filled' id='-5' class='priority-5 menu-item' style='pointer-events: none;'></bbj-icon>"  
+        redFlag! = "<html><bbj-icon pool='tabler' name='flag-2-filled' id='-5' class='priority-5 menu-item' style='pointer-events: none;'></bbj-icon>"
 
         #flagVector! = BBjAPI().makeVector()
         #flagVector!.add(deleteFlag!)
@@ -70,14 +70,14 @@ class public TaskListView
         #flagVector!.add(greenFlag!)
         #flagVector!.add(yellowFlag!)
         #flagVector!.add(orangeFlag!)
-        #flagVector!.add(redFlag!)    
-         
+        #flagVector!.add(redFlag!)
+
         i! = 0
         id! = -1
-        while (i! < #flagVector!.size()) 
+        while (i! < #flagVector!.size())
             currentPriority! = #task!.getPriority()
             flag! = #flagVector!.getItem(i!)
-            
+
             if (i! = 0) then
                 flagItem! = #flagPopupMenu!.addMenuItem(-6, flag!)
             else
@@ -85,38 +85,38 @@ class public TaskListView
                 if (currentPriority! = i!) then flagItem!.setVisible(0)
                 id! = id! - 1
             endif
-            
+
             flagItem!.setCallback(flagItem!.ON_POPUP_ITEM_SELECT, #this!, "changePriority")
             i! = i! + 1
         wend
     methodend
-    
+
     method public void setDueNotice()
-        #due!.removeClass("due-today past-due")       
+        #due!.removeClass("due-today past-due")
         due! = ""
-        
-        if (#task!.getDueDate() > -1) AND (#task!.getDueDate() < jul(date(0))) then 
+
+        if (#task!.getDueDate() > -1) AND (#task!.getDueDate() < jul(date(0))) then
             due! = "Past Due!"
              #due!.addClass("due-today past-due")
         endif
-        
-        if (#task!.getDueDate() = jul(date(0))) then 
+
+        if (#task!.getDueDate() = jul(date(0))) then
             due! = "Due Today!"
              #due!.addClass("due-today")
         endif
-        
-        #due!.setText(due!) 
+
+        #due!.setText(due!)
     methodend
-    
-    method public void setPriorityFlag() 
+
+    method public void setPriorityFlag()
         #flagText! = "Priority " + STR(#task!.getPriority())
-         
-        if (#task!.getPriority() > 0) then 
+
+        if (#task!.getPriority() > 0) then
             #flagIcon! = "<html><bbj-icon pool='tabler' name='flag-2-filled'></bbj-icon>"
-        else 
+        else
             #flagIcon! = ""
-        endif    
-    
+        endif
+
         #priorityFlag!.setText(#flagIcon!)
         #priorityFlag!.removeClass("priority-1 priority-2 priority-3 priority-4 priority-5 priority-0")
         #priorityFlag!.addClass("priority-flag")
@@ -126,13 +126,13 @@ class public TaskListView
 
     method public void changePriority(BBjPopupSelectEvent e!)
         newPriority! = ABS(e!.getMenuItem().getID())
-        
+
         if (newPriority! = 6) then newPriority! = 0
-        
+
         #task!.setPriority(newPriority!)
         BBjAPI().postCustomEvent("TASK_UPDATE", #task!)
     methodend
-    
+
     method public void clearStyles()
         #win!.removeClass("complete incomplete blocked deferred")
     methodend
@@ -145,11 +145,11 @@ class public TaskListView
         #win!.addClass(#task!.getStatusString(#task!.getStatus()))
         #checkbox!.addClass(#task!.getStatusString(#task!.getStatus()))
         #setPriorityFlag()
-        #setDueNotice() 
+        #setDueNotice()
         for i = 1 to #flagPopupMenu!.getChildCount()
             menuItem! = #flagPopupMenu!.getMenuItem(i)
             menuItem!.setVisible(1)
-            if (#task!.getPriority() = mod(i,5)) then
+            if (#task!.getPriority() = mod(i,6)) then
                 menuItem!.setVisible(0)
             endif
         next i
@@ -179,12 +179,12 @@ class public TaskListView
         endif
         BBjAPI().postCustomEvent("TASK_UPDATE",#task!)
     methodend
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
 classend
 
 use ::Task.bbj::Task
