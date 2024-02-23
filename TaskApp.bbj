@@ -530,10 +530,11 @@ class public TaskApp
 
         rem todo: notify successful export
         json! = #getTasksAsJsonArray()
+        gson! = new GsonBuilder().setPrettyPrinting().create()
         chan = unt
         f$ = #appPath! + "tasks.json"
         open(chan, isz=-1, mode="O_TRUNC,O_CREATE") f$
-            write record(chan) json!.toString()
+            write record(chan) gson!.toJson(json!).toString()
         close(chan)
         #consoleLog("Exported " + str(json!.size()) +  " tasks.")
     methodend
@@ -545,6 +546,7 @@ class public TaskApp
             read record(chan, siz=-1000000) json$
         close(chan)
         parser! = new JsonParser()
+REM         parser!.setLenient(BBjAPI().TRUE)
         json! = parser!.parseString(json$)
 
         gson! = new GsonBuilder().setPrettyPrinting().create()
