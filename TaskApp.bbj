@@ -339,7 +339,6 @@ class public TaskApp
         declare auto Task t!
         task! = e!.getObject()
         uuid! = task!.getUuid()
-        rem check if dirty
         rem check if task is in list
         if (#tasks!.containsKey(uuid!) = 0) then
             #addTask(task!)
