@@ -155,8 +155,14 @@ class public TaskListView
         next i
     methodend
 
-    method public void setVisible(BBjNumber v!)
-        #win!.setVisible(v!)
+    rem /**
+    rem  * Sets the visibility of the ChildWindow of the TaskListView
+    rem  * Calls setVisible on #win!
+    rem  *
+    rem  * @param visible!   BBjNumber acting as a boolean specifying the visibility
+    rem  */
+    method public void setVisible(BBjNumber visible!)
+        #win!.setVisible(visible!)
     methodend
 
     rem /**
