@@ -140,7 +140,7 @@ class public TaskApp
     rem  */
     method public void run()
         rem Set defaults and apply user preferences
-        BBjAPI().getWebManager(err=*NEXT).setTheme(prefsTheme!, err=*NEXT)
+        BBjAPI().getWebManager(err=*NEXT).setTheme(#prefsTheme!, err=*NEXT)
 
         if (new java.io.File(#appPath!+"tasks.json").exists()) then
             #onImport(null(), err=*next)
@@ -624,4 +624,4 @@ use com.google.gson.Gson;           rem https://javadoc.io/static/com.google.cod
 use com.google.gson.GsonBuilder;    rem https://javadoc.io/doc/com.google.code.gson/gson/latest/com.google.gson/com/google/gson/GsonBuilder.html
 use com.google.gson.JsonObject;     rem https://javadoc.io/static/com.google.code.gson/gson/2.10.1/com.google.gson/com/google/gson/JsonObject.html
 use com.google.gson.JsonArray;      rem https://javadoc.io/static/com.google.code.gson/gson/2.10.1/com.google.gson/com/google/gson/JsonArray.html
-use com.google.gson.JsonParser;     rem
+use com.google.gson.JsonParser;     rem https://javadoc.io/static/com.google.code.gson/gson/2.10.1/com.google.gson/com/google/gson/JsonParser.html
