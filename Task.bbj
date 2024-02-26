@@ -22,18 +22,11 @@ class public Task
 
     rem Public Fields
     rem ========================================
-
-
-    rem Protected Fields
-    rem ========================================
     rem /** The title of the task. */
     field public BBjString Title!
 
     rem /** The description of the task. */
     field public BBjString Description!
-
-    rem /** The unique auto-generated ID for the task that may be used to distinguish between instances of the class. */
-    field protected BBjString Uuid!
 
     rem Can we do enums in BBj? Should status just be a boolean isComplete to start with?
     rem /** The status of the task that denotes whether the task is complete or not. */
@@ -47,6 +40,11 @@ class public Task
     rem   * A value of -1 indicates an undefined due date.
     rem   */
     field public BBjNumber DueDate!
+
+    rem Protected Fields
+    rem ========================================
+    rem /** The unique auto-generated ID for the task that may be used to distinguish between instances of the class. */
+    field protected BBjString Uuid!
 
     rem /** The instant in time that the user created the task */
     field protected Instant Created!
