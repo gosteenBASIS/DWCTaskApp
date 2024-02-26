@@ -9,10 +9,13 @@
     --app-color-primary: hsl(var(--app-color-h), var(--app-color-s), var(--app-color-b));
     --app-color-window-bg: hsl(0, 0%, 95%);
     --app-color-navbar-bg: hsl(var(--app-color-h), calc(var(--app-color-s) * 0.75), 95%);
-    --app-color-text-normal: hsl(0, 0%, 20%);
-    --app-color-text-light: hsl(0, 0%, 40%);
-    --app-color-text-faint:hsl(0, 0%, 60%);
-     --app-font-task: var(--bbj-font-family);
+    --app-color-text-normal-l: 20%
+    --app-color-text-light-l:  40%
+    --app-color-text-faint-l:  60%
+    --app-color-text-normal: hsl(0, 0%, var(--app-color-text-normal-l));
+    --app-color-text-light:  hsl(0, 0%, var(--app-color-text-faint-l));
+    --app-color-text-faint:  hsl(0, 0%, var(--app-color-text-faint-l));
+    --app-font-task: var(--bbj-font-family);
 }
 
 /* Overriding the DWC's default CSS custom properties */
@@ -25,6 +28,17 @@
     --bbj-color-default-s: 25%;
     --bbj-list-padding: calc(var(--bbj-space) / 2);
 }
+
+
+/* Different CSS custom property values when running in dark mode */
+/* ========================================  */
+[data-app-theme="dark"], [data-app-theme="dark-pure"] {
+    --app-color-navbar-bg: hsl(var(--app-color-h), calc(var(--app-color-s) * 0.50), 15%);
+    --app-color-text-normal-l: 90%;
+    --app-color-text-light-l:  70%;
+    --app-color-text-faint-l:  60%;
+}
+
 
 /* Global definitions for multiple controls  */
 /* ========================================  */
@@ -72,7 +86,6 @@ bbj-button::part(label) {
 }
 
 .winToolBar, .winTitle, .winTasks {
-    /* max-width: 20em; */
     margin: 0 auto;
     width: 100%;
     padding-left: 20%;
@@ -234,6 +247,7 @@ bbj-button::part(label) {
 
 .task .BBjStaticText {
     font-family: var(--app-font-task);
+    font-size: 1.1em;
     font-weight: 500;
 }
 
@@ -245,9 +259,8 @@ bbj-button::part(label) {
 
 /* Task items that are complete */
 .complete {
-	text-decoration: line-through;	
+	text-decoration: line-through;
 }
-
 .complete::part(input-wrapper) {
 	border-color: rgb(110, 161, 110);
 	background-color: rgba(110, 161, 110, .5);
@@ -260,7 +273,7 @@ bbj-button::part(label) {
     background-color: rgba(167, 151, 66, .5);
 }
 
-/* Task items that are deferred */
+/* Task items that are blocked */
 .blocked::part(input-wrapper) {
     border-color: rgb(197, 124, 124);
     background-color: rgba(197, 124, 124, .5);
@@ -277,7 +290,7 @@ bbj-button::part(label) {
 }
 .labelDate {
     color: var(--app-color-text-light);
-    font-size: 0.85em;
+    font-size: 0.90em;
     font-weight: normal;
 }
 
