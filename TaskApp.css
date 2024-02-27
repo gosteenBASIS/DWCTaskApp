@@ -203,11 +203,18 @@ bbj-button::part(label) {
     width: 100%;
 }
 
-.winTaskProperties .BBjPanel .BBjButton,
+.winTaskProperties .BBjPanel .BBjInputD,
 .winTaskProperties .BBjPanel .BBjListButton {
     flex: 1 1 auto;
     min-width: 10em;
     width: auto;
+}
+
+.winTaskProperties .BBjPanel .BBjButton {
+    flex: 1 1 25%;
+    min-width: 10em;
+    width: auto;
+    /* align-self: flex-end; */
 }
 
 @media (max-height: 600px) {
