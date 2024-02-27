@@ -9,11 +9,11 @@
     --app-color-primary: hsl(var(--app-color-h), var(--app-color-s), var(--app-color-b));
     --app-color-window-bg: hsl(0, 0%, 95%);
     --app-color-navbar-bg: hsl(var(--app-color-h), calc(var(--app-color-s) * 0.75), 95%);
-    --app-color-text-normal-l: 20%
-    --app-color-text-light-l:  40%
-    --app-color-text-faint-l:  60%
+    --app-color-text-normal-l: 20%;
+    --app-color-text-light-l:  40%;
+    --app-color-text-faint-l:  60%;
     --app-color-text-normal: hsl(0, 0%, var(--app-color-text-normal-l));
-    --app-color-text-light:  hsl(0, 0%, var(--app-color-text-faint-l));
+    --app-color-text-light:  hsl(0, 0%, var(--app-color-text-light-l));
     --app-color-text-faint:  hsl(0, 0%, var(--app-color-text-faint-l));
     --app-font-task: var(--bbj-font-family);
 }
@@ -264,6 +264,7 @@ bbj-button::part(label) {
 .complete::part(input-wrapper) {
 	border-color: rgb(110, 161, 110);
 	background-color: rgba(110, 161, 110, .5);
+    color: var(--bbj-color-black);
 }
 
 
@@ -303,10 +304,10 @@ bbj-button::part(label) {
 }
 
 /* Adds check mark on hover of checkbox */
-.checkbox::part(input-wrapper):hover {
-	content: url(data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20class=%22icon%20icon-tabler%20icon-tabler-check%22%20width=%2224%22%20height=%2224%22%20viewBox=%220%200%2024%2024%22%20stroke-width=%222%22%20stroke=%22currentColor%22%20fill=%22none%22%20stroke-linecap=%22round%22%20stroke-linejoin=%22round%22%3E%3Cpath%20stroke=%22none%22%20d=%22M0%200h24v24H0z%22%20fill=%22none%22/%3E%3Cpath%20d=%22M5%2012l5%205l10%20-10%22%20/%3E%3C/svg%3E);
- 	opacity: .5;
-	transition: 1s ease-in-out;
+.checkbox:not(bbj-checked):hover::part(checked-icon) {
+    transform: scale(1) translate3d(0px, 0px, 0px);
+    transition: 500ms ease-in-out;
+    opacity: 0.765;
 }
 
 /* Title styling on task-list-view */
@@ -399,14 +400,14 @@ bbj-button::part(label) {
 
 /*  Toolbar Icons */
 /* ========================================  */
-.toolbar_icon::part(control), .toolbar_icon::part(control):before {
+.toolbar_icon::part(control), .toolbar_icon::part(control)::before {
     background: transparent;
     color: var(--app-color-text-faint);
     transition: all 100ms ease;
     border-color: transparent;
     border-radius: 0.5em;
 }
-.toolbar_icon::part(control):hover, .toolbar_icon::part(control):hover:before {
+.toolbar_icon::part(control):hover, .toolbar_icon::part(control):hover::before {
     border-color: transparent;
     color: var(--app-color-text-normal);
 }
