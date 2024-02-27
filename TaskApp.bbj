@@ -37,6 +37,8 @@ class public TaskApp
     field protected BBjStaticText       labelDay!
     field protected BBjStaticText       labelDate!
 
+    field protected BBjVector           vectTaskLists! = BBjAPI().makeVector()
+
     rem NavBar and ToolBar controls
     field protected BBjButton           btnAddTaskFAB!
     field protected BBjButton           btnAddTask!
@@ -201,6 +203,11 @@ class public TaskApp
         #winTaskList! = #winMain!.addChildWindow("Tasks", $00108800$, #sysgui!.getAvailableContext())
         #winTaskList!.addClass("winTasks")
 
+        #addTaskList("incomplete")
+        #addTaskList("waiting")
+        #addTaskList("deferred")
+        #addTaskList("complete")
+
         #labelDay! = #winTitle!.addStaticText("Today", $4000$)
         #labelDay!.addClass("labelDay")
         #labelDate! = #winTitle!.addStaticText(date(0:"%Dl, %Ml %D"), $4000$)
@@ -260,20 +267,33 @@ class public TaskApp
             task! = it!.next()
             view! = #addTaskListView(task!)
             if (task!.isComplete()) then
-                view!.setVisible(0)
+REM                 view!.setVisible(0)
+                view!.setVisible(1)
             endif
         wend
+    methodend
+
+    rem /**
+    rem  * Add a Task List Window
+    rem  */
+    method public BBjChildWindow addTaskList(BBjString name!)
+        taskList! = #winTaskList!.addChildWindow(name!, $00108800$, #sysgui!.getAvailableContext())
+        rem Probably remove winTasks, just use taskList
+        taskList!.addClass("taskList")
+        #vectTaskLists!.addItem(taskList!)
+        methodret taskList!
     methodend
 
     rem /**
     rem  * Adds a TaskListView for the given Task, and returns the TaskListView
     rem  */
     method public TaskListView addTaskListView(Task t!)
-            view! = new TaskListView(#winTaskList!, t!)
+        taskList! = #vectTaskLists!.getItem(t!.getStatus())
+        view! = new TaskListView(taskList!, t!)
 
-            #taskViews!.put(t!.getUuid(), view!)
-            view!.getwin().setCallback(BBjControl.ON_CLICK, #this!, "onTaskClick")
-            methodret view!
+        #taskViews!.put(t!.getUuid(), view!)
+        view!.getwin().setCallback(BBjControl.ON_CLICK, #this!, "onTaskClick")
+        methodret view!
     methodend
 
     rem /**
@@ -349,10 +369,10 @@ class public TaskApp
             #addTaskListView(task!)
         endif
 
-            view! = #taskViews!.get(uuid!)
-            if (view! <> null()) then
-                view!.refresh()
-            endif
+        view! = #taskViews!.get(uuid!)
+        if (view! <> null()) then
+            view!.refresh()
+        endif
 
         if (task!.getDeleted()) then
             #removeTask(task!)
