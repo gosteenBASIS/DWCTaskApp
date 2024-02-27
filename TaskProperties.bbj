@@ -23,7 +23,8 @@ class public TaskProperties
     field public BBjListButton     listPriority!
     field public BBjInputD         dateDue!
 
-    field public BBjChildWindow    winButtons!
+REM     field public BBjChildWindow    winButtons!
+    field public BBjButton         buttonDelete!
     field public BBjButton         buttonCancel!
     field public BBjButton         buttonSave!
 
@@ -77,7 +78,8 @@ REM         DateMask$=stbl("!DATE"),DateMask=pos($00$=DateMask$),DateMask$=DateM
 REM         #dateDue!.setLocale("en-US")
 REM         #dateDue!.setMask(DateMask$)
 REM         a=msgbox("Date Mask: " + DateMask$ + $0a$ + "!COMPAT for SHORT_YEAR: " + STBL("!COMPAT"))
-
+        #buttonDelete! = #winTaskProperties!.addButton("Delete")
+        #buttonDelete!.setAttribute("theme","danger")
         #buttonCancel! = #winTaskProperties!.addButton(2, "&Cancel")
         #buttonSave!   = #winTaskProperties!.addButton(1, "&Save")
         #buttonSave!.setAttribute("theme","primary")
@@ -85,6 +87,7 @@ REM         a=msgbox("Date Mask: " + DateMask$ + $0a$ + "!COMPAT for SHORT_YEAR:
         rem Callbacks
         #buttonCancel!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onCancel")
         #buttonSave!.setCallback(BBjControl.ON_FORM_VALIDATION, #this!, "onSave")
+        #buttonDelete!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onDelete")
     methodend
 
     rem /**
@@ -157,6 +160,12 @@ REM         a=msgbox("Date Mask: " + DateMask$ + $0a$ + "!COMPAT for SHORT_YEAR:
     method public void onCancel(BBjButtonPushEvent e!)
         #winTaskProperties!.setVisible(0)
         rem Clear fields, set task to null?
+    methodend
+
+    method public void onDelete(BBjButtonPushEvent event!)
+        #task!.setDeleted(1)
+        BBjAPI().postCustomEvent("TASK_UPDATE",#task!)
+        #winTaskProperties!.setVisible(0)
     methodend
 
     method public void setVisible(BBjNumber v)

@@ -342,17 +342,22 @@ class public TaskApp
         declare auto Task t!
         task! = event!.getObject()
         uuid! = task!.getUuid()
+
         rem If the UUID is not present in #tasks!, this is a new Task to be added.
         if (#tasks!.containsKey(uuid!) = 0) then
             #addTask(task!)
             #addTaskListView(task!)
-        else
+        endif
+
             view! = #taskViews!.get(uuid!)
             if (view! <> null()) then
                 view!.refresh()
             endif
+
+        if (task!.getDeleted()) then
+            #removeTask(task!)
         endif
-        rem Automatically export every time you save
+        rem Automatically export every time a task is updated
         #onExport(null())
     methodend
 

@@ -32,6 +32,10 @@ class public Task
     rem /** The status of the task that denotes whether the task is complete or not. */
     field public BBjNumber Status!
 
+    field public BBjNumber Complete! = 0
+
+    field public BBjNumber Deleted! = 0
+
     rem Is a "number" the best way to do priority? It should be restricted to certain values.
     rem /** The priority of the task as a numeric that goes from 1 to 5, where 1 = lowest priority and 5 = highest priority. */
     field public BBjNumber Priority!

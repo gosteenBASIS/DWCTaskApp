@@ -138,6 +138,9 @@ class public TaskListView
     methodend
 
     method public void refresh()
+        if (#task!.getDeleted()) then
+            #setVisible(0)
+        endif
         #clearStyles()
         #title!.setText(#task!.getTitle())
         #description!.setText(#task!.getDescription())
