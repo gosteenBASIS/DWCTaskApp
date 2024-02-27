@@ -333,13 +333,16 @@ class public TaskApp
 
     rem /**
     rem  * Activated by custom event TASK_UPDATE
+    rem  * This method handles any UI or data updates that may be necessary when a Task is modified.
+    rem  *
+    rem  * @param event!    A BBjCustomEvent that has a Task Object as a payload.
     rem  */
-    method public void onTaskUpdate(BBjCustomEvent e!)
+    method public void onTaskUpdate(BBjCustomEvent event!)
         declare auto TaskListView view!
         declare auto Task t!
-        task! = e!.getObject()
+        task! = event!.getObject()
         uuid! = task!.getUuid()
-        rem check if task is in list
+        rem If the UUID is not present in #tasks!, this is a new Task to be added.
         if (#tasks!.containsKey(uuid!) = 0) then
             #addTask(task!)
             #addTaskListView(task!)
