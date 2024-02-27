@@ -399,14 +399,14 @@ bbj-button::part(label) {
 
 /*  Toolbar Icons */
 /* ========================================  */
-.toolbar_icon::part(control) {
+.toolbar_icon::part(control), .toolbar_icon::part(control):before {
     background: transparent;
     color: var(--app-color-text-faint);
     transition: all 100ms ease;
     border-color: transparent;
     border-radius: 0.5em;
 }
-.toolbar_icon::part(control):hover {
+.toolbar_icon::part(control):hover, .toolbar_icon::part(control):hover:before {
     border-color: transparent;
     color: var(--app-color-text-normal);
 }
