@@ -45,15 +45,6 @@
     "created": "2023-12-28T23:01:17.610474500Z"
   },
   {
-    "uuid": "1e311d9b-2a17-492e-ac56-34ad0599b0c5",
-    "title": "Task 27",
-    "description": "",
-    "status": "1",
-    "priority": "0",
-    "duedate": "-1",
-    "created": "2023-12-28T23:01:17.612473300Z"
-  },
-  {
     "uuid": "1f444347-c23e-4549-8f4c-611e2ef34695",
     "title": "Task 1",
     "description": "",
@@ -61,15 +52,6 @@
     "priority": "0",
     "duedate": "-1",
     "created": "2023-12-28T23:01:17.609474600Z"
-  },
-  {
-    "uuid": "1fd0f88c-e4e0-4b10-8d9f-c4ed1cf892bd",
-    "title": "Task 47",
-    "description": "",
-    "status": "1",
-    "priority": "0",
-    "duedate": "-1",
-    "created": "2023-12-28T23:01:17.613473Z"
   },
   {
     "uuid": "2ef531da-5c60-4548-abbe-051643cfea4c",
@@ -133,24 +115,6 @@
     "priority": "0",
     "duedate": "2460307",
     "created": "2023-12-28T23:01:17.612473300Z"
-  },
-  {
-    "uuid": "489fc4ef-48c7-45e3-9785-7363e21700d4",
-    "title": "Task 15",
-    "description": "",
-    "status": "1",
-    "priority": "0",
-    "duedate": "-1",
-    "created": "2023-12-28T23:01:17.610474500Z"
-  },
-  {
-    "uuid": "4af9b06c-a702-45ec-a528-5a18ee43ed21",
-    "title": "oeuiaueaoi",
-    "description": "",
-    "status": "1",
-    "priority": "0",
-    "duedate": "-1",
-    "created": "2023-12-28T23:01:17.609474600Z"
   },
   {
     "uuid": "4e1b854f-b428-4303-96c6-d500ed1ae94a",
@@ -253,8 +217,8 @@
   },
   {
     "uuid": "8110383e-6f4e-4d05-898f-42257f58fc56",
-    "title": "Task 14",
-    "description": "",
+    "title": "Fix layout of TaskProperties buttons",
+    "description": "The delete button should never be on the same line as the due date. Is it possible to prevent this?",
     "status": "0",
     "priority": "0",
     "duedate": "2460307",
@@ -262,8 +226,8 @@
   },
   {
     "uuid": "8e56a320-5611-431e-b86c-515905512dd5",
-    "title": "Task 33",
-    "description": "",
+    "title": "Indication when you delete a task.",
+    "description": "Some sort of \"Task deleted\" indicator, a toast maybe?",
     "status": "0",
     "priority": "0",
     "duedate": "-1",
@@ -289,7 +253,7 @@
   },
   {
     "uuid": "9fd985ff-d822-4ef2-b3de-37bcdbaef79f",
-    "title": "Task 42",
+    "title": "Toasts!",
     "description": "",
     "status": "0",
     "priority": "0",
@@ -343,7 +307,7 @@
   },
   {
     "uuid": "c45c19ae-c5a5-4227-9f03-33c9d95388c6",
-    "title": "Task 21",
+    "title": "The description field should be bigger by default.",
     "description": "",
     "status": "0",
     "priority": "0",
@@ -466,14 +430,5 @@
     "priority": "0",
     "duedate": "-1",
     "created": "2023-12-28T23:01:17.612473300Z"
-  },
-  {
-    "uuid": "ffe9e3b3-4975-4225-83ed-ce877a61a69a",
-    "title": "Task 39",
-    "description": "",
-    "status": "1",
-    "priority": "0",
-    "duedate": "-1",
-    "created": "2023-12-28T23:01:17.613473Z"
   }
 ]
