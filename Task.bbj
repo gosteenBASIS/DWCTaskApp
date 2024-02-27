@@ -302,7 +302,6 @@ classend
 
 
 rem BBj USE Statements
-use ::TaskApp.bbj::TaskApp
 use ::TaskListView.bbj::TaskListView
 
 rem Java USE Statements
