@@ -162,14 +162,23 @@ REM         a=msgbox("Date Mask: " + DateMask$ + $0a$ + "!COMPAT for SHORT_YEAR:
         rem Clear fields, set task to null?
     methodend
 
+    rem /**
+    rem  * Activated by the Delete button.
+    rem  * Sets the Deleted flag on the task, posts a TASK_UPDATE event, and hides the TaskProperties window.
+    rem  */
     method public void onDelete(BBjButtonPushEvent event!)
         #task!.setDeleted(1)
         BBjAPI().postCustomEvent("TASK_UPDATE",#task!)
         #winTaskProperties!.setVisible(0)
     methodend
 
-    method public void setVisible(BBjNumber v)
-        #winTaskProperties!.setVisible(v)
+    rem /**
+    rem  * Sets the visibility on the BBjChildWindow for this class.
+    rem  *
+    rem  * @param visible! A number representing the visibility to set. 0 = invisible.
+    rem  */
+    method public void setVisible(BBjNumber visible!)
+        #winTaskProperties!.setVisible(visible!)
     methodend
 
 classend

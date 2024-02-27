@@ -32,11 +32,14 @@ class public Task
     rem /** The status of the task that denotes whether the task is complete or not. */
     field public BBjNumber Status!
 
+    rem /** Boolean indicating whether the task is complete. */
     field public BBjNumber Complete! = 0
 
+    rem /** Boolean indicating whether the task is deleted. */
     field public BBjNumber Deleted! = 0
 
     rem Is a "number" the best way to do priority? It should be restricted to certain values.
+    rem TODO: 1 should be highest priority.
     rem /** The priority of the task as a numeric that goes from 1 to 5, where 1 = lowest priority and 5 = highest priority. */
     field public BBjNumber Priority!
 
@@ -95,12 +98,7 @@ class public Task
     methodend
 
     rem /**
-    rem  * A Task item's full constructor that specifies all possible parameters.
-    rem  * TODO: Validation for constructor
-    rem  * @param title!            The task's title string
-    rem  * @param description!      The task's description
-    rem  * @param priority!         The task's priority level (1 -5)
-    rem  * @param dueDate!          The task's due date
+    rem  * A Task item's constructor that sets all parameters to their default values.
     rem  */
     method public Task()
         #init()
@@ -123,6 +121,8 @@ class public Task
 
     rem /**
     rem  * Create a clone of a task
+    rem  *
+    rem  * @param task!        The task to clone.
     rem  */
     method public Task(Task task!)
         #Title! = task!.getTitle()
@@ -137,6 +137,7 @@ class public Task
 
     rem /**
     rem  * Initializes a Task item and assigns defaults to its properties.
+    rem  * This method is called by the other constructors to initialize all the properties.
     rem  */
     method protected void init()
         #Title! = ""
@@ -212,6 +213,9 @@ class public Task
         methodret s!
     methodend
 
+    rem /**
+    rem  * Returns whether the task is complete.
+    rem  */
     method public BBjNumber isComplete()
         methodret #Status! = #STATUS_COMPLETE()
     methodend
@@ -238,7 +242,6 @@ class public Task
         ?
         ? "getAsFormattedString(): "
         ? #getAsFormattedString()
-
     methodend
 
     rem /**

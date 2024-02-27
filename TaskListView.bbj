@@ -133,10 +133,17 @@ class public TaskListView
         BBjAPI().postCustomEvent("TASK_UPDATE", #task!)
     methodend
 
+    rem /**
+    rem  * Removes the style classes for all possible statuses.
+    rem  */
     method public void clearStyles()
         #win!.removeClass("complete incomplete blocked deferred")
     methodend
 
+    rem /**
+    rem  * Refresh the TaskListView with the latest information from its Task object.
+    rem  * This is called from the TaskApp class when a TASK_UPDATE event is posted.
+    rem  */
     method public void refresh()
         if (#task!.getDeleted()) then
             #setVisible(0)
