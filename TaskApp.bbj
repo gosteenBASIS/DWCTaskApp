@@ -142,7 +142,7 @@ class public TaskApp
     rem  */
     method public void run()
         rem Set defaults and apply user preferences
-        BBjAPI().getWebManager(err=*NEXT).setTheme(#prefsTheme!, err=*NEXT)
+        #webManager!.setTheme(#prefsTheme!, err=*NEXT)
 
         if (new java.io.File(#appPath!+"tasks.json").exists()) then
             #onImport(null(), err=*next)
