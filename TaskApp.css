@@ -247,6 +247,7 @@ bbj-button::part(label) {
 }
 */
 
+
 /* Day and Date headers for TaskList window         */
 /* ================================================ */
 .labelDay {
@@ -268,44 +269,61 @@ bbj-button::part(label) {
 /* ================================================ */
 .task {
 	display: grid;
-	grid-template-columns: .5fr 8fr 2fr;
-	grid-column-gap: 5px;
-    max-height: 4.5em;
+	grid-template-columns: 1.8em 1fr 5em;
+    grid-template-rows: 2.5em 2em;
+	grid-column-gap: 0.25em;
+    height: 4.5em;
+    justify-items: start;
     border: transparent;
     border-bottom-color: var(--bbj-color-gray-80);
-    margin-bottom: 5px;
 }
 
 .task .BBjStaticText {
     font-family: var(--app-font-task);
     font-size: 1.1em;
     font-weight: 500;
+    align-self: center;
+    white-space: nowrap;
+	text-overflow: ellipsis;
+	max-width: 99%;
+}
+
+/* Title styling on task-list-view */
+.task .title-display {
+	font-weight: 700;
+}
+
+/* Description styling on task-list-view */
+.task .description-display {
+    opacity: 0.5;
+    align-self: start;
 }
 
 /* Task items that are incomplete */
-.incomplete::part(input-wrapper) {
+.task.incomplete bbj-checkbox::part(input-wrapper) {
     border-color: var(--bbj-color-gray-50);
     background-color: var(--bbj-color-white);
 }
 
 /* Task items that are complete */
-.complete {
+.task.complete .BBjStaticText {
+    filter: opacity(0.65);
 	text-decoration: line-through;
 }
-.complete::part(input-wrapper) {
+.task.complete bbj-checkbox::part(input-wrapper) {
 	border-color: rgb(110, 161, 110);
 	background-color: rgba(110, 161, 110, .5);
     color: var(--bbj-color-black);
 }
 
 /* Task items that are deferred */
-.deferred::part(input-wrapper) {
+.task.deferred bbj-checkbox::part(input-wrapper) {
     border-color: rgb(167, 151, 66);
     background-color: rgba(167, 151, 66, .5);
 }
 
 /* Task items that are blocked */
-.blocked::part(input-wrapper) {
+.task.blocked bbj-checkbox::part(input-wrapper) {
     border-color: rgb(197, 124, 124);
     background-color: rgba(197, 124, 124, .5);
 }
@@ -319,8 +337,9 @@ bbj-button::part(label) {
 .checkbox::part(input-wrapper) {
 	border-radius: 100%;
 	color: var(--bbj-color-black);
-	margin-right: 2px;
-	filter: scale(2);
+	transform: scale3d(1.25, 1.25, 1);
+    justify-content: center;
+    align-self: center;
 }
 
 /* Adds check mark on hover of checkbox */
@@ -330,28 +349,14 @@ bbj-button::part(label) {
     opacity: 0.765;
 }
 
-/* Title styling on task-list-view */
-.title-display {
-	font-weight: 700;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	max-width: 80%;
-}
-
 /* Indicator flag styling on task-list-view */
-.priority-flag {
-	font-size: 15px;
+.task .priority-flag {
+	font-size: 1em;
 	background-color: transparent;
 	justify-self: right;
+    align-self: start;
 }
 
-/* Description styling on task-list-view */
-.description-display {
-  	white-space: nowrap;
-  	max-width: 90%;
-	opacity: .5;
-    text-overflow: ellipsis;
-}
 
 
 /*  Task due today and past due badges              */
