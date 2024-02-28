@@ -272,7 +272,7 @@ bbj-button::part(label) {
 	grid-column-gap: 5px;
     max-height: 4.5em;
     border: transparent;
-    border-bottom-color: rgba(0, 0, 0, .2);
+    border-bottom-color: var(--bbj-color-gray-80);
     margin-bottom: 5px;
 }
 
@@ -284,8 +284,8 @@ bbj-button::part(label) {
 
 /* Task items that are incomplete */
 .incomplete::part(input-wrapper) {
-    border-color: gray;
-    background-color: white;
+    border-color: var(--bbj-color-gray-50);
+    background-color: var(--bbj-color-white);
 }
 
 /* Task items that are complete */
@@ -318,7 +318,7 @@ bbj-button::part(label) {
 /* Checkbox styling on task-list-view */
 .checkbox::part(input-wrapper) {
 	border-radius: 100%;
-	color: black;
+	color: var(--bbj-color-black);
 	margin-right: 2px;
 	filter: scale(2);
 }
@@ -357,7 +357,7 @@ bbj-button::part(label) {
 /*  Task due today and past due badges              */
 /* ================================================ */
 .due-today {
-	color: red;
+	color: var(--bbj-color-danger);
 	justify-self: right;
 	white-space: nowrap;
 }
