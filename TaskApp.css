@@ -1,7 +1,7 @@
 /* The CSS file that accompanies the TaskApp DWC application */
 
-/* The TaskApp's CSS custom properties       */
-/* ========================================  */
+/* The TaskApp's CSS custom properties              */
+/* ================================================ */
 :root {
     --app-color-h: 15;
     --app-color-s: 75%;
@@ -18,8 +18,8 @@
     --app-font-task: var(--bbj-font-family);
 }
 
-/* Overriding the DWC's default CSS custom properties */
-/* ========================================  */
+/* Override the DWC's default CSS custom properties */
+/* ================================================ */
 :root {
     --bbj-font-family: 'AR One Sans', 'Gabarito', 'K2D', 'Overlock', 'Encode Sans Semicondensed', 'Aller', 'Alatsi', 'Akrobat', var(--bbj-font-family-sans);
     --bbj-color-body-text: var(--app-color-text-normal);
@@ -30,8 +30,8 @@
 }
 
 
-/* Different CSS custom property values when running in dark mode */
-/* ========================================  */
+/* Dark mode CSS custom properties                  */
+/* ================================================ */
 [data-app-theme="dark"], [data-app-theme="dark-pure"] {
     --app-color-navbar-bg: hsl(var(--app-color-h), calc(var(--app-color-s) * 0.50), 15%);
     --app-color-text-normal-l: 90%;
@@ -40,8 +40,8 @@
 }
 
 
-/* Global definitions for multiple controls  */
-/* ========================================  */
+/* Global definitions for multiple controls         */
+/* ================================================ */
 
 /* Modify the entire DOM */
 html, body, .BBjWindowManagerDesktop {
@@ -64,7 +64,7 @@ bbj-button::part(label) {
 /* https://vue-grid-generator.netlify.app/
 {"areas":[["winNavBar","winToolBar"],["winNavBar","winTitle"],["winNavBar","winTasks"]],"columns":["5em","1fr"],"rows":["3em","10em","1fr"],"gridWidth":"100%","gridHeight":"100%"}
 */
-/* ========================================  */
+/* ================================================ */
 
 .BBjSimpleWindow {
     width: 100%;
@@ -110,7 +110,6 @@ bbj-button::part(label) {
     display: flex;
     flex-flow: row;
     align-items: center;
-    justify-content: space-evenly;
     padding: var(--bbj-space);
     gap: var(--bbj-space) var(--bbj-space);
 
@@ -150,7 +149,8 @@ bbj-button::part(label) {
 }
 
 
-/* NavBar Items */
+/* NavBar Items (left-most window)                  */
+/* ================================================ */
 .nav_item {
     width: 100%;
 }
@@ -247,13 +247,25 @@ bbj-button::part(label) {
 }
 */
 
+/* Day and Date headers for TaskList window         */
+/* ================================================ */
+.labelDay {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+.labelDate {
+    color: var(--app-color-text-light);
+    font-size: 0.90em;
+    font-weight: normal;
+}
+
 .BBjDialogGlassPane {
     background-color: hsla(0, 0%, 0%, 0.5);
 }
 
-/* Task Styling */
-/* ============ */
 
+/* Task Styling                                     */
+/* ================================================ */
 .task {
 	display: grid;
 	grid-template-columns: .5fr 8fr 2fr;
@@ -286,7 +298,6 @@ bbj-button::part(label) {
     color: var(--bbj-color-black);
 }
 
-
 /* Task items that are deferred */
 .deferred::part(input-wrapper) {
     border-color: rgb(167, 151, 66);
@@ -302,16 +313,6 @@ bbj-button::part(label) {
 /* Items that are clickable, and hovered over */
 .clickable:hover {
     filter: brightness(80%);
-}
-
-.labelDay {
-    font-size: 1.5em;
-    font-weight: bold;
-}
-.labelDate {
-    color: var(--app-color-text-light);
-    font-size: 0.90em;
-    font-weight: normal;
 }
 
 /* Checkbox styling on task-list-view */
@@ -353,6 +354,8 @@ bbj-button::part(label) {
 }
 
 
+/*  Task due today and past due badges              */
+/* ================================================ */
 .due-today {
 	color: red;
 	justify-self: right;
@@ -363,6 +366,9 @@ bbj-button::part(label) {
 	font-weight: 700;
 }
 
+
+/*  Priority flags and popup menus                  */
+/* ================================================ */
 .priority-0 {
 	color: black;
 	opacity: .7;
@@ -396,29 +402,13 @@ bbj-button::part(label) {
 	display: none;
 }
 
-
-
-/* FAB Floating Action Button  */
-/* ========================================  */
-.btnAddTaskFAB {
-    position: absolute;
-    right: 1em;
-    bottom: 1em;
-    z-index: 1000;
-    width: 3em;
+.menu_collapse::part(control) {
     height: 3em;
-    line-height: 1.25rem;
-}
-.btnAddTaskFAB::part(control) {
-    border-radius: 100em;
-    box-shadow: 0 0.1em 0.5em hsla(0, 0%, 0%, 0.35);
-}
-.btnAddTaskFAB::part(label) {
-    font-size: 200%;
 }
 
-/*  Toolbar Icons */
-/* ========================================  */
+
+/*  Toolbar Icons                                   */
+/* ================================================ */
 .toolbar_icon::part(control), .toolbar_icon::part(control)::before {
     background: transparent;
     color: var(--app-color-text-faint);
@@ -442,6 +432,22 @@ bbj-button::part(label) {
     color: var(--bbj-color-white);
 }
 
-.menu_collapse::part(control) {
+
+/* FAB (Floating Action Button) to add a task       */
+/* ================================================ */
+.btnAddTaskFAB {
+    position: absolute;
+    right: 1em;
+    bottom: 1em;
+    z-index: 1000;
+    width: 3em;
     height: 3em;
+    line-height: 1.25rem;
+}
+.btnAddTaskFAB::part(control) {
+    border-radius: 100em;
+    box-shadow: 0 0.1em 0.5em hsla(0, 0%, 0%, 0.35);
+}
+.btnAddTaskFAB::part(label) {
+    font-size: 200%;
 }
