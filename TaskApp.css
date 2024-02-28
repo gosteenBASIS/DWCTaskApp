@@ -330,7 +330,11 @@ bbj-button::part(label) {
 
 /* Items that are clickable, and hovered over */
 .clickable:hover {
-    filter: brightness(80%);
+    /* filter: brightness(80%); */
+    background: var(--bbj-surface-1);
+}
+.clickable:hover bbj-checkbox::part(input-wrapper) {
+    border-width: 1.5px;
 }
 
 /* Checkbox styling on task-list-view */
@@ -342,11 +346,23 @@ bbj-button::part(label) {
     align-self: center;
 }
 
-/* Adds check mark on hover of checkbox */
-.checkbox:not(bbj-checked):hover::part(checked-icon) {
+/* Fades check mark on mouse enter/exit on a checkbox */
+bbj-checkbox::part(checked-icon) {
     transform: scale(1) translate3d(0px, 0px, 0px);
-    transition: 500ms ease-in-out;
-    opacity: 0.765;
+    transition: all 250ms ease-in-out;
+    opacity: 0;
+}
+bbj-checkbox.bbj-checked::part(checked-icon) {
+    /* Checked, normal conditions */
+    opacity: 1;
+}
+bbj-checkbox.bbj-checked:hover::part(checked-icon) {
+    /* Checked, hovering over the checkbox */
+    opacity: 0.75;
+}
+bbj-checkbox:not(bbj-checked):hover::part(checked-icon) {
+    /* Unchecked, hovering over the checkbox */
+    opacity: 0.25;
 }
 
 /* Indicator flag styling on task-list-view */
