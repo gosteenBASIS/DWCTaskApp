@@ -16,6 +16,7 @@
     --app-color-text-light:  hsl(0, 0%, var(--app-color-text-light-l));
     --app-color-text-faint:  hsl(0, 0%, var(--app-color-text-faint-l));
     --app-font-task: var(--bbj-font-family);
+    --app-font-task-spacing: normal;
 }
 
 /* Override the DWC's default CSS custom properties */
@@ -59,6 +60,30 @@ bbj-button::part(label) {
     font-size: var(--bbj-font-size-l);
     font-weight: var(--bbj-font-weight-semibold);
 }
+
+ /* Make the checkboxes zoom into 100% size on load */
+bbj-checkbox:not(hydrated) {
+    transform: scale3d(0,0,0);
+    transition: all 500ms ease;
+    transition-delay: 200ms;
+}
+bbj-checkbox.hydrated {
+    transform: scale3d(1,1,1);
+    padding-left: 1px;
+}
+.fadeIn {
+    animation: fadeIn 400ms ease-in-out 1 forwards;
+}
+.zoomIn {
+    animation: zoomIn 400ms ease-in-out 1 forwards;
+}
+.bounceIn {
+    animation: bounceIn 2500ms ease-in-out 1 forwards;
+}
+.pulse {
+    animation: bounceIn 2500ms ease-in-out 1 forwards;
+}
+
 
 /* Layout                                    */
 /* https://vue-grid-generator.netlify.app/
@@ -280,17 +305,19 @@ bbj-button::part(label) {
 
 .task .BBjStaticText {
     font-family: var(--app-font-task);
+    letter-spacing: var(--app-font-task-spacing);
     font-size: 1.1em;
     font-weight: 500;
     align-self: center;
     white-space: nowrap;
 	text-overflow: ellipsis;
 	max-width: 99%;
+    transition: letter-spacing 100ms ease;
 }
 
 /* Title styling on task-list-view */
 .task .title-display {
-	font-weight: 700;
+	/* font-weight: 700; */
 }
 
 /* Description styling on task-list-view */
@@ -332,13 +359,14 @@ bbj-button::part(label) {
 .clickable:hover {
     /* filter: brightness(80%); */
     background: var(--bbj-surface-1);
+    transition: all 200ms ease;
 }
-.clickable:hover bbj-checkbox::part(input-wrapper) {
-    border-width: 1.5px;
+.task:hover bbj-checkbox {
+    animation: pulse 500ms ease-in-out 1 forwards;
 }
 
 /* Checkbox styling on task-list-view */
-.checkbox::part(input-wrapper) {
+bbj-checkbox::part(input-wrapper) {
 	border-radius: 100%;
 	color: var(--bbj-color-black);
 	transform: scale3d(1.25, 1.25, 1);
@@ -471,4 +499,68 @@ bbj-checkbox:not(bbj-checked):hover::part(checked-icon) {
 }
 .btnAddTaskFAB::part(label) {
     font-size: 200%;
+}
+
+
+
+
+/* Animations                                       */
+/* ================================================ */
+@keyframes zoomIn {
+    from {
+        transform: scale3d(0, 0, 0);
+    }
+    to {
+        transform: scale3d(1, 1, 1);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes bounceIn {
+    from,
+    20%,
+    40%,
+    60%,
+    80%,
+    to {
+      animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+    0% {
+      transform: scale3d(0, 0, 0);
+    }
+    20% {
+        transform: scale3d(1.2, 1.2, 1.2);
+    }
+    40% {
+        transform: scale3d(0.8, 0.8, 0.8);
+    }
+    60% {
+        transform: scale3d(1.07, 1.07, 1.07);
+    }
+    80% {
+        transform: scale3d(0.9, 0.9, 0.9);
+    }
+    to {
+        transform: scale3d(1, 1, 1);
+    }
+}
+
+@keyframes pulse {
+    from {
+        transform: scale3d(1, 1, 1);
+    }
+    50% {
+        transform: scale3d(1.1, 1.1, 1.1);
+    }
+    to {
+        transform: scale3d(1, 1, 1);
+    }
 }
