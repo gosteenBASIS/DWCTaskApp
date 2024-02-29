@@ -182,10 +182,12 @@ class public TaskApp
 
         rem Create a linefeed-delimited list of font families from the vectory to populate the BBjListButton
         fontFamiliesList! = java.lang.String.join($0a$, java.util.Arrays.asList(#vectFontFamilies!))
+        rem Modfify each entry in the list so that use uses HTML markup to style the font name to that font family
         fontFamiliesList! = fontFamiliesList!.replaceAll("(?mi)^(.*)$", "<html><span style='font-family:$1'>$1</span>")
 
         rem Add the font family listbutton, add some custom classes, and set the callback
         #lstFontFamily! = #winNavBar!.addListButton(fontFamiliesList!)
+        #lstFontFamily!.setAttribute("button-height", "2.25em")
         #lstFontFamily!.setAttribute("label", "Font Family")
         #lstFontFamily!.setAttribute("open-height", "100%")
         #lstFontFamily!.addClass("nav_item nav_fonts")
@@ -279,7 +281,7 @@ REM                 view!.setVisible(0)
     method public BBjChildWindow addTaskList(BBjString name!)
         taskList! = #winTaskList!.addChildWindow(name!, $00108800$, #sysgui!.getAvailableContext())
         rem Probably remove winTasks, just use taskList
-        taskList!.addClass("taskList")
+        taskList!.addClass("taskList fadeIn")
         #vectTaskLists!.addItem(taskList!)
         methodret taskList!
     methodend
@@ -506,7 +508,31 @@ REM                 view!.setVisible(0)
     rem  * BBjListChangeEvent e!    The BBjListButton's ON_LIST_CHANGE event
     rem  */
     method public void onListChangeFontFamilies(BBjListChangeEvent e!)
-        #setCssProperty("--app-font-task", str(#vectFontFamilies!.getItem(e!.getSelectedIndex())))
+        rem Get the selected item from the list
+        fontFamilyHtml! = e!.getSelectedItem()
+
+        rem Since the item has HTML markup to style the family namne, remove all the HTML tags
+        fontFamily! = fontFamilyHtml!.replaceAll("<[^>]*>", "")
+
+        rem Alternatively, since the backing vector of font families is a global field, we could also
+        rem get the selected font family by retrieving the item from the vector.  In this scenario,
+        rem we can use the event's getSelectedIndex() method to specify the item's index in the vector.
+        REM fontFamily! = str(#vectFontFamilies!.getItem(e!.getSelectedIndex()))
+
+        rem Now set the font for the tasks by setting the CSS custom property that we defined for that purpose
+        #setCssProperty("--app-font-task", fontFamily!)
+
+        rem If the font is extremely compressed, then we'll add in some extra space between letters for improved legibilty
+        fontFamily! = fontFamily!.toLowerCase()
+        if (fontFamily!.contains("bebas")) OR (fontFamily!.contains("oswald"))  OR (fontFamily!.contains("teko")) then
+            #setCssProperty("--app-font-task-spacing", "0.1ch")
+        else
+            rem Get the computed letter spacing style of the task title
+            letterSpacing! = str(#webManager!.getComputedStyle("letter-spacing", ".title-display"))
+
+            rem Only revert the letter spacing back to normal if it's not already set to 'normal'
+            if (letterSpacing! <> "normal") then #setCssProperty("--app-font-task-spacing", "normal")
+        endif
     methodend
 
     rem /**
