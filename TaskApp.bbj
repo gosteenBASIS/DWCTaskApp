@@ -264,7 +264,13 @@ class public TaskApp
     rem  */
     method public void displayTasks()
         declare auto Task task!
-        it! = #tasks!.values().iterator()
+
+        rem Original code that uses the #tasks object which isn't sorted
+        rem it! = #tasks!.values().iterator()
+
+        orderedTasks! = #getSortedTasks(0)
+        it! = orderedTasks!.values().iterator()
+
         while it!.hasNext()
             task! = it!.next()
             view! = #addTaskListView(task!)
@@ -274,6 +280,44 @@ REM                 view!.setVisible(0)
             endif
         wend
     methodend
+
+
+    rem /**
+    rem  * Returns a sorted TreeMap that's similar to the #tasks! TreeMap, except
+    rem  * that its key is the priority+dueDate+Uuid (when sorted by priority),
+    rem  * or dueDate+priority+Uuid (when sorted by date).  We're concatenating
+    rem  * the three fields and letting the TreeMap object sort the tasks for us
+    rem  * based on the constructed key.  This new TreeMap still contains the tasks
+    rem  * in the value, and can be used to fill the task list view in a sorted manner.
+    rem  */
+    method public TreeMap getSortedTasks(BBjNumber byPriority)
+        sortedTasks! = new TreeMap()
+
+        it! = #tasks!.keySet().iterator()
+        while it!.hasNext()
+            uuid! = it!.next()
+            task! = #tasks!.get(uuid!)
+            priority! = task!.getPriority()
+            dueDate! = task!.getDueDate()
+            if (dueDate! > -1) then
+                taskDate! = date(dueDate!:"%Yl-%Mz-%Dz")
+            else
+                rem If the due date isn't set, then we'll push it into the distant future for correct sorting
+                taskDate! = "2100-01-01"
+            endif
+
+            rem This determines the sort order, which is based on the provide parameter
+            if (byPriority) then
+                key! = str(5-priority!) + taskDate! + uuid!
+            else
+                key! = taskDate! + str(5-priority!) + uuid!
+            endif
+            sortedTasks!.put(key!, task!)
+        wend
+        methodret sortedTasks!
+    methodend
+
+
 
     rem /**
     rem  * Add a Task List Window
@@ -379,6 +423,7 @@ REM                 view!.setVisible(0)
         if (task!.getDeleted()) then
             #removeTask(task!)
         endif
+
         rem Automatically export every time a task is updated
         #onExport(null())
     methodend
