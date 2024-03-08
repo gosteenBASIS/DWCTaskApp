@@ -96,6 +96,7 @@ REM         a=msgbox("Date Mask: " + DateMask$ + $0a$ + "!COMPAT for SHORT_YEAR:
     rem  */
     method public void loadTask(Task t!)
         #task! = t!
+        #editTitle!.setAttribute("label", "<html>Title <span style='opacity:0.25;position:absolute;right:0;'>" + #task!.getUuid())
         #editTitle!.setText(#task!.getTitle())
         #editDescription!.setText(#task!.getDescription())
         dueDate! = #task!.getDueDate()
