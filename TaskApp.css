@@ -72,7 +72,7 @@ bbj-checkbox.hydrated {
     padding-left: 1px;
 }
 .fadeIn {
-    animation: fadeIn 400ms ease-in-out 1 forwards;
+    animation: fadeIn 1000ms ease-in-out 1 forwards;
 }
 .zoomIn {
     animation: zoomIn 400ms ease-in-out 1 forwards;
