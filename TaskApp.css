@@ -324,6 +324,7 @@ bbj-checkbox.hydrated {
 .task .description-display {
     opacity: 0.5;
     align-self: start;
+    grid-column: 2 / 2;
 }
 
 /* Task items that are incomplete */
