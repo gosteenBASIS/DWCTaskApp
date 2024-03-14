@@ -17,6 +17,7 @@
     --app-color-text-faint:  hsl(0, 0%, var(--app-color-text-faint-l));
     --app-font-family-task: var(--bbj-font-family);
     --app-font-weight-task: var(--bbj-font-weight-semibold);
+    --app-font-size-task: var(--bbj-font-size-m);
     --app-font-spacing-task: normal;
 }
 
@@ -498,8 +499,8 @@ bbj-checkbox:not(bbj-checked):hover::part(checked-icon) {
 /* ================================================ */
 .btnAddTaskFAB {
     position: absolute;
-    right: 1em;
-    bottom: 1em;
+    right: 1.5em;
+    bottom: 1.5em;
     z-index: 1000;
     width: 3em;
     height: 3em;
@@ -509,10 +510,6 @@ bbj-checkbox:not(bbj-checked):hover::part(checked-icon) {
     border-radius: 100em;
     box-shadow: 0 0.1em 0.5em hsla(0, 0%, 0%, 0.35);
 }
-.btnAddTaskFAB::part(label) {
-    font-size: 200%;
-}
-
 
 
 
