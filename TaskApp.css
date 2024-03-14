@@ -399,6 +399,7 @@ bbj-checkbox:not(bbj-checked):hover::part(checked-icon) {
 	background-color: transparent;
 	justify-self: right;
     align-self: start;
+    grid-column: 3 / 3;
 }
 
 
