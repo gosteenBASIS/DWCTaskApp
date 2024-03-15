@@ -1,0 +1,99 @@
+/* The CSS file that accompanies the TaskApp DWC application */
+/* This file contains all the CSS for the Settings screen */
+
+
+
+/* Setting Window and Controls */
+/* ========================================  */
+.winSettings .BBjPanel {
+    display: flex;
+    flex-flow: column;
+    align-items: start;
+    justify-content: flex-start;
+    padding: var(--bbj-space);
+    gap: var(--bbj-space-xl);
+    background-color: var(--bbj-color-gray-90);
+    min-width: 300px;
+}
+
+/* The title of the settings window */
+.winSettings .settingsTitle {
+    width: 100%;
+    font-size: var(--bbj-font-size-xl);
+    font-weight: var(--bbj-font-weight-semibold);
+}
+
+/* Settings [Done] Button */
+.winSettings bbj-button.settingsDone {
+    position: absolute;
+    right: var(--bbj-space-s);
+    top: 0.25rem;
+    align-self: end;
+    font-size: var(--bbj-font-size-l);
+    font-weight: var(--bbj-font-weight-semibold);
+}
+.winSettings bbj-button.settingsDone::part(label) {
+    color: var(--app-color-primary);
+}
+
+/* The chevron icons on setttings buttons */
+.winSettings bbj-icon.chevron {
+    color: var(--bbj-color-gray-text);
+    padding-right: 0;
+}
+
+/* The icons for the settings items that aren't chevrons */
+.winSettings bbj-icon:not(chevron) {
+    color: var(--app-color-primary);
+}
+
+/* The title for each category or section in the settings screen */
+.winSettings .settingsCategoryTitle {
+    color: var(--bbj-color-gray-30);
+    font-size: 90%;
+    font-weight: var(--bbj-font-weight-bold);
+    margin-bottom: -15px;
+}
+
+/* The BBjChildWindow in the settings that contains controls for a single setting */
+.winSettings .settingsChildWindow {
+    background: var(--bbj-window-background);
+    width: 100%;
+    height: unset;
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--bbj-focus-ring-width);
+    gap: var(--bbj-space) var(--bbj-space);
+    border-radius: var(--bbj-border-radius-xl);
+    display: grid;
+    grid-template-columns: auto 1fr;
+}
+
+/* Labels for the settings */
+.winSettings .settingsLabel {
+    line-height: 185%;
+}
+
+/* Value for the settings */
+.winSettings .settingsValue {
+    /* line-height: 185%; */
+}
+
+
+/* All BBjButtons on the settings window */
+.winSettings bbj-button::part(control) {
+    background: transparent;
+    border-width: 0 !important;
+}
+
+/* The BBjButtons that display a chevron that bring up a setting */
+.winSettings bbj-button:not(.settingsDone)::part(label) {
+    text-align: right;
+    font-weight: var(--bbj-font-weight-bold);
+    padding-right: 0;
+    padding-left: calc(2 * var(--bbj-space));
+    width: 100%;
+    justify-content: end;
+}
