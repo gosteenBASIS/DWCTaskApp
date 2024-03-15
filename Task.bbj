@@ -110,6 +110,9 @@ class public Task
     rem  * @param json!            The JSON representation of the Task object
     rem  */
     method public Task(JsonObject json!)
+        #init()
+        rem This error checking doesn't seem to work -- better to use .has() to check if the thing exists?
+        rem get(member) returns Null if it doesn't exist
         #Title! = json!.get("title",err=*NEXT).getAsString()
         #Description! = json!.get("description",err=*NEXT).getAsString()
         #Uuid! = json!.get("uuid").getAsString()
@@ -117,6 +120,7 @@ class public Task
         #Status! = json!.get("status",err=*NEXT).getAsInt()
         #DueDate! = json!.get("duedate",err=*NEXT).getAsInt()
         #Created! = Instant.parse(json!.get("created").getAsString())
+        if (json!.has("complete")) then #Complete! = json!.get("complete",err=*NEXT).getAsInt()
     methodend
 
     rem /**
@@ -130,7 +134,7 @@ class public Task
         #Priority! = task!.getPriority()
         #DueDate! = task!.getDueDate()
         #Status! = task!.getStatus()
-
+        #Complete! = task!.isComplete()
         #Uuid! = task!.getUuid()
         #Created! = task!.getCreated()
     methodend
@@ -145,6 +149,7 @@ class public Task
         #Uuid! = java.util.UUID.randomUUID().toString()
         #Priority! = 0
         #Status! = Task.STATUS_INCOMPLETE()
+        #Complete! = 0
         #DueDate! = -1
         #Created! = Instant.now()
     methodend
@@ -158,6 +163,7 @@ class public Task
         #Priority! = source!.getPriority()
         #DueDate! = source!.getDueDate()
         #Status! = source!.getStatus()
+        #Complete! = source!.isComplete()
     methodend
 
     rem Setters
@@ -194,12 +200,6 @@ class public Task
     rem  */
     method public static BBjString getStatusString(BBjNumber status!)
         switch status!
-            case #STATUS_INCOMPLETE()
-                s! = "incomplete"
-                break
-            case #STATUS_COMPLETE()
-                s! = "complete"
-                break
             case #STATUS_DEFFERRED()
                 s! = "deferred"
                 break
@@ -217,7 +217,7 @@ class public Task
     rem  * Returns whether the task is complete.
     rem  */
     method public BBjNumber isComplete()
-        methodret #Status! = #STATUS_COMPLETE()
+        methodret #Complete!
     methodend
 
     rem Misc utility methods
@@ -229,6 +229,7 @@ class public Task
     method public void printDetails()
         ? "Title: ", #Title!
         ? "Description: ", #Description!
+        ? "Complete: ", #Complete!
         ? "Status: ", #Status!
         ? "Priority: ", #Priority!
         ? "Due Date: ", #DueDate!
@@ -267,6 +268,7 @@ class public Task
         json!.addProperty("uuid", #getUuid())
         json!.addProperty("title", iff(#getTitle() <> null(), #getTitle(), ""))
         json!.addProperty("description", iff(#getDescription() <> null(), #getDescription(), ""))
+        json!.addProperty("complete", iff(#isComplete() <> null(), str(#isComplete()), ""))
         json!.addProperty("status", iff(#getStatus() <> null(), str(#getStatus()), ""))
         json!.addProperty("priority", iff(#getPriority() <> null(), str(#getPriority()), ""))
         json!.addProperty("duedate", iff(#getDueDate() <> null(), str(#getDueDate()), ""))

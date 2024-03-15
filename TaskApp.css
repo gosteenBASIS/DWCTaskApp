@@ -215,6 +215,7 @@ bbj-checkbox.hydrated {
 }
 
 .winTaskProperties .BBjPanel {
+    max-width: 25em;
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
@@ -236,10 +237,13 @@ bbj-checkbox.hydrated {
 }
 
 .winTaskProperties .BBjPanel .BBjButton {
-    flex: 1 1 25%;
+    flex: 1 1 30%;
     min-width: 10em;
     width: auto;
-    /* align-self: flex-end; */
+}
+
+.winTaskProperties .BBjPanel .BBjControl:last-child {
+    width: 100%;
 }
 
 @media (max-height: 600px) {
