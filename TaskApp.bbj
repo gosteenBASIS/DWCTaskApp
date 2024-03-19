@@ -39,7 +39,7 @@ REM     field protected TaskCardView        taskCardView! = new TaskCardView()
     field protected BBjChildWindow      winTaskCardComplete!
     field protected BBjChildWindow      winTaskCardPriority!
     field protected BBjChildWindow      winTaskCardDueDate!
-    field protected BBjChildWindow      winTaskList!
+    field protected BBjChildWindow      winTasks!
     field protected BBjTopLevelWindow   winSettings!
     field protected BBjStaticText       labelDay!
     field protected BBjStaticText       labelDate!
@@ -55,6 +55,7 @@ REM     field protected TaskCardView        taskCardView! = new TaskCardView()
     field protected BBjButton           btnImport!
     field protected BBjListButton       lstFontFamily!
     field protected BBjButton           btnShowCompletedTasks!
+    field protected BBjRadioButton      switchLayout!
 
     rem Misc Data
     field protected BBjString           appName! = "TaskApp"
@@ -64,7 +65,7 @@ REM     field protected TaskCardView        taskCardView! = new TaskCardView()
     field public    BBjString           taskView! = "incomplete"
     field public    BBjChildWindow      winTaskView!
     field public    BBjButton           btnIncompleteView!
-    field public    BBjButton           btnCompleteView! 
+    field public    BBjButton           btnCompleteView!
     field public    BBjButton           btnPriorityView!
     field public    BBjButton           btnDueView!
     field public    BBjNumber           displayType! = 2
@@ -133,6 +134,8 @@ REM     field protected TaskCardView        taskCardView! = new TaskCardView()
         #webManager! = BBjAPI().getWebManager()
         css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"TaskApp.css"))
         #webManager!.injectStyle(css!, 0, "name=taskapp_css")
+        css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"TaskListView.css"))
+        #webManager!.injectStyle(css!, 0, "name=taskapp_listview_css")
         css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"Settings.css"))
         #webManager!.injectStyle(css!, 0, "name=taskapp_settings_css")
 
@@ -275,7 +278,11 @@ REM     field protected TaskCardView        taskCardView! = new TaskCardView()
         endif
 
 
-
+        #switchLayout! = #winNavBar!.addRadioButton("Layout Type")
+        #switchLayout!.addClass("switchLayout")
+        #switchLayout!.setAttribute("switch", "")
+        #switchLayout!.setAttribute("expanse", "m")
+        #switchLayout!.setCallback(BBjControl.ON_CHECK_CHANGE, #this!, "OnSwitchChangeLayout")
 
         #winToolBar! = #winMain!.addChildWindow("ToolBar", $00108800$, #sysgui!.getAvailableContext())
         #winToolBar!.addClass("winToolBar")
@@ -283,13 +290,13 @@ REM     field protected TaskCardView        taskCardView! = new TaskCardView()
         #winTitle! = #winMain!.addChildWindow("Title", $00108800$, #sysgui!.getAvailableContext())
         #winTitle!.addClass("winTitle")
 
-        #winTaskList! = #winMain!.addChildWindow("Tasks", $00108800$, #sysgui!.getAvailableContext())
-        #winTaskList!.addClass("winTasks")
-        
+        #winTasks! = #winMain!.addChildWindow("Tasks", $00108800$, #sysgui!.getAvailableContext())
+        #winTasks!.addClass("winTasks")
+
         rem TASK CARD VIEW: windows (replaces lines 224-225)
 REM         #winTaskView! = #winMain!.addChildWindow("Title", $00108800$, #sysgui!.getAvailableContext())
 REM         #winTaskView!.addClass("winTaskView")
-REM         
+REM
 REM         #winTaskCard! = #winTaskView!.addChildWindow("All Tasks", $00108800$, #sysgui!.getAvailableContext())
 REM         #winTaskCard!.addClass("winTasks")
 REM         #winTaskCardComplete! = #winTaskView!.addChildWindow("Completed Tasks", $00108800$, #sysgui!.getAvailableContext())
@@ -301,6 +308,7 @@ REM         #winTaskCardPriority!.addClass("winTasks")
 REM         #winTaskCardDueDate! = #winTaskView!.addChildWindow("Tasks by Due Date", $00108800$, #sysgui!.getAvailableContext())
 REM         #winTaskCardDueDate!.addClass("winTasks")
 
+
         #addTaskList("incomplete")
         #addTaskList("waiting")
         #addTaskList("deferred")
@@ -310,10 +318,10 @@ REM         #winTaskCardDueDate!.addClass("winTasks")
         #labelDay!.addClass("labelDay")
         #labelDate! = #winTitle!.addStaticText(date(0:"%Dl, %Ml %D"), $4000$)
         #labelDate!.addClass("labelDate")
-        
-        rem TASK CARD VIEW: buttons (add after line 250) 
+
+        rem TASK CARD VIEW: buttons (add after line 250)
 REM         #winViews! = #winTitle!.addChildWindow("Title", $00108800$, #sysgui!.getAvailableContext())
-REM         #winViews!.addClass("winViews") 
+REM         #winViews!.addClass("winViews")
 
 REM         #btnIncompleteView! = #winViews!.addButton("Incomplete")
 REM         #btnIncompleteView!.addClass("btnView")
@@ -322,7 +330,7 @@ REM         #btnPriorityView! = #winViews!.addButton("Priority Level")
 REM         #btnPriorityView!.addClass("btnView")
 REM         #btnDueView! = #winViews!.addButton("Due Date")
 REM         #btnDueView!.addClass("btnView")
-REM         
+REM
 REM         #btnIncompleteView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onIncompleteView")
 REM         #btnPriorityView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onPriorityView")
 REM         #btnDueView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onDueView")
@@ -372,7 +380,7 @@ REM         #btnShowCompletedTasks!.setAttribute("expanse", "xs")
 
         #btnImport!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onImport")
         #btnExport!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onExport")
-        
+
         rem TASK CARD VIEW: completed tasks callback
 REM         #btnShowCompletedTasks!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onShowCompletedTasks")
 
@@ -391,7 +399,7 @@ REM         #btnShowCompletedTasks!.setCallback(BBjControl.ON_BUTTON_PUSH, #this
         rem it! = #tasks!.values().iterator()
 
 
-        rem TASK CARD VIEW: created sorted view to create (replaces line 334)      
+        rem TASK CARD VIEW: created sorted view to create (replaces line 334)
 REM         orderedTasks! = #getSortedTasks(#displayType!) look at lines 398 - 402 for updating this
 
         rem New code that gets a sorted TreeMap of the tasks
@@ -440,7 +448,7 @@ REM                 view!.setVisible(0)
 
             dueDate! = task!.getDueDate()
 REM             created! = task!.getCreated()
-            
+
             if (dueDate! > -1) then
                 taskDate! = date(dueDate!:"%Yl-%Mz-%Dz")
             else
@@ -458,20 +466,20 @@ REM             created! = task!.getCreated()
                 rem The TreeMap's key will be comprised of the priority, then the date, then the UUID
                   key! = str(priority!) + taskDate! + uuid!
             endif
-            
+
              rem TASK CARD VIEW: This determines the sort order, which is based on the provide parameter (replaces lines 384-388)
 REM             if (byPriority = 0) then
 REM                 key! = taskDate! + str(5-priority!) + uuid!
 REM             endif
-REM             
+REM
 REM             if (byPriority = 1) then
 REM                 key! = str(5-priority!) + taskDate! + uuid!
-REM             endif     
-REM             
+REM             endif
+REM
 REM             if (byPriority = 2) then
 REM                 key! = STR(created!.toEpochMilli()) + uuid!
 REM             endif
-            
+
             sortedTasks!.put(key!, task!)
         wend
         methodret sortedTasks!
@@ -482,7 +490,7 @@ REM             endif
     rem  */
 REM     method public TaskCardView addTaskCardView(Task task!)
 REM         view! = new TaskCardView(#winTaskCard!, task!)
-REM             
+REM
 REM         if (task!.isComplete() = 0) then
 REM             if (#displayType! = 0) then view! = new TaskCardView(#winTaskCardDueDate!, task!)
 REM             if (#displayType! = 1) then view! = new TaskCardView(#winTaskCardPriority!, task!)
@@ -490,12 +498,12 @@ REM             if (#displayType! = 2) then view! = new TaskCardView(#winTaskCar
 REM         else
 REM             view! = new TaskCardView(#winTaskCardComplete!, task!)
 REM         endif
-REM 
+REM
 REM         #winTaskCard!.setVisible(0)
 REM         #winTaskCardComplete!.setVisible(0)
 REM         #winTaskCardPriority!.setVisible(0)
 REM         #winTaskCardDueDate!.setVisible(0)
-REM 
+REM
 REM         #taskViews!.put(task!.getUuid(), view!)
 REM         view!.getwin().setCallback(BBjControl.ON_CLICK, #this!, "onTaskClick")
 REM         methodret view!
@@ -505,7 +513,7 @@ REM     methodend
     rem  * Add a Task List Window
     rem  */
     method public BBjChildWindow addTaskList(BBjString name!)
-        taskList! = #winTaskList!.addChildWindow(name!, $00108800$, #sysgui!.getAvailableContext())
+        taskList! = #winTasks!.addChildWindow(name!, $00108800$, #sysgui!.getAvailableContext())
         rem Probably remove winTasks, just use taskList
         taskList!.addClass("taskList fadeIn")
         #vectTaskLists!.addItem(taskList!)
@@ -538,8 +546,8 @@ REM     methodend
         endif
         t! = #tasks!.get(e!.getControl().getAttribute("id"))
         #taskProperties!.loadTask(t!)
-        
-        rem TASK CARD VIEW: onTaskClick method 
+
+        rem TASK CARD VIEW: onTaskClick method
 REM         win! = e!.getControl()
 REM         lock! = "<html><bbj-icon pool='tabler' name='lock' style='width: 30px; height: 30px'></bbj-icon>"
 REM         lockOpen! = "<html><bbj-icon pool='tabler' name='lock-open' style='width: 30px; height: 30px'></bbj-icon>"
@@ -549,33 +557,33 @@ REM         if (btnLock! = null()) OR (btnLock!.getText() = lockOpen!) then
 REM             if (#taskProperties! = null()) then
 REM                 #taskProperties! = new TaskProperties()
 REM             endif
-REM 
+REM
 REM             t! = #tasks!.get(e!.getControl().getAttribute("id"))
-REM             #taskProperties!.loadTask(t!)  
-REM         else       
+REM             #taskProperties!.loadTask(t!)
+REM         else
 REM             unlockResult! = msgbox("Would you like to edit task now?", BBjSysGui.MSGBOX_BUTTONS_YES_NO + BBjSysGui.MSGBOX_ICON_INFORMATION, "Unlock Task to Edit")
-REM             
-REM             if (unlockResult! = 6) then   
+REM
+REM             if (unlockResult! = 6) then
 REM                 if (#taskProperties! = null()) then
 REM                     #taskProperties! = new TaskProperties()
 REM                 endif
-REM                 
+REM
 REM                 btnLock!.setText(lockOpen!)
 REM                 btnLock!.removeClass("btn-lock")
 REM                 btnLock!.addClass("btn-lock-open")
 REM                 win!.removeClass("task-complete")
 REM                 win!.addClass("task")
-REM                 
+REM
 REM                 t! = #tasks!.get(e!.getControl().getAttribute("id"))
 REM                 #taskProperties!.loadTask(t!)
-REM                 
+REM
 REM                 dataVector! = BBjAPI().makeVector()
 REM                 dataVector!.addItem(win!)
 REM                 dataVector!.addItem(btnLock!)
 REM                 if (t!.isComplete()) then #taskProperties!.passData(dataVector!)
 REM             endif
 REM         endif
-        
+
     methodend
 
     rem /**
@@ -618,6 +626,13 @@ REM         endif
     methodend
 
     rem /**
+    rem  * Toggles the layout type for the tasks, alternating betweeen a list (default) and card layout
+    rem  */
+    method public void OnSwitchChangeLayout(BBjCheckChangeEvent event!)
+        #winTasks!.toggleClass("cardLayout")
+    methodend
+
+    rem /**
     rem  * Activated by custom event TASK_UPDATE
     rem  * This method handles any UI or data updates that may be necessary when a Task is modified.
     rem  *
@@ -646,7 +661,7 @@ REM         endif
 
         rem Automatically export every time a task is updated
         #onExport(null())
-        
+
         rem TASK CARD VIEW: onTaskUpdate method
 REM         declare auto TaskCardView view!
 REM         declare auto Task t!
@@ -672,7 +687,7 @@ REM                 viewDueDate!.refresh()
 REM             endif
 REM         endif
 REM         rem Automatically export every time you save
-REM         #onExport(null())       
+REM         #onExport(null())
     methodend
 
     rem /**
@@ -725,8 +740,8 @@ REM         #onExport(null())
         endif
         #taskProperties!.loadTask(task!)
     methodend
-    
-    
+
+
     rem TASK CARD VIEW: different viewing methods
     rem /**
     rem  * - Toggles visibility of #winTaskCardComplete! which contains all complete task child windows
@@ -737,7 +752,7 @@ REM         #onExport(null())
     rem  * @param e!        The BBjButtonPushEvent that causes this method to be executed
     rem  */
 REM     method public void onShowCompletedTasks(BBjButtonPushEvent e!)
-REM         if (#taskView! = "incomplete") then             
+REM         if (#taskView! = "incomplete") then
 REM             #taskView! = "complete"
 REM             #btnShowCompletedTasks!.addClass("icon-completed-selected")
 REM             #winTaskCardIncomplete!.setVisible(0)
@@ -768,7 +783,7 @@ rem /**
     rem  */
 REM     method public void onIncompleteView(BBjButtonPushEvent e!)
 REM         winIncompleteControls! = #winTaskCardIncomplete!.getAllControls()
-REM         
+REM
 REM         if (#winTaskCardIncomplete!.isVisible()) then
 REM             #winTaskCardIncomplete!.setVisible(0)
 REM             #btnIncompleteView!.removeClass("view-btn-selected")
@@ -777,13 +792,13 @@ REM             #displayType!= 2
 REM             #winTaskCardComplete!.setVisible(0)
 REM             #winTaskCardPriority!.setVisible(0)
 REM             #winTaskCardDueDate!.setVisible(0)
-REM             
-REM             if (winIncompleteControls!.size() = 0) then 
+REM
+REM             if (winIncompleteControls!.size() = 0) then
 REM                 #displayTasks()
-REM             else 
+REM             else
 REM                 #winTaskCardIncomplete!.setVisible(1)
 REM             endif
-REM             
+REM
 REM             #taskView! = "incomplete"
 REM             #labelDay!.setText("Today")
 REM             #btnIncompleteView!.addClass("view-btn-selected")
@@ -792,17 +807,17 @@ REM             #btnPriorityView!.removeClass("view-btn-selected")
 REM             #btnDueView!.removeClass("view-btn-selected")
 REM         endif
 REM     methodend
-    
+
     rem /**
     rem  * - Toggles visibility of #winTaskCardPriority! which contains all incomplete task child windows organized by Priority
     rem  * - Toggles all related classes
     rem  * - Triggered by #btnPriorityView!
     rem  *
     rem  * @param e!        The BBjButtonPushEvent that causes this method to be executed
-    rem  */    
+    rem  */
 REM     method public void onPriorityView(BBjButtonPushEvent e!)
 REM         winPriorityControls! = #winTaskCardPriority!.getAllControls()
-REM         
+REM
 REM          if (#winTaskCardPriority!.isVisible()) then
 REM             #winTaskCardPriority!.setVisible(0)
 REM             #btnPriorityView!.removeClass("view-btn-selected")
@@ -811,13 +826,13 @@ REM             #displayType! = 1
 REM             #winTaskCardComplete!.setVisible(0)
 REM             #winTaskCardIncomplete!.setVisible(0)
 REM             #winTaskCardDueDate!.setVisible(0)
-REM             
-REM             if (winPriorityControls!.size() = 0) then 
+REM
+REM             if (winPriorityControls!.size() = 0) then
 REM                 #displayTasks()
-REM             else 
+REM             else
 REM                 #winTaskCardPriority!.setVisible(1)
 REM             endif
-REM             
+REM
 REM             #winTaskCardPriority!.setVisible(1)
 REM             #taskView! = "incomplete"
 REM             #labelDay!.setText("Today")
@@ -827,17 +842,17 @@ REM             #btnDueView!.removeClass("view-btn-selected")
 REM             #btnPriorityView!.addClass("view-btn-selected")
 REM         endif
 REM     methodend
-    
+
     rem /**
     rem  * - Toggles visibility of #winTaskCardDueDate! which contains all incomplete task child windows organized by Due Date
     rem  * - Toggles all related classes
     rem  * - Triggered by #btnDueView!
     rem  *
     rem  * @param e!        The BBjButtonPushEvent that causes this method to be executed
-    rem  */    
+    rem  */
 REM     method public void onDueView(BBjButtonPushEvent e!)
 REM         winDueDateControls! = #winTaskCardDueDate!.getAllControls()
-REM     
+REM
 REM         if (#winTaskCardDueDate!.isVisible()) then
 REM             #winTaskCardDueDate!.setVisible(0)
 REM             #btnDueView!.removeClass("view-btn-selected")
@@ -846,13 +861,13 @@ REM             #displayType! = 0
 REM             #winTaskCardComplete!.setVisible(0)
 REM             #winTaskCardIncomplete!.setVisible(0)
 REM             #winTaskCardPriority!.setVisible(0)
-REM             
-REM             if (winDueDateControls!.size() = 0) then 
+REM
+REM             if (winDueDateControls!.size() = 0) then
 REM                 #displayTasks()
-REM             else 
+REM             else
 REM                 #winTaskCardDueDate!.setVisible(1)
 REM             endif
-REM 
+REM
 REM             #winTaskCardDueDate!.setVisible(1)
 REM             #taskView! = "incomplete"
 REM             #labelDay!.setText("Today")
