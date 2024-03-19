@@ -58,7 +58,7 @@ REM     field protected TaskCardView        taskCardView! = new TaskCardView()
 
     rem Misc Data
     field protected BBjString           appName! = "TaskApp"
-    field protected BBjString           version! = "0.02"
+    field protected BBjString           version! = "0.07"
     field protected BBjString           appPath! = dsk("") + dir("")
     field protected BBjVector           vectFontFamilies! = BBjAPI().makeVector()
     field public    BBjString           taskView! = "incomplete"
@@ -106,12 +106,22 @@ REM     field protected TaskCardView        taskCardView! = new TaskCardView()
     methodend
 
 
-    rem User Preferences
+    rem Define the user preferences which will be stored in a HashMap and saved out as a cookie
     rem ========================================
-    rem /** The user's preferred DWC theme to use for the UI */
+    rem /** The hashmap that stores all the user's preferences */
+    field private HashMap hashPrefs!
+    rem /** The user's preferred DWC theme to use for the UI, i.e. light, dark, dark-pure, or system */
     field protected BBjString prefsTheme! = #THEME_SYSTEM()
-    rem /** The user's preferred priority level for new Tasks that have not been assigned a priority */
-    field protected BBjNumber prefsDefaultTaskPriority!
+    rem /** The user's preferred font family (CSS: font-family)for the tasks */
+    field protected BBjString prefsTaskFontFamily! = "Rambla"
+    rem /** The user's preferred font weight (CSS: font-weight)for the tasks */
+    field protected BBjString prefsTaskFontWeight! = "var(--bbj-font-weight-semibold)"
+    rem /** The user's preferred font size for the tasks.
+    field protected BBjString prefsTaskFontSize! = "var(--bbj-font-size-m)"
+    rem /** The user's preferred font letter spacing (CSS: letter-spacing) for the tasks.  This will usually be 'normal', but can be a length as in '0.5px'. */
+    field protected BBjString prefsTaskFontSpacing! = "normal"
+    rem /** The user's preferred font weight for the tasks */
+    field protected BBjNumber prefsDefaultTaskPriority! = 3
 
 
     rem Constructors
@@ -123,6 +133,9 @@ REM     field protected TaskCardView        taskCardView! = new TaskCardView()
         #webManager! = BBjAPI().getWebManager()
         css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"TaskApp.css"))
         #webManager!.injectStyle(css!, 0, "name=taskapp_css")
+        css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"Settings.css"))
+        #webManager!.injectStyle(css!, 0, "name=taskapp_settings_css")
+
 
         rem Set the app's icon in the browser's tab
         url! = "https://public.basis.cloud/images/DWCTaskApp.svg"
@@ -151,6 +164,45 @@ REM     field protected TaskCardView        taskCardView! = new TaskCardView()
         #taskPriorityViews! = new TreeMap()
         #taskDueDateViews! = new TreeMap()
 
+        rem Create the HashMap to store the user preferences and load it up with the default values
+        #hashPrefs! = new HashMap()
+        #hashPrefs!.put("prefsTheme", #prefsTheme!)
+        #hashPrefs!.put("prefsTaskFontFamily", #prefsTaskFontFamily!)
+        #hashPrefs!.put("prefsTaskFontWeight", #prefsTaskFontWeight!)
+        #hashPrefs!.put("prefsTaskFontSize", #prefsTaskFontSize!)
+        #hashPrefs!.put("prefsTaskFontSpacing", #prefsTaskFontSpacing!)
+        #hashPrefs!.put("prefsDefaultTaskPriority", #prefsDefaultTaskPriority!)
+
+        rem Read the user's preferences from a cookie, then apply all saved values to the HashMap of user preferences
+        rem This means that the HashMap is initially filled with default values, but then the user's saved preferences replace the defaults
+        hashPrefsFromCookie! = #getCookies(#appName!,err=*NEXT)
+        if (hashPrefsFromCookie! <> null()) then
+            it! = hashPrefsFromCookie!.keySet().iterator()
+            while (it!.hasNext())
+                key! = it!.next()
+                if (#hashPrefs!.containsKey(key!)) then
+                    value! = hashPrefsFromCookie!.get(key!)
+                    #hashPrefs!.put(key!, str(value!))
+                endif
+            wend
+        endif
+
+        rem Get the updated preferences from the HashMap and apply the values to our field variables
+        #prefsTheme! = #hashPrefs!.get("prefsTheme").toString()
+        #prefsTaskFontFamily! = #hashPrefs!.get("prefsTaskFontFamily").toString()
+        #prefsTaskFontWeight! = #hashPrefs!.get("prefsTaskFontWeight").toString()
+        #prefsTaskFontSize! = #hashPrefs!.get("prefsTaskFontSize").toString()
+        #prefsTaskFontSpacing! = #hashPrefs!.get("prefsTaskFontSpacing").toString()
+        #prefsDefaultTaskPriority! = num(#hashPrefs!.get("prefsDefaultTaskPriority"))
+
+        rem Finally, apply user preferences
+        #webManager!.setTheme(#prefsTheme!, err=*NEXT)
+        #setCssProperty("--app-font-family-task", #prefsTaskFontFamily!)
+        #setCssProperty("--app-font-weight-task", #prefsTaskFontWeight!)
+        #setCssProperty("--app-font-size-task", #prefsTaskFontSize!)
+        #setCssProperty("--app-font-spacing-task", #prefsTaskFontSpacing!)
+
+        rem Register for a custom event that the TaskProperties fires after the user is done editing or adding a task
         BBjAPI().setCustomEventCallback("TASK_UPDATE",#this!,"onTaskUpdate")
     methodend
 
@@ -161,9 +213,6 @@ REM     field protected TaskCardView        taskCardView! = new TaskCardView()
     rem  * Runs the TaskApp application
     rem  */
     method public void run()
-        rem Set defaults and apply user preferences
-        #webManager!.setTheme(#prefsTheme!, err=*NEXT)
-
         if (new java.io.File(#appPath!+"tasks.json").exists()) then
             #onImport(null(), err=*next)
         else
@@ -203,7 +252,9 @@ REM     field protected TaskCardView        taskCardView! = new TaskCardView()
         rem Create a linefeed-delimited list of font families from the vectory to populate the BBjListButton
         fontFamiliesList! = java.lang.String.join($0a$, java.util.Arrays.asList(#vectFontFamilies!))
         rem Modfify each entry in the list so that use uses HTML markup to style the font name to that font family
-        fontFamiliesList! = fontFamiliesList!.replaceAll("(?mi)^(.*)$", "<html><span style='font-family:$1'>$1</span>")
+        regExSearchFor! = "(?mi)^(.*)$"
+        regExReplaceWith! = "<html><span style='font-family:$1;font-weight:var(--app-font-weight-task);font-size:var(--app-font-size-task);letter-spacing:var(--app-font-spacing-task);'>$1</span>"
+        fontFamiliesList! = fontFamiliesList!.replaceAll(regExSearchFor!, regExReplaceWith!)
 
         rem Add the font family listbutton, add some custom classes, and set the callback
         #lstFontFamily! = #winNavBar!.addListButton(fontFamiliesList!)
@@ -212,9 +263,19 @@ REM     field protected TaskCardView        taskCardView! = new TaskCardView()
         #lstFontFamily!.setAttribute("open-height", "100%")
         #lstFontFamily!.addClass("nav_item nav_fonts")
         #lstFontFamily!.setCallback(BBjControl.ON_LIST_CHANGE, #this!, "onListChangeFontFamilies")
-        rem Initialize the listbutton by selecting the first item and then setting the font CSS custom property to make it take effect
-        #lstFontFamily!.selectIndex(0)
-        #setCssProperty("--app-font-task", str(#vectFontFamilies!.getItem(0)))
+
+        rem Select the correct font family for the tasks in the BBjListButton
+        if (#vectFontFamilies!.contains(#prefsTaskFontFamily!)) then
+            rem Select the user's preferred font family in the list
+            #lstFontFamily!.selectIndex(#vectFontFamilies!.indexOf(#prefsTaskFontFamily!))
+        else
+            rem Since the user's preferred font family for the tasks wasn't in the vector, we'll default to the first item in the list
+            #lstFontFamily!.selectIndex(0)
+            #setCssProperty("--app-font-task", str(#vectFontFamilies!.getItem(0)))
+        endif
+
+
+
 
         #winToolBar! = #winMain!.addChildWindow("ToolBar", $00108800$, #sysgui!.getAvailableContext())
         #winToolBar!.addClass("winToolBar")
@@ -267,10 +328,11 @@ REM         #btnPriorityView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "on
 REM         #btnDueView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onDueView")
 
         rem Create the FAB (floating action button) and the toolbar buttons
-        #btnAddTaskFAB! = #winMain!.addButton("+")
+        #btnAddTaskFAB! = #winMain!.addButton("<html><bbj-icon pool='tabler' name='plus''></bbj-icon>")
         #btnAddTaskFAB!.addClass("btnAddTaskFAB")
         #btnAddTaskFAB!.setAttribute("theme", "primary")
-        
+        #btnAddTaskFAB!.setAttribute("expanse", "xs")
+
         rem TASK CARD VIEW: show completed task cards (completed tasks button on toolbar)
 REM         #btnShowCompletedTasks! = #winToolBar!.addButton("<html><bbj-icon pool='tabler' name='checks'></bbj-icon>")
 REM         #btnShowCompletedTasks!.addClass("toolbar_icon icon-completed")
@@ -328,10 +390,13 @@ REM         #btnShowCompletedTasks!.setCallback(BBjControl.ON_BUTTON_PUSH, #this
         rem Original code that uses the #tasks object which isn't sorted
         rem it! = #tasks!.values().iterator()
 
-        rem TASK CARD VIEW: created sorted view to create (replaces line 334)      
-REM         orderedTasks! = #getSortedTasks(#displayType!)
 
-        orderedTasks! = #getSortedTasks(0)
+        rem TASK CARD VIEW: created sorted view to create (replaces line 334)      
+REM         orderedTasks! = #getSortedTasks(#displayType!) look at lines 398 - 402 for updating this
+
+        rem New code that gets a sorted TreeMap of the tasks
+        #labelDate!.setText("<html>" + date(0:"%Dl, %Ml %D") + $0A$ + "<span style='font-size:50%;'>Tasks Sorted by Priority")
+        orderedTasks! = #getSortedTasks("priority")
         it! = orderedTasks!.values().iterator()
 
         rem TASK CARD VIEW: task loop (replaces lines 345-352)
@@ -355,19 +420,26 @@ REM                 view!.setVisible(0)
     rem  * that its key is the priority+dueDate+Uuid (when sorted by priority),
     rem  * or dueDate+priority+Uuid (when sorted by date).  We're concatenating
     rem  * the three fields and letting the TreeMap object sort the tasks for us
-    rem  * based on the constructed key.  This new TreeMap still contains the tasks
-    rem  * in the value, and can be used to fill the task list view in a sorted manner.
+    rem  * based on the constructed key.  This new TreeMap still contains the task
+    rem  * objects in the value, so it can be used to fill the task list view in
+    rem  * a sorted manner.
+    REM  *
+    REM  * @param BBjString sortType!       The desired sorting type for the returned TreeMap.  Values can be "priority" or "date"
+    REM  * @return TreeMap                  A TreeMap where the values are the tasks objects and the key is based on the sorting type
     rem  */
-    method public TreeMap getSortedTasks(BBjNumber byPriority)
+    method public TreeMap getSortedTasks(BBjString sortType!)
         sortedTasks! = new TreeMap()
 
         it! = #tasks!.keySet().iterator()
         while it!.hasNext()
             uuid! = it!.next()
             task! = #tasks!.get(uuid!)
-            priority! = task!.getPriority()
+
+            rem If the task's priority is 0, meaning that it's unset, then we'll use priority 9 so that it appears at the end of the sorted list
+            priority! = iff(task!.getPriority()>0, task!.getPriority(), 9)
+
             dueDate! = task!.getDueDate()
-            created! = task!.getCreated()
+REM             created! = task!.getCreated()
             
             if (dueDate! > -1) then
                 taskDate! = date(dueDate!:"%Yl-%Mz-%Dz")
@@ -377,10 +449,14 @@ REM                 view!.setVisible(0)
             endif
 
             rem This determines the sort order, which is based on the provide parameter
-            if (byPriority) then
-                key! = str(5-priority!) + taskDate! + uuid!
+            if (sortType!.toLowerCase().trim().contains("date")) then
+                rem Sort by the task's due date
+                rem The TreeMap's key will be comprised of the date, then the priority, then the UUID
+                key! = taskDate! + str(priority!) + uuid!
             else
-                key! = taskDate! + str(5-priority!) + uuid!
+                rem Sort by the task's priority
+                rem The TreeMap's key will be comprised of the priority, then the date, then the UUID
+                  key! = str(priority!) + taskDate! + uuid!
             endif
             
              rem TASK CARD VIEW: This determines the sort order, which is based on the provide parameter (replaces lines 384-388)
@@ -803,6 +879,7 @@ REM     methodend
         if (#winSettings! = null()) then
             #winSettings! = #sysgui!.addWindow(#sysgui!.getAvailableContext(), "TaskApp Settings", $011B0010$)
             #winSettings!.addClass("winSettings")
+            #winSettings!.setOuterStyle("overflow", "hidden")
             #winSettings!.setIcon(dsk("")+dir("")+"images/DWCTaskApp.png")
 
             rem Create the [Done] button that closes the settings window
@@ -817,8 +894,10 @@ REM     methodend
             win! = #winSettings!.addChildWindow("", $00108800$, #sysgui!.getAvailableContext())
             win!.addClass("settingsChildWindow")
             text! = win!.addStaticText("<html><bbj-icon pool='tabler' name='palette' class='icon'></bbj-icon>&&nbsp; Theme")
-            text! = win!.addStaticText(themeColor!)
-            settingsThemeColor! = win!.addButton("<html><bbj-icon pool='tabler' name='chevron-right' class='chevron'></bbj-icon>")
+            text!.addClass("settingsLabel")
+            REM text! = win!.addStaticText(themeColor!)
+            settingsThemeColor! = win!.addButton("<html>" + themeColor! + " <bbj-icon pool='tabler' name='chevron-right' class='chevron'></bbj-icon>")
+            settingsThemeColor!.addClass("toolbar_icon")
 
             rem About
             text! = #winSettings!.addStaticText("About the App")
@@ -826,7 +905,8 @@ REM     methodend
             win! = #winSettings!.addChildWindow("", $00108800$, #sysgui!.getAvailableContext())
             win!.addClass("settingsChildWindow")
             text! = win!.addStaticText("<html><bbj-icon pool='tabler' name='info-circle' class='icon'></bbj-icon>&&nbsp; About")
-            settingsAbout! = win!.addButton("<html><bbj-icon pool='tabler' name='chevron-right' class='chevron'></bbj-icon>")
+            settingsAbout! = win!.addButton("<html>Version " + #version! + " <bbj-icon pool='tabler' name='chevron-right' class='chevron'></bbj-icon>")
+            settingsAbout!.addClass("toolbar_icon settingsValue")
 
             rem Set the control callbacks
             settingsDone!.setCallback(BBjButton.ON_BUTTON_PUSH, #this!, "onSettingsDone")
@@ -843,10 +923,19 @@ REM     methodend
         #winSettings!.setVisible(0)
     methodend
     method public void onSettingsThemeColor(BBjButtonPushEvent e!)
-        temp = msgbox("Net Yet Implemented")
+        temp = msgbox("Not Yet Implemented", BBjSysGui.MSGBOX_ICON_STOP, #appName!, mode="theme=warning")
     methodend
     method public void onSettingsAbout(BBjButtonPushEvent e!)
-        temp = msgbox("TaskApp is current at version 0.0!")
+        REM msg! = "<html><img src=""https://public.basis.cloud/images/DWCTaskApp.svg"" height=""0px""> DWC TaskApp version " + #version!
+        msg! = "<html><div style='padding: 0.75em 0 0 0;'>The TaskApp application was authored by: "
+        msg! = msg! + "<ul>"
+        msg! = msg! + "<li>Alex Anastassatos</li>"
+        msg! = msg! + "<li>Bryan Highhill</li>"
+        msg! = msg! + "<li>Garrison Osteen</li>"
+        msg! = msg! + "<li>Nick Decker</li>"
+        msg! = msg! + "</ul></div>"
+        mode! = "theme=primary,ICON=./images/DWCTaskApp.png,ICONWIDTH=42"
+        temp = msgbox(msg!, BBjSysGui.MSGBOX_ICON_INFORMATION, #appName! + " Version " + #version!, mode=mode!)
     methodend
     rem ====================  END of Settings ====================
 
@@ -861,6 +950,8 @@ REM     methodend
     rem  * BBjListChangeEvent e!    The BBjListButton's ON_LIST_CHANGE event
     rem  */
     method public void onListChangeFontFamilies(BBjListChangeEvent e!)
+        declare auto BBjString fontFamily!
+
         rem Get the selected item from the list
         fontFamilyHtml! = e!.getSelectedItem()
 
@@ -873,19 +964,12 @@ REM     methodend
         REM fontFamily! = str(#vectFontFamilies!.getItem(e!.getSelectedIndex()))
 
         rem Now set the font for the tasks by setting the CSS custom property that we defined for that purpose
-        #setCssProperty("--app-font-task", fontFamily!)
+        #setCssProperty("--app-font-family-task", fontFamily!)
 
-        rem If the font is extremely compressed, then we'll add in some extra space between letters for improved legibilty
-        fontFamily! = fontFamily!.toLowerCase()
-        if (fontFamily!.contains("bebas")) OR (fontFamily!.contains("oswald"))  OR (fontFamily!.contains("teko")) then
-            #setCssProperty("--app-font-task-spacing", "0.1ch")
-        else
-            rem Get the computed letter spacing style of the task title
-            letterSpacing! = str(#webManager!.getComputedStyle("letter-spacing", ".title-display"))
-
-            rem Only revert the letter spacing back to normal if it's not already set to 'normal'
-            if (letterSpacing! <> "normal") then #setCssProperty("--app-font-task-spacing", "normal")
-        endif
+        rem Save out the user's preferred task font family in a cookie
+        #prefsTaskFontFamily! = fontFamily!
+        #hashPrefs!.put("prefsTaskFontFamily", #prefsTaskFontFamily!)
+        #setCookies(#appName!, #hashPrefs!, err=*NEXT)
     methodend
 
     rem /**
@@ -943,7 +1027,7 @@ REM     methodend
         open(chan, isz=-1, mode="O_TRUNC,O_CREATE") f$
             write record(chan) gson!.toJson(json!).toString()
         close(chan)
-        #consoleLog("Exported " + str(json!.size()) +  " tasks.")
+        REM #consoleLog("Exported " + str(json!.size()) +  " tasks.")
     methodend
 
     method public void onImport(BBjButtonPushEvent e!)
@@ -957,7 +1041,7 @@ REM         parser!.setLenient(BBjAPI().TRUE)
         json! = parser!.parseString(json$)
 
         gson! = new GsonBuilder().setPrettyPrinting().create()
-        #consoleLog(json!.toString())
+        REM #consoleLog(json!.toString())
         array! = gson!.fromJson(json!, JsonArray.class)
         it! = array!.iterator()
         rem todo: clear treemap after checking if there are any tasks to import
@@ -970,6 +1054,100 @@ REM         parser!.setLenient(BBjAPI().TRUE)
         wend
     methodend
 
+
+    REM /**
+    REM  * Method to set multiple string-based user preferences via a HashMap to reduce client-server round trips
+    REM  * <p>
+    REM  * The get/setCookies() methods bypasses the effort of creating string templates and BBjTemplatedStrings as well as encoding
+    REM  * information for safety and portability.  You only have to provide a unique key value that's used to
+    REM  * store the information (usually the app's name, but it can be virtually any string) and a HashMap filled
+    REM  * with the information to store.  The method iterates through the HashMap's keys and builds a string
+    REM  * that consists of the HashMap's key/value pairs joined by the <code>"-,-"</code> characters in an
+    REM  * attempt to provide a reasonable separator that won't interfere with the stored data.
+    REM  * <p>
+    REM  * Both get/setCookies() methods throw errors, so you may want to add an <code>,err=</code> branch when
+    REM  * calling these methods.  The getCookies() method will return a Hashmap filled with key/value pairs if
+    REM  * the cookie exists.  If it does not exist, it will return <code>null()</code>.
+    REM  * <p>
+    REM  * The corresponding <code>getCookies()</code> method is used to retrieve the stored information from the
+    REM  * client's computer (GUI) or browser (BUI).  You only need to provide the unique key value when getting
+    REM  * the saved cookies, greatly simplifying the reading/writing of user properties
+    REM  *
+    REM  * @param p_cookieKey$          A BBjString with the unique identifier for the saved cookie, such as the application's name
+    REM  * @param p_cookieHashMap!      A HashMap filled with key/value pairs to be stored where the key is the field name and the value is the string value for that field
+    REM  *
+    REM  * @see <a href='https://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html' target='_blank'>HashMap</a> for more information on the Java HashMap object
+    REM  */
+    method public static void setCookies(BBjString p_cookieKey$, HashMap p_cookieHashMap!)
+        it! = p_cookieHashMap!.keySet().iterator()
+        while it!.hasNext()
+            key$ = it!.next()
+            value$ = str(p_cookieHashMap!.get(key$))
+            fullString$ = fullString$ + key$ + "-,-" + value$ + $0A$
+        wend
+        fullString$ = fullString$(1, len(fullString$)-1)
+
+        REM Encode the string contents and store it in the user properties based on the provided application key
+        encodedCookies$ = URLEncoder.encode(fullString$)
+        tc! = BBjAPI().getThinClient(err=ERR_GETTING_THINCLIENT)
+        tc!.setUserProperty(p_cookieKey$, encodedCookies$, err=ERR_WRITING_COOKIE)
+        methodret
+
+        ERR_GETTING_THINCLIENT:
+        throw "Error getting the BBjThinClient when trying to set cookies.  The error message was: " + errmes(-1), 725
+
+        ERR_WRITING_COOKIE:
+        throw "Error saving cookie.  The error message was: " + errmes(-1), 720
+    methodend
+
+
+    REM /**
+    REM  * Method to get multiple string-based user preferences in a HashMap to reduce client-server round trips
+    REM  * <p>
+    REM  * The get/setCookies() methods offer a simple way to persist application setting via a HashMap.  You
+    REM  * save information by calling the setCookies() method providing a unique key value that's used to
+    REM  * store the information (usually the app's name, but it can be virtually any string) and a HashMap filled
+    REM  * with the information to store.  You can then call the getCookies() method to retrieve the saved
+    REM  * information in a HashMap.  The methods bypass the effort of creating string templates and BBjTemplatedStrings
+    REM  * as well as encoding information for safety and portability.
+    REM  * <p>
+    REM  * Both get/setCookies() methods throw errors, so you may want to add an <code>,err=</code> branch when
+    REM  * calling these methods.  The getCookies() method will return a Hashmap filled with key/value pairs if
+    REM  * the cookie exists.  If it does not exist, it will return <code>null()</code>.
+    REM  *
+    REM  * @param p_cookieKey$          A BBjString with the unique identifier for the saved cookie, such as the application's name
+    REM  *
+    REM  * @return                      A HashMap filled with key/value pairs, basically a clone of the HahMap provided to the setCookies() method.  If the cookie doesn't exist on the client's machine or browser, the method retuns null().
+    REM  */
+    method public static HashMap getCookies(BBjString p_cookieKey$)
+        declare HashMap             hashCookies!
+
+        tc! = BBjAPI().getThinClient(err=ERR_GETTING_THINCLIENT)
+        prop$ = tc!.getUserProperty(p_cookieKey$, ERR=ERR_READING_COOKIE)
+        cookieValue! = URLDecoder.decode(prop$)
+        if (cookieValue! <> null()) then
+            hashCookies! = new HashMap()
+            fieldList! = java.util.Arrays.asList(cookieValue!.split($0A$))
+            for fieldNum = 0 to fieldList!.size()-1
+                keyVal! = fieldList!.get(fieldNum)
+                keyValVector! = java.util.Arrays.asList(keyVal!.split("-,-"))
+                hashCookies!.put(keyValVector!.get(0,err=*NEXT), keyValVector!.get(1,err=*NEXT))
+            next
+        endif
+        methodret hashCookies!
+
+        ERR_GETTING_THINCLIENT:
+        throw "Error getting the BBjThinClient when trying to get cookies.  The error message was: " + errmes(-1), 725
+
+        ERR_READING_COOKIE:
+        if (err=11) then
+            methodret null()
+        else
+            throw "Error reading cookie.  The error message was: " + errmes(-1), 720
+        endif
+    methodend
+
+
     rem /**
     rem  * Logs the provided string into the user's browser Developer Tools console.
     rem  *
@@ -981,6 +1159,7 @@ REM         parser!.setLenient(BBjAPI().TRUE)
     method protected void consoleLog(BBjString logEntry!)
         #consoleLogValues(logEntry!, "")
     methodend
+
 
     rem /**
     rem  * Logs the provided strings, usually key/value pairs, into the user's browser Developer Tools console.
@@ -1027,6 +1206,9 @@ REM use ::Task-Card-View.bbj::TaskCardView
 rem Java USE Statements
 use java.time.LocalDate
 use java.util.TreeMap
+use java.util.HashMap
+use java.net.URLEncoder
+use java.net.URLDecoder
 
 rem Google's Gson for JSON, which is included with BBj
 use com.google.gson.Gson;           rem https://javadoc.io/static/com.google.code.gson/gson/2.10.1/com.google.gson/com/google/gson/Gson.html

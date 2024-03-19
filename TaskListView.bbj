@@ -40,17 +40,19 @@ class public TaskListView
 
         #due! = #win!.addStaticText("")
 
-        #win!.addStaticText("")
-
         #description! = #win!.addStaticText("")
         #description!.addClass("description-display")
 
-        #createPopupMenu()
         #priorityFlag! = #win!.addStaticText("")
-        #priorityFlag!.setPopupMenu(#flagPopupMenu!)
+        #priorityFlag!.setCallback(BBjControl.ON_POPUP_REQUEST, #this!, "OnShowPriorityPopup")
         #setPriorityFlag()
 
         #refresh()
+    methodend
+
+    method public void OnShowPriorityPopup(BBjPopupRequestEvent event!)
+        if (#flagPopupMenu! = null()) then #createPopupMenu()
+        #flagPopupMenu!.show(event!.getControl(), 0, 0)
     methodend
 
     method public void createPopupMenu()
@@ -156,13 +158,15 @@ class public TaskListView
         #checkbox!.addClass(#task!.getStatusString(#task!.getStatus()))
         #setPriorityFlag()
         #setDueNotice()
-        for i = 1 to #flagPopupMenu!.getChildCount()
-            menuItem! = #flagPopupMenu!.getMenuItem(i)
-            menuItem!.setVisible(1)
-            if (#task!.getPriority() = mod(i,6)) then
-                menuItem!.setVisible(0)
-            endif
-        next i
+        if (#flagPopupMenu! <> null()) then
+            for i = 1 to #flagPopupMenu!.getChildCount()
+                menuItem! = #flagPopupMenu!.getMenuItem(i)
+                menuItem!.setVisible(1)
+                if (#task!.getPriority() = mod(i,6)) then
+                    menuItem!.setVisible(0)
+                endif
+            next i
+        endif
     methodend
 
     rem /**

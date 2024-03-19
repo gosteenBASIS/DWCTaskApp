@@ -15,8 +15,10 @@
     --app-color-text-normal: hsl(0, 0%, var(--app-color-text-normal-l));
     --app-color-text-light:  hsl(0, 0%, var(--app-color-text-light-l));
     --app-color-text-faint:  hsl(0, 0%, var(--app-color-text-faint-l));
-    --app-font-task: var(--bbj-font-family);
-    --app-font-task-spacing: normal;
+    --app-font-family-task: var(--bbj-font-family);
+    --app-font-weight-task: var(--bbj-font-weight-semibold);
+    --app-font-size-task: var(--bbj-font-size-m);
+    --app-font-spacing-task: normal;
 }
 
 /* Override the DWC's default CSS custom properties */
@@ -61,6 +63,11 @@ bbj-button::part(label) {
     font-weight: var(--bbj-font-weight-semibold);
 }
 
+/* Set a larger minimum width for the message box buttons */
+.BBjMsgBox-button {
+    min-width: 5em;
+}
+
  /* Make the checkboxes zoom into 100% size on load */
 bbj-checkbox:not(hydrated) {
     transform: scale3d(0,0,0);
@@ -72,7 +79,7 @@ bbj-checkbox.hydrated {
     padding-left: 1px;
 }
 .fadeIn {
-    animation: fadeIn 400ms ease-in-out 1 forwards;
+    animation: fadeIn 1000ms ease-in-out 1 forwards;
 }
 .zoomIn {
     animation: zoomIn 400ms ease-in-out 1 forwards;
@@ -294,7 +301,7 @@ bbj-checkbox.hydrated {
 /* ================================================ */
 .task {
 	display: grid;
-	grid-template-columns: 1.8em 1fr 5em;
+	grid-template-columns: 1.8em 1fr 9ch;
     grid-template-rows: 2.5em 2em;
 	grid-column-gap: 0.25em;
     height: 4.5em;
@@ -304,10 +311,10 @@ bbj-checkbox.hydrated {
 }
 
 .task .BBjStaticText {
-    font-family: var(--app-font-task);
-    letter-spacing: var(--app-font-task-spacing);
+    font-family: var(--app-font-family-task);
+    font-weight: var(--app-font-weight-task);
+    letter-spacing: var(--app-font-spacing-task);
     font-size: 1.1em;
-    font-weight: 500;
     align-self: center;
     white-space: nowrap;
 	text-overflow: ellipsis;
@@ -324,6 +331,7 @@ bbj-checkbox.hydrated {
 .task .description-display {
     opacity: 0.5;
     align-self: start;
+    grid-column: 2 / 2;
 }
 
 /* Task items that are incomplete */
@@ -399,48 +407,52 @@ bbj-checkbox:not(bbj-checked):hover::part(checked-icon) {
 	background-color: transparent;
 	justify-self: right;
     align-self: start;
+    grid-column: 3 / 3;
 }
 
 
 
 /*  Task due today and past due badges              */
 /* ================================================ */
-.due-today {
+.task .due-today {
 	color: var(--bbj-color-danger);
 	justify-self: right;
 	white-space: nowrap;
+	font-weight: 600;
 }
 
-.past-due {
-	font-weight: 700;
+.task .past-due {
+	font-weight: 600;
 }
 
 
 /*  Priority flags and popup menus                  */
 /* ================================================ */
 .priority-0 {
-	color: black;
-	opacity: .7;
+	color: var(--bbj-color-black);
+	opacity: 0.7;
 }
 
+/* Priority 1 is blue, so we'd typically use the DWC's primary color but since we allow the user */
+/* to customize the primary color hue, then we have to force this to the default primary color hue */
 .priority-1 {
-	color: #2c80d4;
+	color: hsl(211, 100%, 40%);
 }
 
 .priority-2 {
-	color: #47942f;
+	color: var(--bbj-color-success);
 }
 
 .priority-3 {
-	color: #f5e102;
+	color: hsl(55, 100%, 50%);
 }
 
 .priority-4 {
-	color: #f58402;
+	color: hsl(30, 100%, 50%);
 }
 
 .priority-5 {
-	color: #f50202;
+	color: var(--bbj-color-danger);
 }
 
 .menu-item::part(control) {
@@ -470,6 +482,7 @@ bbj-checkbox:not(bbj-checked):hover::part(checked-icon) {
     color: var(--app-color-text-normal);
 }
 
+/* The reload toolbar icon is special and has a unique hover effect */
 .icon_reload.toolbar_icon::part(control) {
     color: var(--bbj-color-danger);
     opacity: 0.75;
@@ -486,8 +499,8 @@ bbj-checkbox:not(bbj-checked):hover::part(checked-icon) {
 /* ================================================ */
 .btnAddTaskFAB {
     position: absolute;
-    right: 1em;
-    bottom: 1em;
+    right: 1.5em;
+    bottom: 1.5em;
     z-index: 1000;
     width: 3em;
     height: 3em;
@@ -497,10 +510,6 @@ bbj-checkbox:not(bbj-checked):hover::part(checked-icon) {
     border-radius: 100em;
     box-shadow: 0 0.1em 0.5em hsla(0, 0%, 0%, 0.35);
 }
-.btnAddTaskFAB::part(label) {
-    font-size: 200%;
-}
-
 
 
 
