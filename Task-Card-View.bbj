@@ -1,0 +1,334 @@
+REM /**
+REM  * TaskCardView.bbj
+REM  * @author gosteen, ndecker, bhighhill 
+REM  * Task-Card-View.bbj
+REM  * TaskCardView represents the childwindow of a task view
+REM  */
+
+class public TaskCardView
+    field protected BBjButton       btnDeleteTask!
+    field protected BBjButton       btnLock!
+    field protected BBjButton       btnSetComplete!
+    field protected BBjStaticText   description!
+    field protected BBjStaticText   due!
+    field protected BBjString       flagIcon! = "<html><bbj-icon pool='tabler' name='flag-2-filled' style='width: 30px; height: 30px'></bbj-icon>"
+    field protected BBjPopupMenu    flagPopupMenu!
+    field protected BBjString       flagText!
+    field protected BBjVector       flagVector! = BBjAPI().makeVector()
+    field protected BBjString       lock! = "<html><bbj-icon pool='tabler' name='lock' style='width: 30px; height: 30px'></bbj-icon>"
+    field protected BBjString       lockOpen! = "<html><bbj-icon pool='tabler' name='lock-open' style='width: 30px; height: 30px'></bbj-icon>"
+    field protected BBjStaticText   priorityFlag!
+    field protected BBjStaticText   status!
+    field protected BBjSysGui       sysgui!
+    field protected Task            task!
+    field protected BBjStaticText   title!
+    field protected BBjString       trashIcon! = "<html><bbj-icon pool='tabler' name='trash' style='width: 25px; height: 25px'></bbj-icon>"
+    field protected BBjString       uuid!
+    field public    BBjChildWindow  win!
+
+    rem /**
+    rem  * Creates a task card view for every task
+    rem  * 
+    rem  * @param parent!, t!           parent! is the parent window which contains all task child windows of a given view, t! is the Task that is to be added to a given view
+    rem  */
+    method public TaskCardView(BBjWindow parent!, Task t!)
+        #sysgui! = BBjAPI().getSysGui()
+        #win! = parent!.addChildWindow("", $00108000$, #sysgui!.getAvailableContext())
+        #win!.addClass("task")
+             
+        #task! = t!
+        #uuid! = #task!.getUuid()
+        #win!.setAttribute("id", #uuid!)
+
+        if (#task!.isComplete()) then 
+            #win!.removeClass("task")
+            #win!.addClass("task-complete")
+            #win!.setToolTipText("Unlock to edit task")
+        else
+            #win!.setToolTipText("Click to edit task")
+        endif
+        
+REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()))
+        
+        if (#task!.getDueDate() > -1 AND #task!.isComplete() = 0) then #due! = #win!.addStaticText("")
+        if (#task!.getDueDate() = -1 AND #task!.isComplete() = 0) then #status! = #win!.addStaticText("") 
+        if (#task!.isComplete()) then #status! = #win!.addStaticText("Date of Completion")
+        
+        if (#task!.isComplete() = 0) then 
+            #createPopupMenu() 
+            #priorityFlag! = #win!.addStaticText("") 
+            #priorityFlag!.setPopupMenu(#flagPopupMenu!)
+            #setPriorityFlag()
+            
+            if (#task!.getDueDate() > -1) then
+                #status! = #win!.addStaticText("Status: " + #task!.getStatusString(#task!.getStatus()))
+                #status!.addClass("status-display")
+            endif
+        else
+            #btnLock! = #win!.addButton(#lock!)
+            #win!.setUserData(#btnLock!)
+            #btnLock!.addClass("btn-lock")
+            #btnLock!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "setLock")
+        endif
+        
+        #title! = #win!.addStaticText("")
+        #title!.addClass("title-display")     
+ 
+        #description! = #win!.addStaticText("")
+        #description!.addClass("description-display")
+
+        if (#task!.isComplete() = 0) then 
+            #btnSetComplete! = #win!.addButton("Mark as Complete")
+        else
+            #btnSetComplete! = #win!.addButton("Mark as Incomplete")
+        endif
+        
+        #btnSetComplete!.addClass("btn-complete-incomplete")
+        #btnSetComplete!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "setComplete")
+
+        #btnDeleteTask! = #win!.addButton(#trashIcon!)
+        #btnDeleteTask!.addClass("btn-delete-task")
+        #btnDeleteTask!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onDelete")
+        
+        #refresh()
+    methodend
+    
+    rem /**
+    rem  * - Creates a BBjPopupMenu that contains flag icons representing every priority level except for 
+    rem  * the task's priority level
+    rem  * - Adds a call back which triggers the #changePriority() method when a new priority flag is selected
+    rem  */
+    method public void createPopupMenu()
+        #flagPopupMenu! = #sysgui!.addPopupMenu()
+
+        noPriorityFlag! = "<html><bbj-icon pool='tabler' name='flag-2-filled' id='-1' class='priority-0 menu-item' style='pointer-events: none;'></bbj-icon>"
+        blueFlag! = "<html><bbj-icon pool='tabler' name='flag-2-filled' id='-1' class='priority-1 menu-item' style='pointer-events: none;'></bbj-icon>"
+        greenFlag! = "<html><bbj-icon pool='tabler' name='flag-2-filled' id='-2' class='priority-2 menu-item' style='pointer-events: none;'></bbj-icon>"
+        yellowFlag! = "<html><bbj-icon pool='tabler' name='flag-2-filled' id='-3' class='priority-3 menu-item' style='pointer-events: none;'></bbj-icon>"
+        orangeFlag! = "<html><bbj-icon pool='tabler' name='flag-2-filled' id='-4' class='priority-4 menu-item' style='pointer-events: none;'></bbj-icon>"
+        redFlag! = "<html><bbj-icon pool='tabler' name='flag-2-filled' id='-5' class='priority-5 menu-item' style='pointer-events: none;'></bbj-icon>"  
+
+        #flagVector!.add(noPriorityFlag!)
+        #flagVector!.add(blueFlag!)
+        #flagVector!.add(greenFlag!)
+        #flagVector!.add(yellowFlag!)
+        #flagVector!.add(orangeFlag!)
+        #flagVector!.add(redFlag!)    
+         
+        i! = 0
+        id! = -1
+        while (i! < #flagVector!.size()) 
+            currentPriority! = #task!.getPriority()
+            flag! = #flagVector!.getItem(i!)
+            
+            if (i! = 0) then
+                flagItem! = #flagPopupMenu!.addMenuItem(-6, flag!)
+            else
+                flagItem! = #flagPopupMenu!.addMenuItem(id!, flag!)
+                if (currentPriority! = i!) then flagItem!.setVisible(0)
+                id! = id! - 1
+            endif
+            
+            flagItem!.setCallback(flagItem!.ON_POPUP_ITEM_SELECT, #this!, "changePriority")
+            i! = i! + 1
+        wend
+    methodend
+    
+    rem /**
+    rem  * If task is incomplete: 
+    rem  * - If a task is past due, adds a "Past Due!" notice
+    rem  * - If a task is due today, adds a "Due Today!" notice
+    rem  * - Otherwise, adds the task's due date
+    rem  * - Notices are set to BBjStaticText #due!
+    rem  * 
+    rem  * If task is complete: 
+    rem  * - adds the date of completion
+    rem  * - Completion date is set to BBjStaticText #status!
+    rem  */
+    method public void setDueNotice()
+            #due!.removeClass("due-today past-due")       
+            due! = ""
+            dueDate! = date(#task!.getDueDate():"%Dl, %Ml %D")
+            
+            if (#task!.isComplete() = 0) then              
+                if (#task!.getDueDate() > -1) AND (#task!.getDueDate() < jul(date(0))) then 
+                    due! = "Past Due!"
+                    #due!.addClass("due-notice")
+                    #due!.setToolTipText("Due " + dueDate!)
+                endif
+                
+                if (#task!.getDueDate() = jul(date(0))) then 
+                    due! = "Due Today!"
+                    #due!.addClass("due-notice")
+                    #due!.setToolTipText("Due " + dueDate!)
+                endif
+                
+                if (#task!.getDueDate() > -1 AND #task!.getDueDate() > jul(date(0))) then
+                    due! = "Due " + STR(dueDate!)
+                    #due!.addClass("due-date")
+                endif
+            endif
+            
+            if (#task!.isComplete()) then 
+                #status!.setText("Date of Completion")
+                #status!.addClass("status-display")
+            endif
+            
+            #due!.setText(due!) 
+    methodend
+    
+    rem /**
+    rem  * - Adds a priority flag icon which represents the task's priority level
+    rem  * - Icon is set to BBjStaticText #priorityFlag!
+    rem  */
+    method public void setPriorityFlag()     
+        if (#task!.isComplete() = 0) then
+            #flagText! = "Priority " + STR(#task!.getPriority())           
+        
+            if (#priorityFlag! <> null()) then 
+                #priorityFlag!.setText(#flagIcon!)
+                #priorityFlag!.removeClass("priority-1 priority-2 priority-3 priority-4 priority-5 priority-0")
+                #priorityFlag!.addClass("priority-flag")
+                #priorityFlag!.addClass("priority-" + STR(#task!.getPriority()))
+                #priorityFlag!.setToolTipText(#flagText!)
+            endif
+        endif
+    methodend
+
+    rem /**
+    rem  * - Changes task priority level to priority level selected from the #flagPopupMenu!
+    rem  * 
+    rem  * @param e!      The BBjPopupSelectEvent that causes this method to be executed 
+    rem  */
+    method public void changePriority(BBjPopupSelectEvent e!)
+        newPriority! = ABS(e!.getMenuItem().getID())
+        
+        if (newPriority! = 6) then newPriority! = 0
+        
+        #task!.setPriority(newPriority!)
+        BBjAPI().postCustomEvent("TASK_UPDATE", #task!)
+        #refresh()
+    methodend
+    
+    rem /**
+    rem  * - Toggles a completed task lock icon between open and closed
+    rem  * - Icon is set to BBjStaticText #btnLock!
+    rem  * - Toggles associated classes
+    rem  * 
+    rem  * @param e!      The BBjButtonPushEvent that causes this method to be executed 
+    rem  */
+    method public void setLock(BBjButtonPushEvent e!)
+        if (#btnLock!.getText() = #lock!) then
+            #btnLock!.setText(#lockOpen!)
+            #btnLock!.removeClass("btn-lock")
+            #btnLock!.addClass("btn-lock-open")
+            #win!.removeClass("task-complete")
+            #win!.addClass("task")
+            #win!.setToolTipText("Click to edit task")
+        else
+            #btnLock!.setText(#lock!)
+            #btnLock!.removeClass("btn-lock-open")
+            #btnLock!.addClass("btn-lock")
+            #win!.removeClass("task")
+            #win!.addClass("task-complete")
+            #win!.setToolTipText("Unlock to edit task")
+        endif
+    methodend
+    
+    rem /**
+    rem  * - Toggles the status of a task between complete and incomplete
+    rem  * - Toggles the BBjButton btnTaskCompletion! text between "Mark as Complete" & "Mark as Incomplete"
+    rem  * - toggles associated classes
+    rem  * 
+    rem  * @param e!      The BBjButtonPushEvent that causes this method to be executed 
+    rem  */
+    method public void setComplete(BBjButtonPushEvent e!)
+         btnTaskCompletion! = e!.getControl()
+        
+        if (#task!.isComplete()) then
+            #task!.setStatus(#task!.STATUS_INCOMPLETE())
+            btnTaskCompletion!.setText("Mark as Complete")
+            #win!.removeClass("status-complete")
+            if (#priorityFlag! <> null()) then #priorityFlag!.removeClass("priority-transparent")
+            if (#btnLock! <> null()) then 
+                #btnLock!.removeClass("btn-lock")
+                #btnLock!.addClass("btn-lock-open")
+                #btnLock!.setText(#lockOpen!)
+                #win!.removeClass("task-complete")
+                #win!.addClass("task")
+            endif
+        else
+            #task!.setStatus(#task!.STATUS_COMPLETE())
+            btnTaskCompletion!.setText("Mark as Incomplete")
+            #win!.addClass("status-complete")
+            if (#priorityFlag! <> null()) then #priorityFlag!.addClass("priority-transparent")
+            if (#btnLock! <> null()) then 
+                #btnLock!.addClass("btn-lock")
+                #btnLock!.removeClass("btn-lock-open")
+                #btnLock!.setText(#lock!)
+                #win!.removeClass("task")
+                #win!.addClass("task-complete")
+            endif
+        endif
+        BBjAPI().postCustomEvent("TASK_UPDATE",#task!)
+        #refresh()
+    methodend
+    
+    rem /**
+    rem  * - Clears task classes on refresh
+    rem  */
+    method public void clearStyles()
+        #win!.removeClass("status-complete status-blocked status-deferred")      
+        if (#due! <> null()) then #due!.removeClass("due-notice due-date")
+    methodend
+
+    rem /**
+    rem  * - Updates task data on refresh
+    rem  */
+    method public void refresh()
+        #clearStyles()
+        #title!.setText(#task!.getTitle())
+        
+        #description!.setText(#task!.getDescription())
+        #description!.setToolTipText(#task!.getDescription())
+        
+        #win!.addClass(#task!.getStatusString(#task!.getStatus()))
+        
+        if (#task!.isComplete() = 0) then #status!.setText("Status: " + #task!.getStatusString(#task!.getStatus()))
+        if (#task!.isComplete()) then #status!.setText("Date of Completion")
+
+        #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()))
+        
+        if (#due! <> null()) then #setDueNotice()
+        
+        if (#task!.isComplete() = 0) then
+            #setPriorityFlag()
+            
+            if (#due! <> null()) then #setDueNotice() 
+            
+            if (#flagPopupMenu! <> null()) then
+                for i = 1 to #flagPopupMenu!.getChildCount()
+                    menuItem! = #flagPopupMenu!.getMenuItem(i)
+                    menuItem!.setVisible(1)
+                    if (#task!.getPriority() = mod(i,6)) then
+                        menuItem!.setVisible(0)
+                    endif
+                next i
+            endif
+        endif
+        
+        #win!.removeClass("complete")      
+    methodend
+    
+    rem /**
+    rem  * Triggers message box which prompts user for confirmation before deleting a task
+    rem  * 
+    rem  * @param e!      The BBjButtonPushEvent that causes this method to be executed 
+    rem  */
+    method public void onDelete(BBjButtonPushEvent e!)
+        i = msgbox("This won't do anything yet", BBjSysGui.MSGBOX_BUTTONS_YES_NO + BBjSysGui.MSGBOX_ICON_EXCLAMATION, "Delete Task")
+    methodend   
+classend
+
+use ::Task-Experiments.bbj::Task
+use ::TaskApp-Experiments.bbj::TaskApp
