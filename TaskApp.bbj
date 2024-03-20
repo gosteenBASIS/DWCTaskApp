@@ -29,6 +29,7 @@ class public TaskApp
     field protected BBjWebManager       webManager!
     field protected BBjTopLevelWindow   winMain!
     field protected TaskProperties      taskProperties!
+    field protected Settings            settings!
 REM     field protected TaskCardView        taskCardView! = new TaskCardView()
     field protected BBjChildWindow      winNavBar!
     field protected BBjChildWindow      winToolBar!
@@ -40,7 +41,6 @@ REM     field protected TaskCardView        taskCardView! = new TaskCardView()
     field protected BBjChildWindow      winTaskCardPriority!
     field protected BBjChildWindow      winTaskCardDueDate!
     field protected BBjChildWindow      winTasks!
-    field protected BBjTopLevelWindow   winSettings!
     field protected BBjStaticText       labelDay!
     field protected BBjStaticText       labelDate!
 
@@ -123,6 +123,8 @@ REM     field protected TaskCardView        taskCardView! = new TaskCardView()
     field protected BBjString prefsTaskFontSpacing! = "normal"
     rem /** The user's preferred font weight for the tasks */
     field protected BBjNumber prefsDefaultTaskPriority! = 3
+    rem /** The TaskApp's version, used for display purposes only */
+    field protected BBjString prefsVersion! = #version!
 
 
     rem Constructors
@@ -135,7 +137,9 @@ REM     field protected TaskCardView        taskCardView! = new TaskCardView()
         css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"TaskApp.css"))
         #webManager!.injectStyle(css!, 0, "name=taskapp_css")
         css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"TaskListView.css"))
-        #webManager!.injectStyle(css!, 0, "name=taskapp_listview_css")
+        #webManager!.injectStyle(css!, 0, "name=taskapp_list_view_css")
+        css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"Task-Card-View.css"))
+        #webManager!.injectStyle(css!, 0, "name=taskapp_card_view_css")
         css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"Settings.css"))
         #webManager!.injectStyle(css!, 0, "name=taskapp_settings_css")
 
@@ -175,6 +179,8 @@ REM     field protected TaskCardView        taskCardView! = new TaskCardView()
         #hashPrefs!.put("prefsTaskFontSize", #prefsTaskFontSize!)
         #hashPrefs!.put("prefsTaskFontSpacing", #prefsTaskFontSpacing!)
         #hashPrefs!.put("prefsDefaultTaskPriority", #prefsDefaultTaskPriority!)
+        #hashPrefs!.put("prefsVersion", #prefsVersion!)
+
 
         rem Read the user's preferences from a cookie, then apply all saved values to the HashMap of user preferences
         rem This means that the HashMap is initially filled with default values, but then the user's saved preferences replace the defaults
@@ -291,7 +297,7 @@ REM     field protected TaskCardView        taskCardView! = new TaskCardView()
         #winTitle!.addClass("winTitle")
 
         #winTasks! = #winMain!.addChildWindow("Tasks", $00108800$, #sysgui!.getAvailableContext())
-        #winTasks!.addClass("winTasks")
+        #winTasks!.addClass("winTasks listLayout")
 
         rem TASK CARD VIEW: windows (replaces lines 224-225)
 REM         #winTaskView! = #winMain!.addChildWindow("Title", $00108800$, #sysgui!.getAvailableContext())
@@ -630,6 +636,7 @@ REM         endif
     rem  */
     method public void OnSwitchChangeLayout(BBjCheckChangeEvent event!)
         #winTasks!.toggleClass("cardLayout")
+        #winTasks!.toggleClass("listLayout")
     methodend
 
     rem /**
@@ -708,6 +715,20 @@ REM         #onExport(null())
     method public void removeTask(Task task!)
         #tasks!.remove(task!.getUuid())
         #taskViews!.remove(task!.getUuid())
+    methodend
+
+
+
+    rem /**
+    rem  * Displays the app's settings window
+    rem  *
+    rem  * @param e!        The BBjButtonPushEvent that causes this method to be executed
+    rem  */
+    method public void onShowSettings(BBjButtonPushEvent e!)
+        if (#settings! = null()) then
+            #settings! = new Settings()
+        endif
+        #settings!.onShowSettings(#hashPrefs!)
     methodend
 
     rem /**
@@ -878,81 +899,6 @@ REM             #btnDueView!.addClass("view-btn-selected")
 REM         endif
 REM     methodend
 
-
-    rem ====================  START of Settings ====================
-    rem /**
-    rem  * Shows the app's configuration window
-    rem  *
-    rem  * @param task!     The Task object
-    rem  */
-    method public void onShowSettings(BBjButtonPushEvent e!)
-        rem To Do
-        rem 1) Define the theme color
-        themeColor! = "Tangerine"
-
-        rem Create the window and controls if it doesn't yet exist.  Otherwise, we'll simply display the existing one that we created and previously hid.
-        if (#winSettings! = null()) then
-            #winSettings! = #sysgui!.addWindow(#sysgui!.getAvailableContext(), "TaskApp Settings", $011B0010$)
-            #winSettings!.addClass("winSettings")
-            #winSettings!.setOuterStyle("overflow", "hidden")
-            #winSettings!.setIcon(dsk("")+dir("")+"images/DWCTaskApp.png")
-
-            rem Create the [Done] button that closes the settings window
-            title! = #winSettings!.addStaticText("Settings", $4000$)
-            title!.addClass("settingsTitle")
-            settingsDone! = #winSettings!.addButton("Done")
-            settingsDone!.addClass("settingsDone")
-
-            rem Personalization
-            text! = #winSettings!.addStaticText("Personalization")
-            text!.addClass("settingsCategoryTitle")
-            win! = #winSettings!.addChildWindow("", $00108800$, #sysgui!.getAvailableContext())
-            win!.addClass("settingsChildWindow")
-            text! = win!.addStaticText("<html><bbj-icon pool='tabler' name='palette' class='icon'></bbj-icon>&&nbsp; Theme")
-            text!.addClass("settingsLabel")
-            REM text! = win!.addStaticText(themeColor!)
-            settingsThemeColor! = win!.addButton("<html>" + themeColor! + " <bbj-icon pool='tabler' name='chevron-right' class='chevron'></bbj-icon>")
-            settingsThemeColor!.addClass("toolbar_icon")
-
-            rem About
-            text! = #winSettings!.addStaticText("About the App")
-            text!.addClass("settingsCategoryTitle")
-            win! = #winSettings!.addChildWindow("", $00108800$, #sysgui!.getAvailableContext())
-            win!.addClass("settingsChildWindow")
-            text! = win!.addStaticText("<html><bbj-icon pool='tabler' name='info-circle' class='icon'></bbj-icon>&&nbsp; About")
-            settingsAbout! = win!.addButton("<html>Version " + #version! + " <bbj-icon pool='tabler' name='chevron-right' class='chevron'></bbj-icon>")
-            settingsAbout!.addClass("toolbar_icon settingsValue")
-
-            rem Set the control callbacks
-            settingsDone!.setCallback(BBjButton.ON_BUTTON_PUSH, #this!, "onSettingsDone")
-            settingsThemeColor!.setCallback(BBjButton.ON_BUTTON_PUSH, #this!, "onSettingsThemeColor")
-            settingsAbout!.setCallback(BBjButton.ON_BUTTON_PUSH, #this!, "onSettingsAbout")
-        endif
-
-        rem Since we created the window from BBj as hidden, we have to show it.
-        rem The actual visibility will be a combination of BBj's setVisible() and CSS to animate the opacity.
-        #winSettings!.setVisible(1)
-    methodend
-
-    method public void onSettingsDone(BBjButtonPushEvent e!)
-        #winSettings!.setVisible(0)
-    methodend
-    method public void onSettingsThemeColor(BBjButtonPushEvent e!)
-        temp = msgbox("Not Yet Implemented", BBjSysGui.MSGBOX_ICON_STOP, #appName!, mode="theme=warning")
-    methodend
-    method public void onSettingsAbout(BBjButtonPushEvent e!)
-        REM msg! = "<html><img src=""https://public.basis.cloud/images/DWCTaskApp.svg"" height=""0px""> DWC TaskApp version " + #version!
-        msg! = "<html><div style='padding: 0.75em 0 0 0;'>The TaskApp application was authored by: "
-        msg! = msg! + "<ul>"
-        msg! = msg! + "<li>Alex Anastassatos</li>"
-        msg! = msg! + "<li>Bryan Highhill</li>"
-        msg! = msg! + "<li>Garrison Osteen</li>"
-        msg! = msg! + "<li>Nick Decker</li>"
-        msg! = msg! + "</ul></div>"
-        mode! = "theme=primary,ICON=./images/DWCTaskApp.png,ICONWIDTH=42"
-        temp = msgbox(msg!, BBjSysGui.MSGBOX_ICON_INFORMATION, #appName! + " Version " + #version!, mode=mode!)
-    methodend
-    rem ====================  END of Settings ====================
 
 
     rem /**
@@ -1216,6 +1162,7 @@ rem BBj USE Statements
 use ::Task.bbj::Task
 use ::TaskProperties.bbj::TaskProperties
 use ::TaskListView.bbj::TaskListView
+use ::Settings.bbj::Settings
 REM use ::Task-Card-View.bbj::TaskCardView
 
 rem Java USE Statements
