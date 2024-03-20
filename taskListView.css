@@ -1,6 +1,6 @@
 /* Task Styling                                     */
 /* ================================================ */
-.task {
+.listLayout .task {
 	display: grid;
 	grid-template-columns: 1.8em 1fr 9ch;
     grid-template-rows: 2.5em 2em;
@@ -11,7 +11,7 @@
     border-bottom-color: var(--bbj-color-gray-80);
 }
 
-.task .BBjStaticText {
+.listLayout .task .BBjStaticText {
     font-family: var(--app-font-family-task);
     font-weight: var(--app-font-weight-task);
     letter-spacing: var(--app-font-spacing-task);
@@ -24,58 +24,58 @@
 }
 
 /* Title styling on task-list-view */
-.task .title-display {
+.listLayout .task .title-display {
 	/* font-weight: 700; */
 }
 
 /* Description styling on task-list-view */
-.task .description-display {
+.listLayout .task .description-display {
     opacity: 0.5;
     align-self: start;
     grid-column: 2 / 2;
 }
 
 /* Task items that are incomplete */
-.task.incomplete bbj-checkbox::part(input-wrapper) {
+.listLayout .task.incomplete bbj-checkbox::part(input-wrapper) {
     border-color: var(--bbj-color-gray-50);
     background-color: var(--bbj-color-white);
 }
 
 /* Task items that are complete */
-.task.complete .BBjStaticText {
+.listLayout .task.complete .BBjStaticText {
     filter: opacity(0.65);
 	text-decoration: line-through;
 }
-.task.complete bbj-checkbox::part(input-wrapper) {
+.listLayout .task.complete bbj-checkbox::part(input-wrapper) {
 	border-color: rgb(110, 161, 110);
 	background-color: rgba(110, 161, 110, .5);
     color: var(--bbj-color-black);
 }
 
 /* Task items that are deferred */
-.task.deferred bbj-checkbox::part(input-wrapper) {
+.listLayout .task.deferred bbj-checkbox::part(input-wrapper) {
     border-color: rgb(167, 151, 66);
     background-color: rgba(167, 151, 66, .5);
 }
 
 /* Task items that are blocked */
-.task.blocked bbj-checkbox::part(input-wrapper) {
+.listLayout .task.blocked bbj-checkbox::part(input-wrapper) {
     border-color: rgb(197, 124, 124);
     background-color: rgba(197, 124, 124, .5);
 }
 
 /* Items that are clickable, and hovered over */
-.clickable:hover {
+.listLayout .clickable:hover {
     /* filter: brightness(80%); */
     background: var(--bbj-surface-1);
     transition: all 200ms ease;
 }
-.task:hover bbj-checkbox {
+.listLayout .task:hover bbj-checkbox {
     animation: pulse 500ms ease-in-out 1 forwards;
 }
 
 /* Checkbox styling on task-list-view */
-bbj-checkbox::part(input-wrapper) {
+.listLayout bbj-checkbox::part(input-wrapper) {
 	border-radius: 100%;
 	color: var(--bbj-color-black);
 	transform: scale3d(1.25, 1.25, 1);
@@ -84,20 +84,20 @@ bbj-checkbox::part(input-wrapper) {
 }
 
 /* Fades check mark on mouse enter/exit on a checkbox */
-bbj-checkbox::part(checked-icon) {
+.listLayout bbj-checkbox::part(checked-icon) {
     transform: scale(1) translate3d(0px, 0px, 0px);
     transition: all 250ms ease-in-out;
     opacity: 0;
 }
-bbj-checkbox.bbj-checked::part(checked-icon) {
+.listLayout bbj-checkbox.bbj-checked::part(checked-icon) {
     /* Checked, normal conditions */
     opacity: 1;
 }
-bbj-checkbox.bbj-checked:hover::part(checked-icon) {
+.listLayout bbj-checkbox.bbj-checked:hover::part(checked-icon) {
     /* Checked, hovering over the checkbox */
     opacity: 0.75;
 }
-bbj-checkbox:not(bbj-checked):hover::part(checked-icon) {
+.listLayout bbj-checkbox:not(bbj-checked):hover::part(checked-icon) {
     /* Unchecked, hovering over the checkbox */
     opacity: 0.25;
 }
