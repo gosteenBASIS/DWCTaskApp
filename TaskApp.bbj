@@ -776,49 +776,6 @@ REM         #onExport(null())
     rem  *
     rem  * @param e!        The BBjButtonPushEvent that causes this method to be executed
     rem  */
-    method public void onShowSettings(BBjButtonPushEvent e!)
-        rem To Do
-        rem 1) Define the theme color
-        themeColor! = "Tangerine"
-
-        rem Create the window and controls if it doesn't yet exist.  Otherwise, we'll simply display the existing one that we created and previously hid.
-        if (#winSettings! = null()) then
-            #winSettings! = #sysgui!.addWindow(#sysgui!.getAvailableContext(), "TaskApp Settings", $011B0010$)
-            #winSettings!.addClass("winSettings")
-            #winSettings!.setOuterStyle("overflow", "hidden")
-            #winSettings!.setIcon(dsk("")+dir("")+"images/DWCTaskApp.png")
-
-            rem Create the [Done] button that closes the settings window
-            title! = #winSettings!.addStaticText("Settings", $4000$)
-            title!.addClass("settingsTitle")
-            settingsDone! = #winSettings!.addButton("Done")
-            settingsDone!.addClass("settingsDone")
-
-            rem Personalization
-            text! = #winSettings!.addStaticText("Personalization")
-            text!.addClass("settingsCategoryTitle")
-            win! = #winSettings!.addChildWindow("", $00108800$, #sysgui!.getAvailableContext())
-            win!.addClass("settingsChildWindow")
-            text! = win!.addStaticText("<html><dwc-icon pool='tabler' name='palette' class='icon'></dwc-icon>&&nbsp; Theme")
-            text!.addClass("settingsLabel")
-            REM text! = win!.addStaticText(themeColor!)
-            settingsThemeColor! = win!.addButton("<html>" + themeColor! + " <dwc-icon pool='tabler' name='chevron-right' class='chevron'></dwc-icon>")
-            settingsThemeColor!.addClass("toolbar_icon")
-
-            rem About
-            text! = #winSettings!.addStaticText("About the App")
-            text!.addClass("settingsCategoryTitle")
-            win! = #winSettings!.addChildWindow("", $00108800$, #sysgui!.getAvailableContext())
-            win!.addClass("settingsChildWindow")
-            text! = win!.addStaticText("<html><dwc-icon pool='tabler' name='info-circle' class='icon'></dwc-icon>&&nbsp; About")
-            settingsAbout! = win!.addButton("<html>Version " + #version! + " <dwc-icon pool='tabler' name='chevron-right' class='chevron'></dwc-icon>")
-            settingsAbout!.addClass("toolbar_icon settingsValue")
-
-            rem Set the control callbacks
-            settingsDone!.setCallback(BBjButton.ON_BUTTON_PUSH, #this!, "onSettingsDone")
-            settingsThemeColor!.setCallback(BBjButton.ON_BUTTON_PUSH, #this!, "onSettingsThemeColor")
-            settingsAbout!.setCallback(BBjButton.ON_BUTTON_PUSH, #this!, "onSettingsAbout")
-        endif
 REM     method public void onShowCompletedTasks(BBjButtonPushEvent e!)
 REM         if (#taskView! = "incomplete") then
 REM             #taskView! = "complete"
@@ -840,7 +797,6 @@ REM             #winTaskCardComplete!.setVisible(0)
 REM             #labelDay!.setText("Today")
 REM             #btnIncompleteView!.addClass("view-btn-selected")
 REM         endif
-REM     methodend
 
 rem /**
     rem  * - Toggles visibility of #winTaskCardIncomplete which contains all incomplete task child windows
