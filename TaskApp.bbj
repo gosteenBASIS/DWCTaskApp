@@ -98,9 +98,9 @@ class public TaskApp
     rem /** The user's preferred font family (CSS: font-family)for the tasks */
     field protected BBjString prefsTaskFontFamily! = "Rambla"
     rem /** The user's preferred font weight (CSS: font-weight)for the tasks */
-    field protected BBjString prefsTaskFontWeight! = "var(--bbj-font-weight-semibold)"
+    field protected BBjString prefsTaskFontWeight! = "var(--dwc-font-weight-semibold)"
     rem /** The user's preferred font size for the tasks.
-    field protected BBjString prefsTaskFontSize! = "var(--bbj-font-size-m)"
+    field protected BBjString prefsTaskFontSize! = "var(--dwc-font-size-m)"
     rem /** The user's preferred font letter spacing (CSS: letter-spacing) for the tasks.  This will usually be 'normal', but can be a length as in '0.5px'. */
     field protected BBjString prefsTaskFontSpacing! = "normal"
     rem /** The user's preferred font weight for the tasks */
@@ -117,7 +117,10 @@ class public TaskApp
         #webManager!.injectStyle(css!, 0, "name=taskapp_css")
         css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"Settings.css"))
         #webManager!.injectStyle(css!, 0, "name=taskapp_settings_css")
-
+        rem ' set legacy BBj className values when running in DWC.
+        if info(3,6)="6" then
+        bbjapi().getWebManager().setAttribute("dwc.class","true")
+        endif
 
         rem Set the app's icon in the browser's tab
         url! = "https://public.basis.cloud/images/DWCTaskApp.svg"
@@ -266,6 +269,7 @@ class public TaskApp
         #winTaskList! = #winMain!.addChildWindow("Tasks", $00108800$, #sysgui!.getAvailableContext())
         #winTaskList!.addClass("winTasks")
 
+
         #addTaskList("incomplete")
         #addTaskList("waiting")
         #addTaskList("deferred")
@@ -277,32 +281,32 @@ class public TaskApp
         #labelDate!.addClass("labelDate")
 
         rem Create the FAB (floating action button) and the toolbar buttons
-        #btnAddTaskFAB! = #winMain!.addButton("<html><bbj-icon pool='tabler' name='plus''></bbj-icon>")
+        #btnAddTaskFAB! = #winMain!.addButton("<html><dwc-icon pool='tabler' name='plus''></dwc-icon>")
         #btnAddTaskFAB!.addClass("btnAddTaskFAB")
         #btnAddTaskFAB!.setAttribute("theme", "primary")
         #btnAddTaskFAB!.setAttribute("expanse", "xs")
 
-        #btnAddTask! = #winToolBar!.addButton("<html><bbj-icon pool='tabler' name='plus'></bbj-icon>")
+        #btnAddTask! = #winToolBar!.addButton("<html><dwc-icon pool='tabler' name='plus'></dwc-icon>")
         #btnAddTask!.addClass("toolbar_icon")
         #btnAddTask!.setToolTipText("Add Task")
         #btnAddTask!.setAttribute("expanse", "xs")
 
-        #btnSettings! = #winToolBar!.addButton("<html><bbj-icon pool='tabler' name='settings'></bbj-icon>")
+        #btnSettings! = #winToolBar!.addButton("<html><dwc-icon pool='tabler' name='settings'></dwc-icon>")
         #btnSettings!.addClass("toolbar_icon")
         #btnSettings!.setToolTipText("Settings")
         #btnSettings!.setAttribute("expanse", "xs")
 
-        #btnExport! = #winToolBar!.addButton("<html><bbj-icon pool='tabler' name='file-download'></bbj-icon>")
+        #btnExport! = #winToolBar!.addButton("<html><dwc-icon pool='tabler' name='file-download'></dwc-icon>")
         #btnExport!.addClass("toolbar_icon")
         #btnExport!.setToolTipText("Export tasks")
         #btnExport!.setAttribute("expanse", "xs")
 
-        #btnImport! = #winToolBar!.addButton("<html><bbj-icon pool='tabler' name='file-upload'></bbj-icon>")
+        #btnImport! = #winToolBar!.addButton("<html><dwc-icon pool='tabler' name='file-upload'></dwc-icon>")
         #btnImport!.addClass("toolbar_icon")
         #btnImport!.setToolTipText("Import tasks")
         #btnImport!.setAttribute("expanse", "xs")
 
-        #btnReload! = #winToolBar!.addButton("<html><bbj-icon pool='tabler' name='reload'></bbj-icon>")
+        #btnReload! = #winToolBar!.addButton("<html><dwc-icon pool='tabler' name='reload'></dwc-icon>")
         #btnReload!.addClass("toolbar_icon icon_reload")
         #btnReload!.setToolTipText("Reload")
         #btnReload!.setAttribute("expanse", "xs")
@@ -584,10 +588,10 @@ REM                 view!.setVisible(0)
             text!.addClass("settingsCategoryTitle")
             win! = #winSettings!.addChildWindow("", $00108800$, #sysgui!.getAvailableContext())
             win!.addClass("settingsChildWindow")
-            text! = win!.addStaticText("<html><bbj-icon pool='tabler' name='palette' class='icon'></bbj-icon>&&nbsp; Theme")
+            text! = win!.addStaticText("<html><dwc-icon pool='tabler' name='palette' class='icon'></dwc-icon>&&nbsp; Theme")
             text!.addClass("settingsLabel")
             REM text! = win!.addStaticText(themeColor!)
-            settingsThemeColor! = win!.addButton("<html>" + themeColor! + " <bbj-icon pool='tabler' name='chevron-right' class='chevron'></bbj-icon>")
+            settingsThemeColor! = win!.addButton("<html>" + themeColor! + " <dwc-icon pool='tabler' name='chevron-right' class='chevron'></dwc-icon>")
             settingsThemeColor!.addClass("toolbar_icon")
 
             rem About
@@ -595,8 +599,8 @@ REM                 view!.setVisible(0)
             text!.addClass("settingsCategoryTitle")
             win! = #winSettings!.addChildWindow("", $00108800$, #sysgui!.getAvailableContext())
             win!.addClass("settingsChildWindow")
-            text! = win!.addStaticText("<html><bbj-icon pool='tabler' name='info-circle' class='icon'></bbj-icon>&&nbsp; About")
-            settingsAbout! = win!.addButton("<html>Version " + #version! + " <bbj-icon pool='tabler' name='chevron-right' class='chevron'></bbj-icon>")
+            text! = win!.addStaticText("<html><dwc-icon pool='tabler' name='info-circle' class='icon'></dwc-icon>&&nbsp; About")
+            settingsAbout! = win!.addButton("<html>Version " + #version! + " <dwc-icon pool='tabler' name='chevron-right' class='chevron'></dwc-icon>")
             settingsAbout!.addClass("toolbar_icon settingsValue")
 
             rem Set the control callbacks
