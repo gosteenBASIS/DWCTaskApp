@@ -153,8 +153,11 @@ class public TaskListView
         #clearStyles()
         #title!.setText(#task!.getTitle())
         #description!.setText(#task!.getDescription())
-        #checkbox!.setSelected(#task!.isComplete())
+        #checkbox!.setSelected(#task!.getComplete())
         #win!.addClass(#task!.getStatusString(#task!.getStatus()))
+        if (#task!.getComplete()) then
+            #win!.addClass("complete")
+        endif
         #checkbox!.addClass(#task!.getStatusString(#task!.getStatus()))
         #setPriorityFlag()
         #setDueNotice()
@@ -186,10 +189,12 @@ class public TaskListView
     rem  */
     method public void onTaskCheck(BBjCheckChangeEvent e!)
         #clearStyles()
-        if (#task!.isComplete()) then
+        if (#task!.getComplete()) then
             #task!.setStatus(#task!.STATUS_INCOMPLETE())
+            #task!.setComplete(0)
         else
             #task!.setStatus(#task!.STATUS_COMPLETE())
+            #task!.setComplete(1)
         endif
         BBjAPI().postCustomEvent("TASK_UPDATE",#task!)
     methodend

@@ -426,7 +426,7 @@ REM         wend
         while it!.hasNext()
             task! = it!.next()
             view! = #addTaskListView(task!)
-            if (task!.isComplete()) then
+            if (task!.getComplete()) then
 REM                 view!.setVisible(0)
                 view!.setVisible(1)
             endif
@@ -501,7 +501,7 @@ REM             endif
 REM     method public TaskCardView addTaskCardView(Task task!)
 REM         view! = new TaskCardView(#winTaskCard!, task!)
 REM
-REM         if (task!.isComplete() = 0) then
+REM         if (task!.getComplete() = 0) then
 REM             if (#displayType! = 0) then view! = new TaskCardView(#winTaskCardDueDate!, task!)
 REM             if (#displayType! = 1) then view! = new TaskCardView(#winTaskCardPriority!, task!)
 REM             if (#displayType! = 2) then view! = new TaskCardView(#winTaskCardIncomplete!, task!)
@@ -590,7 +590,7 @@ REM
 REM                 dataVector! = BBjAPI().makeVector()
 REM                 dataVector!.addItem(win!)
 REM                 dataVector!.addItem(btnLock!)
-REM                 if (t!.isComplete()) then #taskProperties!.passData(dataVector!)
+REM                 if (t!.getComplete()) then #taskProperties!.passData(dataVector!)
 REM             endif
 REM         endif
 

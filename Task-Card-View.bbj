@@ -40,7 +40,7 @@ class public TaskCardView
         #uuid! = #task!.getUuid()
         #win!.setAttribute("id", #uuid!)
 
-        if (#task!.isComplete()) then 
+        if (#task!.getComplete()) then 
             #win!.removeClass("task")
             #win!.addClass("task-complete")
             #win!.setToolTipText("Unlock to edit task")
@@ -77,7 +77,7 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
         #description! = #win!.addStaticText("")
         #description!.addClass("description-display")
 
-        if (#task!.isComplete() = 0) then 
+        if (#task!.getComplete() = 0) then 
             #btnSetComplete! = #win!.addButton("Mark as Complete")
         else
             #btnSetComplete! = #win!.addButton("Mark as Incomplete")
@@ -150,7 +150,7 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
             due! = ""
             dueDate! = date(#task!.getDueDate():"%Dl, %Ml %D")
             
-            if (#task!.isComplete() = 0) then              
+            if (#task!.getComplete() = 0) then              
                 if (#task!.getDueDate() > -1) AND (#task!.getDueDate() < jul(date(0))) then 
                     due! = "Past Due!"
                     #due!.addClass("due-notice")
@@ -169,7 +169,7 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
                 endif
             endif
             
-            if (#task!.isComplete()) then 
+            if (#task!.getComplete()) then 
                 #status!.setText("Date of Completion")
                 #status!.addClass("status-display")
             endif
@@ -182,7 +182,7 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
     rem  * - Icon is set to BBjStaticText #priorityFlag!
     rem  */
     method public void setPriorityFlag()     
-        if (#task!.isComplete() = 0) then
+        if (#task!.getComplete() = 0) then
             #flagText! = "Priority " + STR(#task!.getPriority())           
         
             if (#priorityFlag! <> null()) then 
@@ -245,7 +245,7 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
     method public void setComplete(BBjButtonPushEvent e!)
          btnTaskCompletion! = e!.getControl()
         
-        if (#task!.isComplete()) then
+        if (#task!.getComplete()) then
             #task!.setStatus(#task!.STATUS_INCOMPLETE())
             btnTaskCompletion!.setText("Mark as Complete")
             #win!.removeClass("status-complete")
@@ -294,14 +294,14 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
         
         #win!.addClass(#task!.getStatusString(#task!.getStatus()))
         
-        if (#task!.isComplete() = 0) then #status!.setText("Status: " + #task!.getStatusString(#task!.getStatus()))
-        if (#task!.isComplete()) then #status!.setText("Date of Completion")
+        if (#task!.getComplete() = 0) then #status!.setText("Status: " + #task!.getStatusString(#task!.getStatus()))
+        if (#task!.getComplete()) then #status!.setText("Date of Completion")
 
         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()))
         
         if (#due! <> null()) then #setDueNotice()
         
-        if (#task!.isComplete() = 0) then
+        if (#task!.getComplete() = 0) then
             #setPriorityFlag()
             
             if (#due! <> null()) then #setDueNotice() 

@@ -28,7 +28,6 @@ class public Task
     rem /** The description of the task. */
     field public BBjString Description!
 
-    rem Can we do enums in BBj? Should status just be a boolean isComplete to start with?
     rem /** The status of the task. Represents whether the task is deferred or blocked
     rem  *  TODO: Should "status" be a String? Should it just be a vector of strings, representing flags?
     rem  *  Make some constants -- add status Task.DEFERRED, Task.BLOCKED, etc.
@@ -137,7 +136,7 @@ class public Task
         #Priority! = task!.getPriority()
         #DueDate! = task!.getDueDate()
         #Status! = task!.getStatus()
-        #Complete! = task!.isComplete()
+        #Complete! = task!.getComplete()
         #Uuid! = task!.getUuid()
 REM         #Created! = task!.getCreated()
     methodend
@@ -166,7 +165,7 @@ REM         #Created! = task!.getCreated()
         #Priority! = source!.getPriority()
         #DueDate! = source!.getDueDate()
         #Status! = source!.getStatus()
-        #Complete! = source!.isComplete()
+        #Complete! = source!.getComplete()
     methodend
 
     rem Setters
@@ -217,13 +216,6 @@ REM                 throw "Invalid status provided to Task.getStatusString(): " 
         methodret s!
     methodend
 
-    rem /**
-    rem  * Returns whether the task is complete.
-    rem  */
-    method public BBjNumber isComplete()
-        methodret #Complete!
-    methodend
-
     rem Misc utility methods
     rem ========================================
     rem /**
@@ -272,7 +264,7 @@ REM                 throw "Invalid status provided to Task.getStatusString(): " 
         json!.addProperty("uuid", #getUuid())
         json!.addProperty("title", iff(#getTitle() <> null(), #getTitle(), ""))
         json!.addProperty("description", iff(#getDescription() <> null(), #getDescription(), ""))
-        json!.addProperty("complete", iff(#isComplete() <> null(), str(#isComplete()), ""))
+        json!.addProperty("complete", iff(#getComplete() <> null(), str(#getComplete()), ""))
         json!.addProperty("status", iff(#getStatus() <> null(), str(#getStatus()), ""))
         json!.addProperty("priority", iff(#getPriority() <> null(), str(#getPriority()), ""))
         json!.addProperty("duedate", iff(#getDueDate() <> null(), str(#getDueDate()), ""))
