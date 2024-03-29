@@ -27,6 +27,8 @@ REM     field public BBjChildWindow    winButtons!
     field public BBjButton         buttonDelete!
     field public BBjButton         buttonCancel!
     field public BBjButton         buttonSave!
+    field public BBjString         lock! = "<html><bbj-icon pool='tabler' name='lock' style='width: 30px; height: 30px'></bbj-icon>"
+    field public BBjNumber         dataPassed! = 0 
 
     field public Task              task!
 
@@ -111,6 +113,19 @@ REM         a=msgbox("Date Mask: " + DateMask$ + $0a$ + "!COMPAT for SHORT_YEAR:
         #winTaskProperties!.setVisible(1)
     methodend
 
+    rem /** 
+    rem  * Receives vector from TaskApp onTaskClick method and sets vector as userData
+    rem  * on the cancel and save buttons
+    rem  * 
+    rem  * @param BBjVector that contains lock icon and task window
+    rem  */
+        rem TASK CARD VIEW: passData method
+REM     method public void passData(BBjVector dataVector!)
+REM         #buttonCancel!.setUserData(dataVector!)
+REM         #buttonSave!.setUserData(dataVector!)
+REM         #dataPassed! = 1
+REM     methodend
+
     rem /**
     rem  * Save the information from the current fields into the Task object in the #task! variable
     rem  */
@@ -152,15 +167,48 @@ REM         a=msgbox("Date Mask: " + DateMask$ + $0a$ + "!COMPAT for SHORT_YEAR:
         #task!.setPriority(e!.getSelectedIndex(#listPriority!))
         #task!.setStatus(e!.getSelectedIndex(#listStatus!))
         #task!.setTitle(#editTitle!.getText())
+        
+        rem TASK CARD VIEW: sets completed task back to lock after saving
+        rem change lock icon back to close and update classes on task window to lock task
+REM         if (#dataPassed!) then
+REM             dataVector! = e!.getControl().getUserData()
+REM             win! = dataVector!.getItem(0)
+REM             btnLock! = dataVector!.getItem(1)
+REM             btnLock!.setText(#lock!)
+REM             btnLock!.removeClass("btn-lock-open")
+REM             btnLock!.addClass("btn-lock")
+REM             win!.removeClass("task")
+REM             win!.addClass("task-complete")
+REM         endif
 
         #winTaskProperties!.setVisible(0)
         BBjAPI().postCustomEvent("TASK_UPDATE",#task!)
         e!.accept(1)
+        
+        rem TASK CARD VIEW: reset data passed back to 0
+REM         #dataPassed! = 0
     methodend
 
-    method public void onCancel(BBjButtonPushEvent e!)
+    method public void onCancel(BBjButtonPushEvent e!)   
+        
+        rem TASK CARD VIEW: sets completed task back to lock after canceling
+        rem change lock icon back to close and update classes on task window to lock task
+REM         if (#dataPassed!) then
+REM             dataVector! = e!.getControl().getUserData()
+REM             win! = dataVector!.getItem(0)
+REM             btnLock! = dataVector!.getItem(1)
+REM             btnLock!.setText(#lock!)
+REM             btnLock!.removeClass("btn-lock-open")
+REM             btnLock!.addClass("btn-lock")
+REM             win!.removeClass("task")
+REM             win!.addClass("task-complete")
+REM         endif
+        
         #winTaskProperties!.setVisible(0)
         rem Clear fields, set task to null?
+        
+        rem TASK CARD VIEW: reset data passed back to 0
+        #dataPassed! = 0
     methodend
 
     rem /**
