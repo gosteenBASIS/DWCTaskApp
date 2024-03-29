@@ -353,7 +353,7 @@ REM         #btnDueView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onDueVi
 
         #btnAddTask! = #winToolBar!.addButton("<html><dwc-icon pool='tabler' name='plus'></dwc-icon>")
         rem TASK CARD VIEW: show completed task cards (completed tasks button on toolbar)
-REM         #btnShowCompletedTasks! = #winToolBar!.addButton("<html><bbj-icon pool='tabler' name='checks'></bbj-icon>")
+REM         #btnShowCompletedTasks! = #winToolBar!.addButton("<html><dwc-icon pool='tabler' name='checks'></dwc-icon>")
 REM         #btnShowCompletedTasks!.addClass("toolbar_icon icon-completed")
 REM         #btnShowCompletedTasks!.setToolTipText("Completed Tasks")
 REM         #btnShowCompletedTasks!.setAttribute("expanse", "xs")
@@ -559,8 +559,8 @@ REM     methodend
 
         rem TASK CARD VIEW: onTaskClick method
 REM         win! = e!.getControl()
-REM         lock! = "<html><bbj-icon pool='tabler' name='lock' style='width: 30px; height: 30px'></bbj-icon>"
-REM         lockOpen! = "<html><bbj-icon pool='tabler' name='lock-open' style='width: 30px; height: 30px'></bbj-icon>"
+REM         lock! = "<html><dwc-icon pool='tabler' name='lock' style='width: 30px; height: 30px'></dwc-icon>"
+REM         lockOpen! = "<html><dwc-icon pool='tabler' name='lock-open' style='width: 30px; height: 30px'></dwc-icon>"
 REM         btnLock! = e!.getControl().getUserData()
 
 REM         if (btnLock! = null()) OR (btnLock!.getText() = lockOpen!) then

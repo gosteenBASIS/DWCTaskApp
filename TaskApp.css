@@ -95,16 +95,16 @@ dwc-checkbox.hydrated {
 /* BBjRadioButton styled as a Switch                */
 /* ================================================ */
 .switchLayout {
-    --bbj-switch-size: 4em;
-    --bbj-switch-background: hsl(var(--app-color-h), 25%, 90%);
-    --bbj-switch-hover-background:  hsl(var(--app-color-h), 25%, 97%);
-    --bbj-switch-checked-background: hsl(var(--app-color-h), var(--app-color-s), 35%);
-    --bbj-switch-hover-checked-background: hsl(var(--app-color-h), var(--app-color-s), 42%);
+    --dwc-switch-size: 4em;
+    --dwc-switch-background: hsl(var(--app-color-h), 25%, 90%);
+    --dwc-switch-hover-background:  hsl(var(--app-color-h), 25%, 97%);
+    --dwc-switch-checked-background: hsl(var(--app-color-h), var(--app-color-s), 35%);
+    --dwc-switch-hover-checked-background: hsl(var(--app-color-h), var(--app-color-s), 42%);
 }
 .switchLayout::part(input) {
     width: 6em;
 }
-.switchLayout.bbj-checked::part(input)::before {
+.switchLayout.dwc-checked::part(input)::before {
     transform: translateX(200%);
 }
 .switchLayout:not([checked])::part(input)::after {

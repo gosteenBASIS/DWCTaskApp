@@ -11,18 +11,18 @@ class public TaskCardView
     field protected BBjButton       btnSetComplete!
     field protected BBjStaticText   description!
     field protected BBjStaticText   due!
-    field protected BBjString       flagIcon! = "<html><bbj-icon pool='tabler' name='flag-2-filled' style='width: 30px; height: 30px'></bbj-icon>"
+    field protected BBjString       flagIcon! = "<html><dwc-icon pool='tabler' name='flag-2-filled' style='width: 30px; height: 30px'></dwc-icon>"
     field protected BBjPopupMenu    flagPopupMenu!
     field protected BBjString       flagText!
     field protected BBjVector       flagVector! = BBjAPI().makeVector()
-    field protected BBjString       lock! = "<html><bbj-icon pool='tabler' name='lock' style='width: 30px; height: 30px'></bbj-icon>"
-    field protected BBjString       lockOpen! = "<html><bbj-icon pool='tabler' name='lock-open' style='width: 30px; height: 30px'></bbj-icon>"
+    field protected BBjString       lock! = "<html><dwc-icon pool='tabler' name='lock' style='width: 30px; height: 30px'></dwc-icon>"
+    field protected BBjString       lockOpen! = "<html><dwc-icon pool='tabler' name='lock-open' style='width: 30px; height: 30px'></dwc-icon>"
     field protected BBjStaticText   priorityFlag!
     field protected BBjStaticText   status!
     field protected BBjSysGui       sysgui!
     field protected Task            task!
     field protected BBjStaticText   title!
-    field protected BBjString       trashIcon! = "<html><bbj-icon pool='tabler' name='trash' style='width: 25px; height: 25px'></bbj-icon>"
+    field protected BBjString       trashIcon! = "<html><dwc-icon pool='tabler' name='trash' style='width: 25px; height: 25px'></dwc-icon>"
     field protected BBjString       uuid!
     field public    BBjChildWindow  win!
 
@@ -101,12 +101,12 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
     method public void createPopupMenu()
         #flagPopupMenu! = #sysgui!.addPopupMenu()
 
-        noPriorityFlag! = "<html><bbj-icon pool='tabler' name='flag-2-filled' id='-1' class='priority-0 menu-item' style='pointer-events: none;'></bbj-icon>"
-        blueFlag! = "<html><bbj-icon pool='tabler' name='flag-2-filled' id='-1' class='priority-1 menu-item' style='pointer-events: none;'></bbj-icon>"
-        greenFlag! = "<html><bbj-icon pool='tabler' name='flag-2-filled' id='-2' class='priority-2 menu-item' style='pointer-events: none;'></bbj-icon>"
-        yellowFlag! = "<html><bbj-icon pool='tabler' name='flag-2-filled' id='-3' class='priority-3 menu-item' style='pointer-events: none;'></bbj-icon>"
-        orangeFlag! = "<html><bbj-icon pool='tabler' name='flag-2-filled' id='-4' class='priority-4 menu-item' style='pointer-events: none;'></bbj-icon>"
-        redFlag! = "<html><bbj-icon pool='tabler' name='flag-2-filled' id='-5' class='priority-5 menu-item' style='pointer-events: none;'></bbj-icon>"  
+        noPriorityFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-1' class='priority-0 menu-item' style='pointer-events: none;'></dwc-icon>"
+        blueFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-1' class='priority-1 menu-item' style='pointer-events: none;'></dwc-icon>"
+        greenFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-2' class='priority-2 menu-item' style='pointer-events: none;'></dwc-icon>"
+        yellowFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-3' class='priority-3 menu-item' style='pointer-events: none;'></dwc-icon>"
+        orangeFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-4' class='priority-4 menu-item' style='pointer-events: none;'></dwc-icon>"
+        redFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-5' class='priority-5 menu-item' style='pointer-events: none;'></dwc-icon>"  
 
         #flagVector!.add(noPriorityFlag!)
         #flagVector!.add(blueFlag!)

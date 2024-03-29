@@ -78,10 +78,10 @@ class public Settings
             text!.addClass("settingsCategoryTitle")
             win! = #winSettings!.addChildWindow("", $00108800$, #sysgui!.getAvailableContext())
             win!.addClass("settingsChildWindow")
-            text! = win!.addStaticText("<html><bbj-icon pool='tabler' name='palette' class='icon'></bbj-icon>&&nbsp; Theme")
+            text! = win!.addStaticText("<html><dwc-icon pool='tabler' name='palette' class='icon'></dwc-icon>&&nbsp; Theme")
             text!.addClass("settingsLabel")
             REM text! = win!.addStaticText(themeColor!)
-            settingsThemeColor! = win!.addButton("<html>" + themeColor! + " <bbj-icon pool='tabler' name='chevron-right' class='chevron'></bbj-icon>")
+            settingsThemeColor! = win!.addButton("<html>" + themeColor! + " <dwc-icon pool='tabler' name='chevron-right' class='chevron'></dwc-icon>")
             settingsThemeColor!.addClass("toolbar_icon")
 
             rem Typography
@@ -89,9 +89,9 @@ class public Settings
             text!.addClass("settingsCategoryTitle")
             win! = #winSettings!.addChildWindow("", $00108800$, #sysgui!.getAvailableContext())
             win!.addClass("settingsChildWindow")
-            text! = win!.addStaticText("<html><bbj-icon pool='tabler' name='typography' class='icon'></bbj-icon>&&nbsp; Typography")
+            text! = win!.addStaticText("<html><dwc-icon pool='tabler' name='typography' class='icon'></dwc-icon>&&nbsp; Typography")
             text!.addClass("settingsLabel")
-            settingsTypography! = win!.addButton("<html>" + #hashPrefs!.get("prefsTaskFontFamily") + " <bbj-icon pool='tabler' name='chevron-right' class='chevron'></bbj-icon>")
+            settingsTypography! = win!.addButton("<html>" + #hashPrefs!.get("prefsTaskFontFamily") + " <dwc-icon pool='tabler' name='chevron-right' class='chevron'></dwc-icon>")
             settingsTypography!.addClass("toolbar_icon")
 
             rem About
@@ -99,8 +99,8 @@ class public Settings
             text!.addClass("settingsCategoryTitle")
             win! = #winSettings!.addChildWindow("", $00108800$, #sysgui!.getAvailableContext())
             win!.addClass("settingsChildWindow")
-            text! = win!.addStaticText("<html><bbj-icon pool='tabler' name='info-circle' class='icon'></bbj-icon>&&nbsp; About")
-            settingsAbout! = win!.addButton("<html>Version " + #hashPrefs!.get("prefsVersion") + " <bbj-icon pool='tabler' name='chevron-right' class='chevron'></bbj-icon>")
+            text! = win!.addStaticText("<html><dwc-icon pool='tabler' name='info-circle' class='icon'></dwc-icon>&&nbsp; About")
+            settingsAbout! = win!.addButton("<html>Version " + #hashPrefs!.get("prefsVersion") + " <dwc-icon pool='tabler' name='chevron-right' class='chevron'></dwc-icon>")
             settingsAbout!.addClass("toolbar_icon settingsValue")
 
             rem Set the control callbacks

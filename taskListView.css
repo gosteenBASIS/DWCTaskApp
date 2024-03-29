@@ -8,7 +8,7 @@
     height: 4.5em;
     justify-items: start;
     border: transparent;
-    border-bottom-color: var(--bbj-color-gray-80);
+    border-bottom-color: var(--dwc-color-gray-80);
 }
 
 .task .BBjStaticText {
@@ -36,9 +36,9 @@
 }
 
 /* Task items that are incomplete */
-.task.incomplete bbj-checkbox::part(input-wrapper) {
-    border-color: var(--bbj-color-gray-50);
-    background-color: var(--bbj-color-white);
+.task.incomplete dwc-checkbox::part(input-wrapper) {
+    border-color: var(--dwc-color-gray-50);
+    background-color: var(--dwc-color-white);
 }
 
 /* Task items that are complete */
@@ -46,20 +46,20 @@
     filter: opacity(0.65);
 	text-decoration: line-through;
 }
-.task.complete bbj-checkbox::part(input-wrapper) {
+.task.complete dwc-checkbox::part(input-wrapper) {
 	border-color: rgb(110, 161, 110);
 	background-color: rgba(110, 161, 110, .5);
-    color: var(--bbj-color-black);
+    color: var(--dwc-color-black);
 }
 
 /* Task items that are deferred */
-.task.deferred bbj-checkbox::part(input-wrapper) {
+.task.deferred dwc-checkbox::part(input-wrapper) {
     border-color: rgb(167, 151, 66);
     background-color: rgba(167, 151, 66, .5);
 }
 
 /* Task items that are blocked */
-.task.blocked bbj-checkbox::part(input-wrapper) {
+.task.blocked dwc-checkbox::part(input-wrapper) {
     border-color: rgb(197, 124, 124);
     background-color: rgba(197, 124, 124, .5);
 }
@@ -67,37 +67,37 @@
 /* Items that are clickable, and hovered over */
 .clickable:hover {
     /* filter: brightness(80%); */
-    background: var(--bbj-surface-1);
+    background: var(--dwc-surface-1);
     transition: all 200ms ease;
 }
-.task:hover bbj-checkbox {
+.task:hover dwc-checkbox {
     animation: pulse 500ms ease-in-out 1 forwards;
 }
 
 /* Checkbox styling on task-list-view */
-bbj-checkbox::part(input-wrapper) {
+dwc-checkbox::part(input-wrapper) {
 	border-radius: 100%;
-	color: var(--bbj-color-black);
+	color: var(--dwc-color-black);
 	transform: scale3d(1.25, 1.25, 1);
     justify-content: center;
     align-self: center;
 }
 
 /* Fades check mark on mouse enter/exit on a checkbox */
-bbj-checkbox::part(checked-icon) {
+dwc-checkbox::part(checked-icon) {
     transform: scale(1) translate3d(0px, 0px, 0px);
     transition: all 250ms ease-in-out;
     opacity: 0;
 }
-bbj-checkbox.bbj-checked::part(checked-icon) {
+dwc-checkbox.dwc-checked::part(checked-icon) {
     /* Checked, normal conditions */
     opacity: 1;
 }
-bbj-checkbox.bbj-checked:hover::part(checked-icon) {
+dwc-checkbox.dwc-checked:hover::part(checked-icon) {
     /* Checked, hovering over the checkbox */
     opacity: 0.75;
 }
-bbj-checkbox:not(bbj-checked):hover::part(checked-icon) {
+dwc-checkbox:not(dwc-checked):hover::part(checked-icon) {
     /* Unchecked, hovering over the checkbox */
     opacity: 0.25;
 }
