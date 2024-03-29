@@ -36,7 +36,7 @@
 }
 
 /* Task items that are incomplete */
-.task.incomplete dwc-checkbox::part(input-wrapper) {
+.task dwc-checkbox::part(input-wrapper) {
     border-color: var(--dwc-color-gray-50);
     background-color: var(--dwc-color-white);
 }
@@ -89,15 +89,16 @@ dwc-checkbox::part(checked-icon) {
     transition: all 250ms ease-in-out;
     opacity: 0;
 }
-dwc-checkbox.dwc-checked::part(checked-icon) {
-    /* Checked, normal conditions */
+
+dwc-checkbox[checked]::part(checked-icon) {
     opacity: 1;
 }
-dwc-checkbox.dwc-checked:hover::part(checked-icon) {
+
+dwc-checkbox[checked]:hover::part(checked-icon) {
     /* Checked, hovering over the checkbox */
     opacity: 0.75;
 }
-dwc-checkbox:not(dwc-checked):hover::part(checked-icon) {
+dwc-checkbox:not([checked]):hover::part(checked-icon) {
     /* Unchecked, hovering over the checkbox */
     opacity: 0.25;
 }

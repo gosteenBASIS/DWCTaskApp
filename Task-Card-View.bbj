@@ -50,11 +50,11 @@ class public TaskCardView
         
 REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()))
         
-        if (#task!.getDueDate() > -1 AND #task!.isComplete() = 0) then #due! = #win!.addStaticText("")
-        if (#task!.getDueDate() = -1 AND #task!.isComplete() = 0) then #status! = #win!.addStaticText("") 
-        if (#task!.isComplete()) then #status! = #win!.addStaticText("Date of Completion")
+        if (#task!.getDueDate() > -1 AND #task!.getComplete() = 0) then #due! = #win!.addStaticText("")
+        if (#task!.getDueDate() = -1 AND #task!.getComplete() = 0) then #status! = #win!.addStaticText("") 
+        if (#task!.getComplete()) then #status! = #win!.addStaticText("Date of Completion")
         
-        if (#task!.isComplete() = 0) then 
+        if (#task!.getComplete() = 0) then 
             #createPopupMenu() 
             #priorityFlag! = #win!.addStaticText("") 
             #priorityFlag!.setPopupMenu(#flagPopupMenu!)

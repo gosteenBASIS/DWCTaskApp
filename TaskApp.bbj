@@ -112,7 +112,7 @@ REM     field protected TaskCardView        taskCardView! = new TaskCardView()
     rem /** The hashmap that stores all the user's preferences */
     field private HashMap hashPrefs!
     rem /** The user's preferred DWC theme to use for the UI, i.e. light, dark, dark-pure, or system */
-    field protected BBjString prefsTheme! = #THEME_SYSTEM()
+    field protected BBjString prefsTheme! = #THEME_LIGHT()
     rem /** The user's preferred font family (CSS: font-family)for the tasks */
     field protected BBjString prefsTaskFontFamily! = "Rambla"
     rem /** The user's preferred font weight (CSS: font-weight)for the tasks */
@@ -139,7 +139,7 @@ REM     field protected TaskCardView        taskCardView! = new TaskCardView()
         css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"TaskListView.css"))
         #webManager!.injectStyle(css!, 0, "name=taskapp_list_view_css")
         css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"Task-Card-View.css"))
-        #webManager!.injectStyle(css!, 0, "name=taskapp_card_view_css")
+REM         #webManager!.injectStyle(css!, 0, "name=taskapp_card_view_css")
         css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"Settings.css"))
         #webManager!.injectStyle(css!, 0, "name=taskapp_settings_css")
         rem ' set legacy BBj className values when running in DWC.
@@ -346,7 +346,7 @@ REM         #btnPriorityView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "on
 REM         #btnDueView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onDueView")
 
         rem Create the FAB (floating action button) and the toolbar buttons
-        #btnAddTaskFAB! = #winMain!.addButton("<html><dwc-icon pool='tabler' name='plus''></dwc-icon>")
+        #btnAddTaskFAB! = #winMain!.addButton("<html><dwc-icon pool='tabler' name='plus'></dwc-icon>")
         #btnAddTaskFAB!.addClass("btnAddTaskFAB")
         #btnAddTaskFAB!.setAttribute("theme", "primary")
         #btnAddTaskFAB!.setAttribute("expanse", "xs")

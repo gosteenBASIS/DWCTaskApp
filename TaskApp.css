@@ -374,6 +374,10 @@ dwc-checkbox.hydrated {
 	color: var(--dwc-color-success);
 }
 
+dwc-menuitem::part(control) .priority-2 {
+    color: var(--dwc-color-success);
+}
+
 .priority-3 {
 	color: hsl(55, 100%, 50%);
 }
@@ -398,6 +402,9 @@ dwc-checkbox.hydrated {
     height: 3em;
 }
 
+.no-events {
+    pointer-events: none;
+}
 
 /*  Toolbar Icons                                   */
 /* ================================================ */
