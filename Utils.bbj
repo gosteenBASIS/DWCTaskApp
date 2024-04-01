@@ -1,0 +1,223 @@
+rem /**
+rem  * <code>Utils</code> is a BBj custom data class that is used to provide helpful utility methods to the DWC TaskApp
+rem */
+class public Utils
+
+    rem /**
+    rem  * Method to set multiple string-based user preferences via a HashMap to reduce client-server round trips
+    rem  * <p>
+    rem  * The get/setCookies() methods bypasses the effort of creating string templates and BBjTemplatedStrings as well
+    rem  * as encoding information for safety and portability.  You only have to provide a unique key value that's used to
+    rem  * store the information (usually the app's name, but it can be virtually any string) and a HashMap filled
+    rem  * with the information to store.  The method iterates through the HashMap's keys and builds a string
+    rem  * that consists of the HashMap's key/value pairs joined by the <code>"-,-"</code> characters in an
+    rem  * attempt to provide a reasonable separator that won't interfere with the stored data.
+    rem  * <p>
+    rem  * Both get/setCookies() methods throw errors, so you may want to add an <code>,err=</code> branch when
+    rem  * calling these methods.  The getCookies() method will return a Hashmap filled with key/value pairs if
+    rem  * the cookie exists.  If it does not exist, it will return <code>null()</code>.
+    rem  * <p>
+    rem  * The corresponding <code>getCookies()</code> method is used to retrieve the stored information from the
+    rem  * client's computer (GUI) or browser (BUI/DWC).  You only need to provide the unique key value when getting
+    rem  * the saved cookies, greatly simplifying the reading/writing of user properties
+    rem  *
+    rem  * @param p_cookieKey$          A BBjString with the unique identifier for the saved cookie, such as the application's name
+    rem  * @param p_cookieHashMap!      A HashMap filled with key/value pairs to be stored where the key is the field name and the value is the string value for that field
+    rem  *
+    rem  * @see <a href='https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/HashMap.html' target='_blank'>HashMap</a> for more information on the Java HashMap object
+    rem  */
+    method public static void setCookies(BBjString p_cookieKey$, HashMap p_cookieHashMap!)
+        it! = p_cookieHashMap!.keySet().iterator()
+        while it!.hasNext()
+            key$ = it!.next()
+            value$ = str(p_cookieHashMap!.get(key$))
+            fullString$ = fullString$ + key$ + "-,-" + value$ + $0A$
+        wend
+        fullString$ = fullString$(1, len(fullString$)-1)
+
+        rem Encode the string contents and store it in the user properties based on the provided application key
+        encodedCookies$ = URLEncoder.encode(fullString$)
+        tc! = BBjAPI().getThinClient(err=ERR_GETTING_THINCLIENT)
+        tc!.setUserProperty(p_cookieKey$, encodedCookies$, err=ERR_WRITING_COOKIE)
+        methodret
+
+        ERR_GETTING_THINCLIENT:
+        throw "Error getting the BBjThinClient when trying to set cookies.  The error message was: " + errmes(-1), 725
+
+        ERR_WRITING_COOKIE:
+        throw "Error saving cookie.  The error message was: " + errmes(-1), 720
+    methodend
+
+
+    rem /**
+    rem  * Method to get multiple string-based user preferences in a HashMap to reduce client-server round trips
+    rem  * <p>
+    rem  * The get/setCookies() methods offer a simple way to persist application setting via a HashMap.  You
+    rem  * save information by calling the setCookies() method providing a unique key value that's used to
+    rem  * store the information (usually the app's name, but it can be virtually any string) and a HashMap filled
+    rem  * with the information to store.  You can then call the getCookies() method to retrieve the saved
+    rem  * information in a HashMap.  The methods bypass the effort of creating string templates and BBjTemplatedStrings
+    rem  * as well as encoding information for safety and portability.
+    rem  * <p>
+    rem  * Both get/setCookies() methods throw errors, so you may want to add an <code>,err=</code> branch when
+    rem  * calling these methods.  The getCookies() method will return a Hashmap filled with key/value pairs if
+    rem  * the cookie exists.  If it does not exist, it will return <code>null()</code>.
+    rem  *
+    rem  * @param p_cookieKey$          A BBjString with the unique identifier for the saved cookie, such as the application's name
+    rem  *
+    rem  * @return                      A HashMap filled with key/value pairs, basically a clone of the HahMap provided to the setCookies() method.  If the cookie doesn't exist on the client's machine or browser, the method retuns null().
+    rem  */
+    method public static HashMap getCookies(BBjString p_cookieKey$)
+        declare HashMap             hashCookies!
+
+        tc! = BBjAPI().getThinClient(err=ERR_GETTING_THINCLIENT)
+        prop$ = tc!.getUserProperty(p_cookieKey$, ERR=ERR_READING_COOKIE)
+        cookieValue! = URLDecoder.decode(prop$)
+        if (cookieValue! <> null()) then
+            hashCookies! = new HashMap()
+            fieldList! = java.util.Arrays.asList(cookieValue!.split($0A$))
+            for fieldNum = 0 to fieldList!.size()-1
+                keyVal! = fieldList!.get(fieldNum)
+                keyValVector! = java.util.Arrays.asList(keyVal!.split("-,-"))
+                hashCookies!.put(keyValVector!.get(0,err=*NEXT), keyValVector!.get(1,err=*NEXT))
+            next
+        endif
+        methodret hashCookies!
+
+        ERR_GETTING_THINCLIENT:
+        throw "Error getting the BBjThinClient when trying to get cookies.  The error message was: " + errmes(-1), 725
+
+        ERR_READING_COOKIE:
+        if (err=11) then
+            methodret null()
+        else
+            throw "Error reading cookie.  The error message was: " + errmes(-1), 720
+        endif
+    methodend
+
+
+    rem /**
+    rem  * Logs the provided string into the user's browser Developer Tools console.
+    rem  *
+    rem  * Note that this is a convenience method that calls the consoleLogValues() method
+    rem  * with an empty string for the second parameter (the value).
+    rem  *
+    rem  * @param logEntry!     The information to display in the Developer Tools console
+    rem  */
+    method public static void consoleLog(BBjString logEntry!)
+        #consoleLogValues(logEntry!, "")
+    methodend
+
+
+    rem /**
+    rem  * Logs the provided strings, usually key/value pairs, into the user's browser Developer Tools console.
+    rem  * <p>
+    rem  * If you're developing with VS Code, you can use its debug capabilities so that the
+    rem  * browser's Developer Tools console is available in VS Code's debug console.  This
+    rem  * allows you to view the browser's console output and interact with the interpreter
+    rem  * from within VS Code.
+    rem  *
+    rem  * @param key!          The first information to display in the Developer Tools console, typically the key in a key/value pair
+    rem  * @param value!        The second information to display in the Developer Tools console, typically the value in a key/value pair
+    rem  */
+    method public static void consoleLogValues(BBjString key!, BBjString value!)
+        rem Sanitize the log entries by escaping single quotes
+        if (key! = null()) then key! = ""
+        if (value! = null()) then value! = ""
+        key! = key!.replaceAll("'", "\'")
+        value! = value!.replaceAll("'", "\'")
+
+        rem Define the CSS to format the console output
+        space! = " "
+        cssSpace! = "'background: white;'"
+        cssDebugPrefix! = "'background: hsl(60, 100%, 65%); color: hsl(350, 100%, 25%); padding: 2px 4px; border-radius: 3px; border: 1px solid hsl(350, 100%, 25%); font-weight: 700;'"
+        cssKey! = "'background: hsl(210, 90%, 94%); color: hsl(210, 35%, 35%); padding: 2px 4px; border-radius: 3px; border: 1px solid hsl(210, 35%, 35%);'"
+        cssValue! = "'background: hsl(115, 90%, 94%); color: hsl(115, 35%, 35%); padding: 2px 4px; border-radius: 3px; border: 1px solid hsl(115, 35%, 35%);'"
+
+        rem Define the JavaScript that logs the information
+        js! = "console.log('%cDebug Log:%c%s%c%s%c%s%c%s', " + cssDebugPrefix! + ", " + cssSpace! + ", `" + space! + "`," + cssKey! + ", `" + key! + "`," + cssSpace! + ", `" + space! + "`," + cssValue! + ",`" + value! + "`);"
+
+        rem Get the SysGui device and execute the JavaScript to log the information to the Developer Tools console
+        sg! = BBjAPI().getSysGui(err=*NEXT)
+        if (sg! = null()) then sg! = BBjAPI().openSysGui("X0"); sgChan! = sg!.getChannel()
+        sg!.executeScript(js!)
+        if (sgChan! <> null()) then close(sgChan!,err=*NEXT)
+    methodend
+
+
+    rem /**
+    rem  * Utility method that sets a CSS custom property given the property and value.
+    rem  * It ensures that the CSS property is properly formatted, then builds a CSS
+    rem  * string from the information and adds it to the DOM, thus overriding any
+    rem  * previous setting.
+    rem  *
+    rem  * BBjListChangeEvent e!    The BBjListButton's ON_LIST_CHANGE event
+    rem  */
+    method public static void setCssProperty(BBjString property!, BBjString value!)
+        rem Sanitize the property by ensuring that it starts with '--' and changing all spaces to dashes
+        if !(property!.startsWith("--")) then property! = "--" + property!
+        property! = property!.replaceAll(" ", "-").trim()
+        value! = value!.trim()
+
+        rem If the value contains spaces, such as a font-family listing, then it encloses the string in single quotes
+        if (value!.contains(" ")) then value! = "'" + value! + "'"
+
+        rem Build the CSS string for the root element and append it to the DOM's <body> element
+        css! = ":root { " + property! + ": " + value! + "; }"
+        BBjAPI().getWebManager().injectStyle(css!, 0, "app_custom_css_property")
+    methodend
+
+
+    rem ================================================================================================
+    rem Convert a string to title case
+    rem ================================================================================================
+    rem /**
+    rem  * Method to convert a given string to Title Case, meaning that the first letter of each word is capitalized and the rest is set to lowercase
+    rem  * <p>
+    rem  * Note that this is a convenience method to the more full-featured toTitleCase() method that allows you to optionally set whether the remainder strings are set to lowercase.
+    rem  *
+    rem  * @param BBjString string!             A BBjString to be converted to Title Case
+    rem  * @return BBjString                    The orginal string converted to Title Case
+    rem  */
+    method public static BBjString toTitleCase(BBjString string!)
+        methodret #toTitleCase(string!, 1)
+    methodend
+
+    rem /**
+    rem  * Method to convert a given string to Title Case, meaning that the first letter of each word is capitalized and the rest is optionally set to lowercase
+    rem  *
+    rem  * @param BBjString string!             A BBjString to be converted to Title Case
+    rem  * @param BBjNumber forceLowerCase      A BBjNumber acting as a boolean that indicates whether the method should force all non-titlecase letters to lowercase (1) or not (0).
+    rem  * @return BBjString                    The orginal string converted to Title Case
+    rem  */
+    method public static BBjString toTitleCase(BBjString string!, BBjNumber forceLowerCase)
+        use java.lang.Character
+        declare auto StringBuilder  rtnVal!
+
+        rtnVal! = new StringBuilder()
+        nextTitleCase = 1
+
+        if (forceLowerCase) then string! = string!.toLowerCase()
+
+        charArray! = string!.toCharArray()
+        for i = 0 to charArray!.length - 1
+            char! = charArray![i]
+            if !(Character.isLetterOrDigit(char!)) then
+                nextTitleCase = 1
+            else
+                if (nextTitleCase) then
+                    char! = Character.toTitleCase(char!)
+                    nextTitleCase = 0
+                endif
+            endif
+            rtnVal!.append(char!)
+        next
+        methodret rtnVal!.toString()
+    methodend
+
+classend
+
+rem Java USE Statements
+use java.util.HashMap
+use java.net.URLEncoder
+use java.net.URLDecoder
