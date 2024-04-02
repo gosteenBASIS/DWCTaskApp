@@ -4,8 +4,8 @@
     "title": "Test: Long Titles.  This is a whole lot of extra text that seems to be unecessary at first glance, but in practice it really helps to test the sizing of the control when it comes to displaying very long titles.",
     "description": "Test: Long Descriptions.  This is a description for the task, which ought to be displayed an the second row in the CSS Grid, and has a reduced opacity so that it doesn\u0027t compete with the title when it comes to how the user percieves the data.  This particular description is very long on purpose, so that we can see how it\u0027s displayed under extreme circumstances.\n",
     "complete": "0",
-    "status": "0",
-    "priority": "1",
+    "status": "1",
+    "priority": "3",
     "duedate": "2460311",
     "created": "2023-12-28T23:01:17.613473Z"
   },
@@ -14,7 +14,7 @@
     "title": "Add import/export buttons",
     "description": "",
     "complete": "0",
-    "status": "1",
+    "status": "0",
     "priority": "5",
     "duedate": "-1",
     "created": "2023-12-28T23:01:17.609474600Z"
@@ -54,7 +54,7 @@
     "title": "Changed title",
     "description": "description",
     "complete": "0",
-    "status": "1",
+    "status": "0",
     "priority": "2",
     "duedate": "-1",
     "created": "2023-12-28T23:01:17.610474500Z"
@@ -94,7 +94,7 @@
     "title": "Fix ordering of tasks?",
     "description": "",
     "complete": "0",
-    "status": "0",
+    "status": "1",
     "priority": "5",
     "duedate": "2460307",
     "created": "2023-12-28T23:01:17.611474400Z"
@@ -194,7 +194,7 @@
     "title": "Right-click on tasks",
     "description": "oaeu\n",
     "complete": "0",
-    "status": "0",
+    "status": "1",
     "priority": "0",
     "duedate": "2460307",
     "created": "2023-12-28T23:01:17.611474400Z"
@@ -224,7 +224,7 @@
     "title": "Task Properties should be adaptable to smaller heights",
     "description": "",
     "complete": "0",
-    "status": "0",
+    "status": "1",
     "priority": "0",
     "duedate": "2460307",
     "created": "2023-12-28T23:01:17.609474600Z"
@@ -254,7 +254,7 @@
     "title": "Fix layout of TaskProperties buttons",
     "description": "The delete button should never be on the same line as the due date. Is it possible to prevent this?",
     "complete": "0",
-    "status": "0",
+    "status": "1",
     "priority": "0",
     "duedate": "2460307",
     "created": "2023-12-28T23:01:17.610474500Z"
@@ -294,7 +294,7 @@
     "title": "Toasts!",
     "description": "",
     "complete": "0",
-    "status": "0",
+    "status": "1",
     "priority": "0",
     "duedate": "2460307",
     "created": "2023-12-28T23:01:17.613473Z"
@@ -424,7 +424,7 @@
     "title": "Check for Invalid Dates",
     "description": "",
     "complete": "0",
-    "status": "0",
+    "status": "1",
     "priority": "0",
     "duedate": "2460307",
     "created": "2023-12-28T23:01:17.613473Z"
@@ -444,7 +444,7 @@
     "title": "Task 4",
     "description": "",
     "complete": "0",
-    "status": "0",
+    "status": "1",
     "priority": "0",
     "duedate": "2460307",
     "created": "2023-12-28T23:01:17.609474600Z"
