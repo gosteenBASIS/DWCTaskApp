@@ -215,6 +215,17 @@ class public Utils
         methodret rtnVal!.toString()
     methodend
 
+    rem /**
+    rem  * TODO: make docs for these
+    rem  */
+    method public static LocalDate getLocalDate(BBjNumber jul!)
+        rem Julian date of 1/1/1970 is 2440588
+        methodret LocalDate.ofEpochDay(jul!-2440588)
+    methodend
+
+    method public static BBjNumber getJulian(LocalDate ld!)
+        methodret ld!.toEpochDay()+2440588
+    methodend
 classend
 
 rem Java USE Statements
