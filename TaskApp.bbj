@@ -290,10 +290,12 @@ REM     field protected TaskCardView        taskCardView! = new TaskCardView()
         #winTitle! = #winMain!.addChildWindow("Title", $00108800$, #sysgui!.getAvailableContext())
         #winTitle!.addClass("winTitle")
 
+        rem ///CONDITIONAL FOR VIEW - START///
+        
         #winTasks! = #winMain!.addChildWindow("Tasks", $00108800$, #sysgui!.getAvailableContext())
         #winTasks!.addClass("winTasks")
 
-        rem TASK CARD VIEW: windows (replaces lines 224-225)
+        rem TASK CARD VIEW: windows
 REM         #winTaskView! = #winMain!.addChildWindow("Title", $00108800$, #sysgui!.getAvailableContext())
 REM         #winTaskView!.addClass("winTaskView")
 REM
@@ -313,13 +315,17 @@ REM         #winTaskCardDueDate!.addClass("winTasks")
         #addTaskList("waiting")
         #addTaskList("deferred")
         #addTaskList("complete")
+        
+        rem ///CONDITIONAL FOR VIEW - END///
 
         #labelDay! = #winTitle!.addStaticText("Today", $4000$)
         #labelDay!.addClass("labelDay")
         #labelDate! = #winTitle!.addStaticText(date(0:"%Dl, %Ml %D"), $4000$)
         #labelDate!.addClass("labelDate")
 
-        rem TASK CARD VIEW: buttons (add after line 250)
+        rem ///CONDITIONAL FOR VIEW - START///
+        
+        rem TASK CARD VIEW: buttons 
 REM         #winViews! = #winTitle!.addChildWindow("Title", $00108800$, #sysgui!.getAvailableContext())
 REM         #winViews!.addClass("winViews")
 
@@ -335,17 +341,23 @@ REM         #btnIncompleteView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "
 REM         #btnPriorityView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onPriorityView")
 REM         #btnDueView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onDueView")
 
+        rem ///CONDITIONAL FOR VIEW - END///
+
         rem Create the FAB (floating action button) and the toolbar buttons
         #btnAddTaskFAB! = #winMain!.addButton("<html><bbj-icon pool='tabler' name='plus''></bbj-icon>")
         #btnAddTaskFAB!.addClass("btnAddTaskFAB")
         #btnAddTaskFAB!.setAttribute("theme", "primary")
         #btnAddTaskFAB!.setAttribute("expanse", "xs")
 
+        rem ///CONDITIONAL FOR VIEW - START///
+
         rem TASK CARD VIEW: show completed task cards (completed tasks button on toolbar)
 REM         #btnShowCompletedTasks! = #winToolBar!.addButton("<html><bbj-icon pool='tabler' name='checks'></bbj-icon>")
 REM         #btnShowCompletedTasks!.addClass("toolbar_icon icon-completed")
 REM         #btnShowCompletedTasks!.setToolTipText("Completed Tasks")
 REM         #btnShowCompletedTasks!.setAttribute("expanse", "xs")
+
+        rem ///CONDITIONAL FOR VIEW - END///
 
         #btnAddTask! = #winToolBar!.addButton("<html><bbj-icon pool='tabler' name='plus'></bbj-icon>")
         #btnAddTask!.addClass("toolbar_icon")
@@ -381,8 +393,12 @@ REM         #btnShowCompletedTasks!.setAttribute("expanse", "xs")
         #btnImport!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onImport")
         #btnExport!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onExport")
 
+        rem ///CONDITIONAL FOR VIEW - START///
+        
         rem TASK CARD VIEW: completed tasks callback
 REM         #btnShowCompletedTasks!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onShowCompletedTasks")
+
+        rem ///CONDITIONAL FOR VIEW - END///
 
         #displayTasks()
         #winMain!.setVisible(1)
@@ -407,7 +423,9 @@ REM         orderedTasks! = #getSortedTasks(#displayType!) look at lines 398 - 4
         orderedTasks! = #getSortedTasks("priority")
         it! = orderedTasks!.values().iterator()
 
-        rem TASK CARD VIEW: task loop (replaces lines 345-352)
+        rem ///CONDITIONAL FOR VIEW - START///
+
+        rem TASK CARD VIEW: task loop
 REM         while it!.hasNext()
 REM             task! = it!.next()
 REM             view! = #addTaskCardView(task!)
@@ -421,6 +439,8 @@ REM                 view!.setVisible(0)
                 view!.setVisible(1)
             endif
         wend
+        
+        rem ///CONDITIONAL FOR VIEW - END///
     methodend
 
     rem /**
