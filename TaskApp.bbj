@@ -136,7 +136,7 @@ REM     field protected TaskCardView        taskCardView! = new TaskCardView()
         #webManager! = BBjAPI().getWebManager()
         css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"TaskApp.css"))
         #webManager!.injectStyle(css!, 0, "name=taskapp_css")
-        css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"TaskListView.css"))
+        css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"taskListView.css"))
         #webManager!.injectStyle(css!, 0, "name=taskapp_list_view_css")
         css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"Task-Card-View.css"))
 REM         #webManager!.injectStyle(css!, 0, "name=taskapp_card_view_css")
@@ -1165,6 +1165,7 @@ rem BBj USE Statements
 use ::Task.bbj::Task
 use ::TaskProperties.bbj::TaskProperties
 use ::TaskListView.bbj::TaskListView
+use ::TaskView.bbj::TaskView
 use ::Settings.bbj::Settings
 REM use ::Task-Card-View.bbj::TaskCardView
 

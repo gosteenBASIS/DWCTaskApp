@@ -1,0 +1,178 @@
+REM /**
+REM  * TaskView.bbj
+REM  * @author gosteen
+REM  *C:\Users\gosteen\eclipse\workspaces\bbj-workspace\TaskApp\TaskView.bbj
+REM  */
+rem package TaskApp
+
+
+class public TaskView
+    field public    Task            task!
+    field public    BBjNumber       priority!
+    field public    BBjChildWindow  win!
+    field public    BBjString       uuid!
+    field public    BBjPopupMenu    flagPopupMenu!
+    field protected BBjSysGui       sysgui!
+    field public    BBjStaticText   title!
+    field public    BBjStaticText   description!
+    field public    BBjStaticText   due!
+    field public    BBjString       flagIcon!
+    field public    BBjStaticText   priorityFlag!
+    field public    BBjVector       flagVector!
+    field public    BBjString       flagText!
+
+    method public TaskView(BBjWindow parent!, Task t!)
+        #sysgui! = BBjAPI().getSysGui()
+        #task! = t!
+        #uuid! = #task!.getUuid()
+
+        #win! = parent!.addChildWindow("", $00108000$, #sysgui!.getAvailableContext())
+        #win!.setAttribute("id", #uuid!)
+        #win!.addClass("task clickable")
+
+        #priority! = #task!.getPriority()
+        #title! = #win!.addStaticText("")
+        #title!.addClass("title-display")
+        #description! = #win!.addStaticText("")
+        #description!.addClass("description-display")
+
+        #due! = #win!.addStaticText("")
+        #due!.addClass("due-notice")
+        #priorityFlag! = #win!.addStaticText("")
+        #priorityFlag!.setCallback(BBjControl.ON_POPUP_REQUEST, #this!, "OnShowPriorityPopup")
+        #setPriorityFlag()
+    methodend
+
+    rem /**
+    rem  * Refresh the TaskListView with the latest information from its Task object.
+    rem  * This is called from the TaskApp class when a TASK_UPDATE event is posted.
+    rem  */
+    method public void refresh()
+        if (#task!.getDeleted()) then
+            #setVisible(0)
+        endif
+        #clearStyles()
+        #title!.setText(#task!.getTitle())
+        #description!.setText(#task!.getDescription())
+        #checkbox!.setSelected(#task!.getComplete())
+        #win!.addClass(#task!.getStatusString(#task!.getStatus()))
+        if (#task!.getComplete()) then
+            #win!.addClass("complete")
+        endif
+        #setPriorityFlag()
+        #setDueNotice()
+        if (#flagPopupMenu! <> null()) then
+            for i = 1 to #flagPopupMenu!.getChildCount()
+                menuItem! = #flagPopupMenu!.getMenuItem(i)
+                menuItem!.setVisible(1)
+                if (#task!.getPriority() = mod(i,6)) then
+                    menuItem!.setVisible(0)
+                endif
+            next i
+        endif
+    methodend
+
+    rem /**
+    rem  * Sets the visibility of the ChildWindow of the TaskListView
+    rem  * Calls setVisible on #win!
+    rem  *
+    rem  * @param visible!   BBjNumber acting as a boolean specifying the visibility
+    rem  */
+    method public void setVisible(BBjNumber visible!)
+        #win!.setVisible(visible!)
+    methodend
+
+    rem /**
+    rem  * Removes the style classes for all possible statuses.
+    rem  */
+    method public void clearStyles()
+        #win!.removeClass("complete incomplete blocked deferred")
+    methodend
+
+    method public void setDueNotice()
+        #due!.removeClass("due-today past-due")
+        due! = ""
+
+        if (#task!.getDueDate() > -1) AND (#task!.getDueDate() < jul(date(0))) then
+            due! = "Past Due!"
+             #due!.addClass("due-today past-due")
+        endif
+
+        if (#task!.getDueDate() = jul(date(0))) then
+            due! = "Due Today!"
+             #due!.addClass("due-today")
+        endif
+
+        #due!.setText(due!)
+    methodend
+
+    method public void setPriorityFlag()
+        #flagText! = "Priority " + STR(#task!.getPriority())
+
+        if (#task!.getPriority() > 0) then
+            #flagIcon! = "<html><dwc-icon pool='tabler' name='flag-2-filled'></dwc-icon>"
+        else
+            #flagIcon! = ""
+        endif
+
+        #priorityFlag!.setText(#flagIcon!)
+        #priorityFlag!.removeClass("priority-1 priority-2 priority-3 priority-4 priority-5 priority-0")
+        #priorityFlag!.addClass("priority-flag")
+        #priorityFlag!.addClass("priority-" + STR(#task!.getPriority()))
+        #priorityFlag!.setToolTipText(#flagText!)
+    methodend
+
+    method public void createPopupMenu()
+        #flagPopupMenu! = #sysgui!.addPopupMenu()
+        #flagPopupMenu!.addClass("flag-popup")
+
+        deleteFlag! = "<html><dwc-icon pool='tabler' name='x' class='priority-0 menu-item'></dwc-icon>"
+        blueFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' class='priority-1 menu-item no-events'></dwc-icon>"
+        greenFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' class='priority-2 menu-item no-events'></dwc-icon>"
+        yellowFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' class='priority-3 menu-item no-events'></dwc-icon>"
+        orangeFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' class='priority-4 menu-item no-events'></dwc-icon>"
+        redFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' class='priority-5 menu-item no-events'></dwc-icon>"
+
+        #flagVector! = BBjAPI().makeVector()
+        #flagVector!.add(deleteFlag!)
+        #flagVector!.add(blueFlag!)
+        #flagVector!.add(greenFlag!)
+        #flagVector!.add(yellowFlag!)
+        #flagVector!.add(orangeFlag!)
+        #flagVector!.add(redFlag!)
+
+        i! = 0
+        id! = -1
+        while (i! < #flagVector!.size())
+            currentPriority! = #task!.getPriority()
+            flag! = #flagVector!.getItem(i!)
+
+            if (i! = 0) then
+                flagItem! = #flagPopupMenu!.addMenuItem(-6, flag!)
+            else
+                flagItem! = #flagPopupMenu!.addMenuItem(id!, flag!)
+                if (currentPriority! = i!) then flagItem!.setVisible(0)
+                id! = id! - 1
+            endif
+            flagItem!.addClass("priority-" + str(i!))
+            flagItem!.setCallback(flagItem!.ON_POPUP_ITEM_SELECT, #this!, "changePriority")
+            i! = i! + 1
+        wend
+    methodend
+
+    method public void OnShowPriorityPopup(BBjPopupRequestEvent event!)
+        if (#flagPopupMenu! = null()) then #createPopupMenu()
+        #flagPopupMenu!.show(event!.getControl(), 0, 0)
+    methodend
+
+    method public void changePriority(BBjPopupSelectEvent e!)
+        newPriority! = ABS(e!.getMenuItem().getID())
+
+        if (newPriority! = 6) then newPriority! = 0
+
+        #task!.setPriority(newPriority!)
+        BBjAPI().postCustomEvent("TASK_UPDATE", #task!)
+    methodend
+classend
+
+use ::Task.bbj::Task

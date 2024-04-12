@@ -11,6 +11,16 @@
     border-bottom-color: var(--dwc-color-gray-80);
 }
 
+dwc-checkbox {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.task .due-notice {
+    grid-row: 1;
+    grid-column: 3;
+}
+
 .task .BBjStaticText {
     font-family: var(--app-font-family-task);
     font-weight: var(--app-font-weight-task);
@@ -73,6 +83,7 @@
 .task:hover dwc-checkbox {
     animation: pulse 500ms ease-in-out 1 forwards;
 }
+
 
 /* Checkbox styling on task-list-view */
 dwc-checkbox::part(input-wrapper) {

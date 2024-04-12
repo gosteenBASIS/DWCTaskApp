@@ -163,7 +163,7 @@ REM         #Created! = task!.getCreated()
         #Priority! = 0
         #Status! = Task.STATUS_INCOMPLETE()
         #Tags! = BBjAPI().makeVector()
-        #Satuses!.addItem(#FLAG_INCOMPLETE())
+REM         #Flags!.addItem(#FLAG_INCOMPLETE())
         #Complete! = 0
         #DueDate! = -1
         #Created! = Instant.now()

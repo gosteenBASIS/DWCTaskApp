@@ -339,6 +339,7 @@ dwc-checkbox.hydrated {
 	justify-self: right;
     align-self: start;
     grid-column: 3 / 3;
+    grid-row: 2;
 }
 
 
@@ -372,10 +373,6 @@ dwc-checkbox.hydrated {
 
 .priority-2 {
 	color: var(--dwc-color-success);
-}
-
-dwc-menuitem::part(control) .priority-2 {
-    color: var(--dwc-color-success);
 }
 
 .priority-3 {
