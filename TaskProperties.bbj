@@ -27,7 +27,7 @@ REM     field public BBjChildWindow    winButtons!
     field public BBjButton         buttonDelete!
     field public BBjButton         buttonCancel!
     field public BBjButton         buttonSave!
-    field public BBjString         lock! = "<html><bbj-icon pool='tabler' name='lock' style='width: 30px; height: 30px'></bbj-icon>"
+    field public BBjString         lock! = "<html><dwc-icon pool='tabler' name='lock' style='width: 30px; height: 30px'></dwc-icon>"
     field public BBjNumber         dataPassed! = 0 
 
     field public Task              task!

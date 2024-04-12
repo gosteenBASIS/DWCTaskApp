@@ -28,8 +28,10 @@ class public Task
     rem /** The description of the task. */
     field public BBjString Description!
 
-    rem Can we do enums in BBj? Should status just be a boolean isComplete to start with?
-    rem /** The status of the task that denotes whether the task is complete or not. */
+    rem /** The status of the task. Represents whether the task is deferred or blocked
+    rem  *  TODO: Should "status" be a String? Should it just be a vector of strings, representing flags?
+    rem  *  Make some constants -- add status Task.DEFERRED, Task.BLOCKED, etc.
+    rem  *  */
     field public BBjNumber Status!
 
     rem /** Boolean indicating whether the task is complete. */
@@ -110,6 +112,9 @@ class public Task
     rem  * @param json!            The JSON representation of the Task object
     rem  */
     method public Task(JsonObject json!)
+        #init()
+        rem This error checking doesn't seem to work -- better to use .has() to check if the thing exists?
+        rem get(member) returns Null if it doesn't exist
         #Title! = json!.get("title",err=*NEXT).getAsString()
         #Description! = json!.get("description",err=*NEXT).getAsString()
         #Uuid! = json!.get("uuid").getAsString()
@@ -117,6 +122,7 @@ class public Task
         #Status! = json!.get("status",err=*NEXT).getAsInt()
         #DueDate! = json!.get("duedate",err=*NEXT).getAsInt()
         #Created! = Instant.parse(json!.get("created").getAsString())
+        if (json!.has("complete")) then #Complete! = json!.get("complete",err=*NEXT).getAsInt()
     methodend
 
     rem /**
@@ -130,7 +136,7 @@ class public Task
         #Priority! = task!.getPriority()
         #DueDate! = task!.getDueDate()
         #Status! = task!.getStatus()
-
+        #Complete! = task!.getComplete()
         #Uuid! = task!.getUuid()
 REM         #Created! = task!.getCreated()
     methodend
@@ -145,6 +151,7 @@ REM         #Created! = task!.getCreated()
         #Uuid! = java.util.UUID.randomUUID().toString()
         #Priority! = 0
         #Status! = Task.STATUS_INCOMPLETE()
+        #Complete! = 0
         #DueDate! = -1
         #Created! = Instant.now()
     methodend
@@ -158,6 +165,7 @@ REM         #Created! = task!.getCreated()
         #Priority! = source!.getPriority()
         #DueDate! = source!.getDueDate()
         #Status! = source!.getStatus()
+        #Complete! = source!.getComplete()
     methodend
 
     rem Setters
@@ -194,12 +202,6 @@ REM         #Created! = task!.getCreated()
     rem  */
     method public static BBjString getStatusString(BBjNumber status!)
         switch status!
-            case #STATUS_INCOMPLETE()
-                s! = "incomplete"
-                break
-            case #STATUS_COMPLETE()
-                s! = "complete"
-                break
             case #STATUS_DEFFERRED()
                 s! = "deferred"
                 break
@@ -207,17 +209,11 @@ REM         #Created! = task!.getCreated()
                 s! = "blocked"
                 break
             case default
-                throw "Invalid status provided to Task.getStatusString(): " + str(status!),17
+                s! = "none"
+REM                 throw "Invalid status provided to Task.getStatusString(): " + str(status!),17
                 break
         swend
         methodret s!
-    methodend
-
-    rem /**
-    rem  * Returns whether the task is complete.
-    rem  */
-    method public BBjNumber isComplete()
-        methodret #Status! = #STATUS_COMPLETE()
     methodend
 
     rem Misc utility methods
@@ -229,6 +225,7 @@ REM         #Created! = task!.getCreated()
     method public void printDetails()
         ? "Title: ", #Title!
         ? "Description: ", #Description!
+        ? "Complete: ", #Complete!
         ? "Status: ", #Status!
         ? "Priority: ", #Priority!
         ? "Due Date: ", #DueDate!
@@ -267,6 +264,7 @@ REM         #Created! = task!.getCreated()
         json!.addProperty("uuid", #getUuid())
         json!.addProperty("title", iff(#getTitle() <> null(), #getTitle(), ""))
         json!.addProperty("description", iff(#getDescription() <> null(), #getDescription(), ""))
+        json!.addProperty("complete", iff(#getComplete() <> null(), str(#getComplete()), ""))
         json!.addProperty("status", iff(#getStatus() <> null(), str(#getStatus()), ""))
         json!.addProperty("priority", iff(#getPriority() <> null(), str(#getPriority()), ""))
         json!.addProperty("duedate", iff(#getDueDate() <> null(), str(#getDueDate()), ""))

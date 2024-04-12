@@ -1,7 +1,7 @@
 REM /**
 REM  * TaskListView.bbj
 REM  * @author gosteen
-REM  *C:\Users\gosteen\eclipse\workspaces\bbj-workspace\TaskApp\TaskListView.bbj
+REM  *C:\Users\gosteen\eclipse\workspaces\dwc-workspace\TaskApp\TaskListView.bbj
 REM  * TaskListView represents the childwindow of a task in a list
 REM  */
 
@@ -32,7 +32,6 @@ class public TaskListView
         #checkbox! = #win!.addCheckBox("")
         #checkbox!.addClass("checkbox")
         #checkbox!.setCallback(BBjControl.ON_CHECK_CHANGE, #this!, "onTaskCheck")
-
         #priority! = #task!.getPriority()
 
         #title! = #win!.addStaticText("")
@@ -59,12 +58,12 @@ class public TaskListView
         #flagPopupMenu! = #sysgui!.addPopupMenu()
         #flagPopupMenu!.addClass("flag-popup")
 
-        deleteFlag! = "<html><bbj-icon pool='tabler' name='x' class='priority-0 menu-item' style='pointer-events: none;'></bbj-icon>"
-        blueFlag! = "<html><bbj-icon pool='tabler' name='flag-2-filled' id='-1' class='priority-1 menu-item' style='pointer-events: none;'></bbj-icon>"
-        greenFlag! = "<html><bbj-icon pool='tabler' name='flag-2-filled' id='-2' class='priority-2 menu-item' style='pointer-events: none;'></bbj-icon>"
-        yellowFlag! = "<html><bbj-icon pool='tabler' name='flag-2-filled' id='-3' class='priority-3 menu-item' style='pointer-events: none;'></bbj-icon>"
-        orangeFlag! = "<html><bbj-icon pool='tabler' name='flag-2-filled' id='-4' class='priority-4 menu-item' style='pointer-events: none;'></bbj-icon>"
-        redFlag! = "<html><bbj-icon pool='tabler' name='flag-2-filled' id='-5' class='priority-5 menu-item' style='pointer-events: none;'></bbj-icon>"
+        deleteFlag! = "<html><dwc-icon pool='tabler' name='x' class='priority-0 menu-item'></dwc-icon>"
+        blueFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' class='priority-1 menu-item no-events'></dwc-icon>"
+        greenFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' class='priority-2 menu-item no-events'></dwc-icon>"
+        yellowFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' class='priority-3 menu-item no-events'></dwc-icon>"
+        orangeFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' class='priority-4 menu-item no-events'></dwc-icon>"
+        redFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' class='priority-5 menu-item no-events'></dwc-icon>"
 
         #flagVector! = BBjAPI().makeVector()
         #flagVector!.add(deleteFlag!)
@@ -87,7 +86,7 @@ class public TaskListView
                 if (currentPriority! = i!) then flagItem!.setVisible(0)
                 id! = id! - 1
             endif
-
+            flagItem!.addClass("priority-" + str(i!))
             flagItem!.setCallback(flagItem!.ON_POPUP_ITEM_SELECT, #this!, "changePriority")
             i! = i! + 1
         wend
@@ -114,7 +113,7 @@ class public TaskListView
         #flagText! = "Priority " + STR(#task!.getPriority())
 
         if (#task!.getPriority() > 0) then
-            #flagIcon! = "<html><bbj-icon pool='tabler' name='flag-2-filled'></bbj-icon>"
+            #flagIcon! = "<html><dwc-icon pool='tabler' name='flag-2-filled'></dwc-icon>"
         else
             #flagIcon! = ""
         endif
@@ -153,8 +152,11 @@ class public TaskListView
         #clearStyles()
         #title!.setText(#task!.getTitle())
         #description!.setText(#task!.getDescription())
-        #checkbox!.setSelected(#task!.isComplete())
+        #checkbox!.setSelected(#task!.getComplete())
         #win!.addClass(#task!.getStatusString(#task!.getStatus()))
+        if (#task!.getComplete()) then
+            #win!.addClass("complete")
+        endif
         #checkbox!.addClass(#task!.getStatusString(#task!.getStatus()))
         #setPriorityFlag()
         #setDueNotice()
@@ -186,17 +188,15 @@ class public TaskListView
     rem  */
     method public void onTaskCheck(BBjCheckChangeEvent e!)
         #clearStyles()
-        if (#task!.isComplete()) then
+        if (#task!.getComplete()) then
             #task!.setStatus(#task!.STATUS_INCOMPLETE())
+            #task!.setComplete(0)
         else
             #task!.setStatus(#task!.STATUS_COMPLETE())
+            #task!.setComplete(1)
         endif
         BBjAPI().postCustomEvent("TASK_UPDATE",#task!)
     methodend
-
-
-
-
 
 
 classend

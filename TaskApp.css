@@ -15,21 +15,21 @@
     --app-color-text-normal: hsl(0, 0%, var(--app-color-text-normal-l));
     --app-color-text-light:  hsl(0, 0%, var(--app-color-text-light-l));
     --app-color-text-faint:  hsl(0, 0%, var(--app-color-text-faint-l));
-    --app-font-family-task: var(--bbj-font-family);
-    --app-font-weight-task: var(--bbj-font-weight-semibold);
-    --app-font-size-task: var(--bbj-font-size-m);
+    --app-font-family-task: var(--dwc-font-family);
+    --app-font-weight-task: var(--dwc-font-weight-semibold);
+    --app-font-size-task: var(--dwc-font-size-m);
     --app-font-spacing-task: normal;
 }
 
 /* Override the DWC's default CSS custom properties */
 /* ================================================ */
 :root {
-    --bbj-font-family: 'AR One Sans', 'Gabarito', 'K2D', 'Overlock', 'Encode Sans Semicondensed', 'Aller', 'Alatsi', 'Akrobat', var(--bbj-font-family-sans);
-    --bbj-color-body-text: var(--app-color-text-normal);
-    --bbj-color-primary-h: var(--app-color-h);
-    --bbj-color-default-h: var(--app-color-h);
-    --bbj-color-default-s: 25%;
-    --bbj-list-padding: calc(var(--bbj-space) / 2);
+    --dwc-font-family: 'AR One Sans', 'Gabarito', 'K2D', 'Overlock', 'Encode Sans Semicondensed', 'Aller', 'Alatsi', 'Akrobat', var(--dwc-font-family-sans);
+    --dwc-color-body-text: var(--app-color-text-normal);
+    --dwc-color-primary-h: var(--app-color-h);
+    --dwc-color-default-h: var(--app-color-h);
+    --dwc-color-default-s: 25%;
+    --dwc-list-padding: calc(var(--dwc-space) / 2);
 }
 
 
@@ -57,10 +57,10 @@ html, body, .BBjWindowManagerDesktop {
 }
 
 /* Modify ALL BBjButtons by setting their color and font size & weight */
-bbj-button::part(label) {
+dwc-button::part(label) {
     /* color: var(--app-color-primary); */
-    font-size: var(--bbj-font-size-l);
-    font-weight: var(--bbj-font-weight-semibold);
+    font-size: var(--dwc-font-size-l);
+    font-weight: var(--dwc-font-weight-semibold);
 }
 
 /* Set a larger minimum width for the message box buttons */
@@ -69,12 +69,12 @@ bbj-button::part(label) {
 }
 
  /* Make the checkboxes zoom into 100% size on load */
-bbj-checkbox:not(hydrated) {
+dwc-checkbox:not(hydrated) {
     transform: scale3d(0,0,0);
     transition: all 500ms ease;
     transition-delay: 200ms;
 }
-bbj-checkbox.hydrated {
+dwc-checkbox.hydrated {
     transform: scale3d(1,1,1);
     padding-left: 1px;
 }
@@ -95,16 +95,16 @@ bbj-checkbox.hydrated {
 /* BBjRadioButton styled as a Switch                */
 /* ================================================ */
 .switchLayout {
-    --bbj-switch-size: 4em;
-    --bbj-switch-background: hsl(var(--app-color-h), 25%, 90%);
-    --bbj-switch-hover-background:  hsl(var(--app-color-h), 25%, 97%);
-    --bbj-switch-checked-background: hsl(var(--app-color-h), var(--app-color-s), 35%);
-    --bbj-switch-hover-checked-background: hsl(var(--app-color-h), var(--app-color-s), 42%);
+    --dwc-switch-size: 4em;
+    --dwc-switch-background: hsl(var(--app-color-h), 25%, 90%);
+    --dwc-switch-hover-background:  hsl(var(--app-color-h), 25%, 97%);
+    --dwc-switch-checked-background: hsl(var(--app-color-h), var(--app-color-s), 35%);
+    --dwc-switch-hover-checked-background: hsl(var(--app-color-h), var(--app-color-s), 42%);
 }
 .switchLayout::part(input) {
     width: 6em;
 }
-.switchLayout.bbj-checked::part(input)::before {
+.switchLayout.dwc-checked::part(input)::before {
     transform: translateX(200%);
 }
 .switchLayout:not([checked])::part(input)::after {
@@ -161,8 +161,8 @@ bbj-checkbox.hydrated {
     align-items: flex-start;
     justify-content: flex-start;
     width: 100%;
-    padding: var(--bbj-space);
-    gap: calc(var(--bbj-space) * 3);
+    padding: var(--dwc-space);
+    gap: calc(var(--dwc-space) * 3);
 }
 
 .winToolBar {
@@ -171,8 +171,8 @@ bbj-checkbox.hydrated {
     display: flex;
     flex-flow: row;
     align-items: center;
-    padding: var(--bbj-space);
-    gap: var(--bbj-space) var(--bbj-space);
+    padding: var(--dwc-space);
+    gap: var(--dwc-space) var(--dwc-space);
 
     /* This keeps the buttons together and centers them on the display */
     /* width: fit-content;
@@ -224,8 +224,8 @@ bbj-checkbox.hydrated {
 
 .nav_user_name::before {
     position: absolute;
-    top: var(--bbj-space);
-    left: var(--bbj-space);
+    top: var(--dwc-space);
+    left: var(--dwc-space);
     width: 2.5em;
     height: 2.5em;
     background: var(--app-color-primary);
@@ -233,7 +233,7 @@ bbj-checkbox.hydrated {
     text-indent: initial;
     text-align: center;
     line-height: 2.5em;
-    color: var(--bbj-color-white);
+    color: var(--dwc-color-white);
     font-weight: 700;
 }
 
@@ -251,12 +251,13 @@ bbj-checkbox.hydrated {
 }
 
 .winTaskProperties .BBjPanel {
+    max-width: 25em;
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
     /* max-width: 40vw; */
-    padding: var(--bbj-space-l);
-    gap: var(--bbj-space-m);
+    padding: var(--dwc-space-l);
+    gap: var(--dwc-space-m);
     /* width: max(300px, 40vw); */
 }
 
@@ -272,10 +273,13 @@ bbj-checkbox.hydrated {
 }
 
 .winTaskProperties .BBjPanel .BBjButton {
-    flex: 1 1 25%;
+    flex: 1 1 30%;
     min-width: 10em;
     width: auto;
-    /* align-self: flex-end; */
+}
+
+.winTaskProperties .BBjPanel .BBjControl:last-child {
+    width: 100%;
 }
 
 @media (max-height: 600px) {
@@ -304,7 +308,7 @@ bbj-checkbox.hydrated {
     flex-flow: row;
     justify-content: space-between;
     margin-top: 1em;
-    padding: var(--bbj-focus-ring-width);
+    padding: var(--dwc-focus-ring-width);
 }
 */
 
@@ -342,7 +346,7 @@ bbj-checkbox.hydrated {
 /*  Task due today and past due badges              */
 /* ================================================ */
 .task .due-today {
-	color: var(--bbj-color-danger);
+	color: var(--dwc-color-danger);
 	justify-self: right;
 	white-space: nowrap;
 	font-weight: 600;
@@ -356,7 +360,7 @@ bbj-checkbox.hydrated {
 /*  Priority flags and popup menus                  */
 /* ================================================ */
 .priority-0 {
-	color: var(--bbj-color-black);
+	color: var(--dwc-color-black);
 	opacity: 0.7;
 }
 
@@ -367,7 +371,11 @@ bbj-checkbox.hydrated {
 }
 
 .priority-2 {
-	color: var(--bbj-color-success);
+	color: var(--dwc-color-success);
+}
+
+dwc-menuitem::part(control) .priority-2 {
+    color: var(--dwc-color-success);
 }
 
 .priority-3 {
@@ -379,7 +387,7 @@ bbj-checkbox.hydrated {
 }
 
 .priority-5 {
-	color: var(--bbj-color-danger);
+	color: var(--dwc-color-danger);
 }
 
 .menu-item::part(control) {
@@ -394,6 +402,9 @@ bbj-checkbox.hydrated {
     height: 3em;
 }
 
+.no-events {
+    pointer-events: none;
+}
 
 /*  Toolbar Icons                                   */
 /* ================================================ */
@@ -411,14 +422,14 @@ bbj-checkbox.hydrated {
 
 /* The reload toolbar icon is special and has a unique hover effect */
 .icon_reload.toolbar_icon::part(control) {
-    color: var(--bbj-color-danger);
+    color: var(--dwc-color-danger);
     opacity: 0.75;
     transition: all 0.1s ease-in-out;
 }
 .icon_reload.toolbar_icon::part(control):hover {
     opacity: 1.0;
-    background: var(--bbj-color-danger);
-    color: var(--bbj-color-white);
+    background: var(--dwc-color-danger);
+    color: var(--dwc-color-white);
 }
 
 
