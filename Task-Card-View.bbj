@@ -34,15 +34,15 @@ class public TaskCardView
     method public TaskCardView(BBjWindow parent!, Task t!)
         #sysgui! = BBjAPI().getSysGui()
         #win! = parent!.addChildWindow("", $00108000$, #sysgui!.getAvailableContext())
-        #win!.addClass("task")
+        #win!.addClass("card-task")
              
         #task! = t!
         #uuid! = #task!.getUuid()
         #win!.setAttribute("id", #uuid!)
 
         if (#task!.getComplete()) then 
-            #win!.removeClass("task")
-            #win!.addClass("task-complete")
+            #win!.removeClass("card-task")
+            #win!.addClass("card-task-complete")
             #win!.setToolTipText("Unlock to edit task")
         else
             #win!.setToolTipText("Click to edit task")
@@ -62,20 +62,20 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
             
             if (#task!.getDueDate() > -1) then
                 #status! = #win!.addStaticText("Status: " + #task!.getStatusString(#task!.getStatus()))
-                #status!.addClass("status-display")
+                #status!.addClass("card-status-display")
             endif
         else
             #btnLock! = #win!.addButton(#lock!)
             #win!.setUserData(#btnLock!)
-            #btnLock!.addClass("btn-lock")
+            #btnLock!.addClass("card-btn-lock")
             #btnLock!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "setLock")
         endif
         
         #title! = #win!.addStaticText("")
-        #title!.addClass("title-display")     
+        #title!.addClass("card-title-display")     
  
         #description! = #win!.addStaticText("")
-        #description!.addClass("description-display")
+        #description!.addClass("card-description-display")
 
         if (#task!.getComplete() = 0) then 
             #btnSetComplete! = #win!.addButton("Mark as Complete")
@@ -83,11 +83,11 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
             #btnSetComplete! = #win!.addButton("Mark as Incomplete")
         endif
         
-        #btnSetComplete!.addClass("btn-complete-incomplete")
+        #btnSetComplete!.addClass("card-btn-complete-incomplete")
         #btnSetComplete!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "setComplete")
 
         #btnDeleteTask! = #win!.addButton(#trashIcon!)
-        #btnDeleteTask!.addClass("btn-delete-task")
+        #btnDeleteTask!.addClass("card-btn-delete-task")
         #btnDeleteTask!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onDelete")
         
         #refresh()
@@ -101,12 +101,12 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
     method public void createPopupMenu()
         #flagPopupMenu! = #sysgui!.addPopupMenu()
 
-        noPriorityFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-1' class='priority-0 menu-item' style='pointer-events: none;'></dwc-icon>"
-        blueFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-1' class='priority-1 menu-item' style='pointer-events: none;'></dwc-icon>"
-        greenFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-2' class='priority-2 menu-item' style='pointer-events: none;'></dwc-icon>"
-        yellowFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-3' class='priority-3 menu-item' style='pointer-events: none;'></dwc-icon>"
-        orangeFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-4' class='priority-4 menu-item' style='pointer-events: none;'></dwc-icon>"
-        redFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-5' class='priority-5 menu-item' style='pointer-events: none;'></dwc-icon>"  
+        noPriorityFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-1' style='pointer-events: none;'></dwc-icon>"
+        blueFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-1' style='pointer-events: none;'></dwc-icon>"   
+        greenFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-2' style='pointer-events: none;'></dwc-icon>"
+        yellowFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-3' style='pointer-events: none;'></dwc-icon>"
+        orangeFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-4' style='pointer-events: none;'></dwc-icon>"
+        redFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-5' style='pointer-events: none;'></dwc-icon>"  
 
         #flagVector!.add(noPriorityFlag!)
         #flagVector!.add(blueFlag!)
@@ -129,6 +129,7 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
                 id! = id! - 1
             endif
             
+            flagItem!.addClass("priority-" + str(i!))
             flagItem!.setCallback(flagItem!.ON_POPUP_ITEM_SELECT, #this!, "changePriority")
             i! = i! + 1
         wend
@@ -153,25 +154,25 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
             if (#task!.getComplete() = 0) then              
                 if (#task!.getDueDate() > -1) AND (#task!.getDueDate() < jul(date(0))) then 
                     due! = "Past Due!"
-                    #due!.addClass("due-notice")
+                    #due!.addClass("card-due-notice")
                     #due!.setToolTipText("Due " + dueDate!)
                 endif
                 
                 if (#task!.getDueDate() = jul(date(0))) then 
                     due! = "Due Today!"
-                    #due!.addClass("due-notice")
+                    #due!.addClass("card-due-notice")
                     #due!.setToolTipText("Due " + dueDate!)
                 endif
                 
                 if (#task!.getDueDate() > -1 AND #task!.getDueDate() > jul(date(0))) then
                     due! = "Due " + STR(dueDate!)
-                    #due!.addClass("due-date")
+                    #due!.addClass("card-due-date")
                 endif
             endif
             
             if (#task!.getComplete()) then 
                 #status!.setText("Date of Completion")
-                #status!.addClass("status-display")
+                #status!.addClass("card-status-display")
             endif
             
             #due!.setText(due!) 
@@ -188,7 +189,7 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
             if (#priorityFlag! <> null()) then 
                 #priorityFlag!.setText(#flagIcon!)
                 #priorityFlag!.removeClass("priority-1 priority-2 priority-3 priority-4 priority-5 priority-0")
-                #priorityFlag!.addClass("priority-flag")
+                #priorityFlag!.addClass("card-priority-flag")
                 #priorityFlag!.addClass("priority-" + STR(#task!.getPriority()))
                 #priorityFlag!.setToolTipText(#flagText!)
             endif
@@ -220,17 +221,17 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
     method public void setLock(BBjButtonPushEvent e!)
         if (#btnLock!.getText() = #lock!) then
             #btnLock!.setText(#lockOpen!)
-            #btnLock!.removeClass("btn-lock")
-            #btnLock!.addClass("btn-lock-open")
-            #win!.removeClass("task-complete")
-            #win!.addClass("task")
+            #btnLock!.removeClass("card-btn-lock")
+            #btnLock!.addClass("card-btn-lock-open")
+            #win!.removeClass("card-task-complete")
+            #win!.addClass("card-task")
             #win!.setToolTipText("Click to edit task")
         else
             #btnLock!.setText(#lock!)
-            #btnLock!.removeClass("btn-lock-open")
-            #btnLock!.addClass("btn-lock")
-            #win!.removeClass("task")
-            #win!.addClass("task-complete")
+            #btnLock!.removeClass("card-btn-lock-open")
+            #btnLock!.addClass("card-btn-lock")
+            #win!.removeClass("card-task")
+            #win!.addClass("card-task-complete")
             #win!.setToolTipText("Unlock to edit task")
         endif
     methodend
@@ -248,26 +249,26 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
         if (#task!.getComplete()) then
             #task!.setStatus(#task!.STATUS_INCOMPLETE())
             btnTaskCompletion!.setText("Mark as Complete")
-            #win!.removeClass("status-complete")
+            #win!.removeClass("card-status-complete")
             if (#priorityFlag! <> null()) then #priorityFlag!.removeClass("priority-transparent")
             if (#btnLock! <> null()) then 
-                #btnLock!.removeClass("btn-lock")
-                #btnLock!.addClass("btn-lock-open")
+                #btnLock!.removeClass("card-btn-lock")
+                #btnLock!.addClass("card-btn-lock-open")
                 #btnLock!.setText(#lockOpen!)
-                #win!.removeClass("task-complete")
-                #win!.addClass("task")
+                #win!.removeClass("card-task-complete")
+                #win!.addClass("card-task")
             endif
         else
             #task!.setStatus(#task!.STATUS_COMPLETE())
             btnTaskCompletion!.setText("Mark as Incomplete")
-            #win!.addClass("status-complete")
+            #win!.addClass("card-status-complete")
             if (#priorityFlag! <> null()) then #priorityFlag!.addClass("priority-transparent")
             if (#btnLock! <> null()) then 
-                #btnLock!.addClass("btn-lock")
-                #btnLock!.removeClass("btn-lock-open")
+                #btnLock!.addClass("card-btn-lock")
+                #btnLock!.removeClass("card-btn-lock-open")
                 #btnLock!.setText(#lock!)
-                #win!.removeClass("task")
-                #win!.addClass("task-complete")
+                #win!.removeClass("card-task")
+                #win!.addClass("card-task-complete")
             endif
         endif
         BBjAPI().postCustomEvent("TASK_UPDATE",#task!)
@@ -279,7 +280,7 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
     rem  */
     method public void clearStyles()
         #win!.removeClass("status-complete status-blocked status-deferred")      
-        if (#due! <> null()) then #due!.removeClass("due-notice due-date")
+        if (#due! <> null()) then #due!.removeClass("card-due-notice card-due-date")
     methodend
 
     rem /**
@@ -288,11 +289,12 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
     method public void refresh()
         #clearStyles()
         #title!.setText(#task!.getTitle())
+        #title!.setToolTipText(#task!.getTitle())
         
         #description!.setText(#task!.getDescription())
         #description!.setToolTipText(#task!.getDescription())
         
-        #win!.addClass(#task!.getStatusString(#task!.getStatus()))
+REM         #win!.addClass(#task!.getStatusString(#task!.getStatus()))
         
         if (#task!.getComplete() = 0) then #status!.setText("Status: " + #task!.getStatusString(#task!.getStatus()))
         if (#task!.getComplete()) then #status!.setText("Date of Completion")
@@ -330,5 +332,5 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
     methodend   
 classend
 
-use ::Task-Experiments.bbj::Task
-use ::TaskApp-Experiments.bbj::TaskApp
+use ::Task.bbj::Task
+use ::TaskApp.bbj::TaskApp

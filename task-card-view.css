@@ -1,142 +1,13 @@
-/* The CSS file that accompanies the TaskApp DWC application */
+/* The CSS file that accompanies the TaskApp DWC application - Card View Layout */
 
-/* The TaskApp's CSS custom properties       */
-/* ========================================  */
-:root {
-    --app-color-h: 15;
-    --app-color-s: 75%;
-    --app-color-b: 35%;
-    --app-color-primary: hsl(var(--app-color-h), var(--app-color-s), var(--app-color-b));
-    --app-color-window-bg: hsl(0, 0%, 95%);
-    --app-color-navbar-bg: hsl(var(--app-color-h), calc(var(--app-color-s) * 0.75), 95%);
-    --app-color-text-normal: hsl(0, 0%, 20%);
-    --app-color-text-light: hsl(0, 0%, 40%);
-    --app-color-text-faint:hsl(0, 0%, 60%);
-     --app-font-task: var(--dwc-font-family);
-}
-
-/* Overriding the DWC's default CSS custom properties */
-/* ========================================  */
-:root {
-    --dwc-font-family: 'AR One Sans', 'Gabarito', 'K2D', 'Overlock', 'Encode Sans Semicondensed', 'Aller', 'Alatsi', 'Akrobat', var(--dwc-font-family-sans);
-    --dwc-color-body-text: var(--app-color-text-normal);
-    --dwc-color-primary-h: var(--app-color-h);
-    --dwc-color-default-h: var(--app-color-h);
-    --dwc-color-default-s: 25%;
-    --dwc-list-padding: calc(var(--dwc-space) / 2);
-}
-
-/* Global definitions for multiple controls  */
-/* ========================================  */
-
-/* Modify the entire DOM */
-html, body, .BBjWindowManagerDesktop {
-    background: var(--app-color-window-bg);
-    padding: 0;
-    margin: 0;
-    width: 100%;
-    height: 100%;
-}
-
-/* Modify ALL BBjButtons by setting their color and font size & weight */
-dwc-button::part(label) {
-/*     color: var(--app-color-primary); */
-    font-size: var(--dwc-font-size-l);
-    font-weight: var(--dwc-font-weight-semibold);
-}
-
-/* Layout                                    */
-/* https://vue-grid-generator.netlify.app/
-{"areas":[["winNavBar","winToolBar"],["winNavBar","winTitle"],["winNavBar","winTasks"]],"columns":["5em","1fr"],"rows":["3em","10em","1fr"],"gridWidth":"100%","gridHeight":"100%"}
-*/
-/* ========================================  */
-
-.BBjSimpleWindow {
-    width: 100%;
-    height: 100%;
-}
-
-.winMain {
-    display: flex;
-    max-height: 100vh;
-}
-
-.winMain .BBjPanel {
-    display: grid;
-    width: 100%;
-    height: 100%;
-    grid-template-areas: 'winNavBar winToolBar' 'winNavBar winTitle' 'winNavBar winTasks';
-    grid-template-columns: 12em 1fr;
-    grid-template-rows: 3em 4em 1fr;
-}
-
-.winToolBar, .winTitle, .winTasks {
-    /* max-width: 20em; */
-    margin: 0 auto;
-    width: 100%;
-    padding-left: 5%;
-    padding-right: 5%;
-}
-
-.winNavBar {
-    grid-area: winNavBar;
-    background-color: var(--app-color-navbar-bg);
-    display: flex;
-    flex-flow: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    padding: var(--dwc-space);
-    gap: calc(var(--dwc-space) * 3);
-}
-
-.winToolBar {
-    grid-area: winToolBar;
-    max-width: 100%;
-    display: flex;
-    flex-flow: row;
-    align-items: center;
-    justify-content: space-evenly;
-    padding: var(--dwc-space);
-    gap: var(--dwc-space) var(--dwc-space);
-
-    /* This keeps the buttons together and centers them on the display */
-    /* width: fit-content;
-    justify-content: space-evenly; */
-
-    /* This keeps the buttons on the far right edge of the display */
-    width: 100%;
-    justify-content: end;
-}
-
-.winTitle {
-    grid-area: winTitle;
-    display: flex;
-    flex-flow: column;
-    align-items: stretch;
-    justify-content: center;
-    height: fit-content;
-}
-
-.winTaskView {
+.winTaskCardView {
 	margin-top: 70px;
 	display: flex;
 	/* flex-wrap: wrap; */
  	justify-content: center;
-
 }
 
-/* .winTasks {
-    grid-area: winTasks;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    width: 100%;
-    flex-grow: 1;
-    min-width: 50%;
-    padding-left: 5%;
-    padding-right: 5%;
-} */
-
-.winTasks {
+.winCardTasks {
   	display: flex;
   	padding-top: 30px;
   	justify-content: space-evenly;
@@ -148,120 +19,14 @@ dwc-button::part(label) {
   	padding-bottom: 130px;
 }
 
-.winViews {
- 	margin-top: 35px;
-	width: 100%;
-	display: flex;
-	justify-content: center;
-}
-
-.btnView {
-	margin-left: 5px;
-	margin-right: 5px;
-}
-
-.view-btn-selected::part(control) {
-	background-color: var(--dwc-color-white);
-}
-
-
-/* NavBar Items */
-.nav_item {
-    width: 100%;
-}
-
-.nav_user_name {
-    height: 2em;
-    line-height: 2.5em;
-    text-indent: 2.75em;
-}
-
-.nav_user_name::before {
-    position: absolute;
-    top: var(--dwc-space);
-    left: var(--dwc-space);
-    width: 2.5em;
-    height: 2.5em;
-    background: var(--app-color-primary);
-    border-radius: 100%;
-    text-indent: initial;
-    text-align: center;
-    line-height: 2.5em;
-    color: var(--dwc-color-white);
-    font-weight: 700;
-}
-
-
-/* Task Property Sheet Styling */
-.BBjTopLevelWindow.BBjDialog {
-    margin: auto;
-}
-
-.winTaskPropertiesContainer.BBjTopLevelWindow {
-    /* Had to over-specify to "win the specificity battle" with DWC */
-     max-height: 90vh;
-     overflow: auto;
-     max-width: max(300px, 40vw);
-}
-
-.winTaskProperties .BBjPanel {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-between;
-    /* max-width: 40vw; */
-    padding: var(--dwc-space-l);
-    gap: var(--dwc-space-m);
-    /* width: max(300px, 40vw); */
-}
-
-.winTaskProperties .BBjPanel .BBjControl {
-    width: 100%;
-}
-
-.winTaskProperties .BBjPanel .BBjButton {
-    flex: 1 1 auto;
-    min-width: 10em;
-    width: auto;
-}
-
-.winStatus {
-	max-height: 10em;
-	padding-top: 10px;
-	border: transparent;
-}
-
-/* .winTaskProperties .BBjChildWindow {
-    display: flex;
-    flex-flow: row;
-    justify-content: space-between;
-    margin-top: 1em;
-    padding: var(--dwc-focus-ring-width);
-}
-
-.BBjDialogGlassPane {
-    background-color: hsla(0, 0%, 0%, 0.5);
-}
-
-/* Task Styling */
-/* ============ */
-
-/* .task {
-	display: grid;
-	grid-template-columns: .5fr 8fr 2fr;
-	grid-column-gap: 5px;
-    max-height: 5em;
-    border: transparent;
-    border-bottom-color: rgba(0, 0, 0, .2);
-    padding-top: 5px;
-} */
-
-.task {
+.card-task {
 	/* background-color: var(--app-color-window-bg); */
 	border: transparent;
 	border-radius: 2em;
 	max-width: 280px;
 	min-width: 220px;
-	max-height: 820px;
+	/* max-height: 820px; */
+	height: 320px;
 	box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 	display: grid;
 	grid-template-columns: 1fr 5ch;
@@ -270,13 +35,13 @@ dwc-button::part(label) {
 	transition: all 300ms ease !important;
 }
 
-.task:hover {
+.card-task:hover {
 	transform: scale(0.95);
 	box-shadow: 0 0 4px rgba(149, 157, 165, 0.2);
 	cursor: pointer;
 }
 
-.task-complete {
+.card-task-complete {
 	/* background-color: var(--app-color-window-bg); */
 	border: transparent;
 	border-radius: 2em;
@@ -292,80 +57,25 @@ dwc-button::part(label) {
 	cursor: pointer;
 }
 
-.task .BBjStaticText {
+.card-task .BBjStaticText {
     font-family: var(--app-font-task);
     font-weight: 500;
 }
 
-
-dwc-checkbox {
-    display: none;
-}
-
-/* >>>>>>> 932e085407dbf4c179c7a03c10326c4ca8f105ef */
-/* Task items that are incomplete */
-.incomplete::part(input-wrapper) {
-    border-color: gray;
-    background-color: white;
-}
-
-/* Task items that are complete */
-.complete {
-	text-decoration: line-through;
-/* 	background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(110,161,110,0.4990589985994398) 33%, rgba(136,178,136,0.5) 66%, rgba(255,255,255,0) 100%); */
-}
-
-.complete::part(input-wrapper) {
-	border-color: rgb(110, 161, 110);
-	background-color: rgba(110, 161, 110, .5);
-}
-
-
-/* Task items that are deferred */
-.deferred::part(input-wrapper) {
-    border-color: rgb(167, 151, 66);
-    background-color: rgba(167, 151, 66, .5);
-}
-
-/* Task items that are deferred */
-.blocked::part(input-wrapper) {
-    border-color: rgb(197, 124, 124);
-    background-color: rgba(197, 124, 124, .5);
-}
-
-/* Items that are clickable, and hovered over */
-.clickable:hover {
-    filter: brightness(80%);
-    cursor: pointer;
-}
-
-.labelDay {
-    font-size: 1.5em;
-    font-weight: bold;
-}
-.labelDate {
-    color: var(--app-color-text-light);
-    font-size: 0.85em;
-    font-weight: normal;
-}
-
-
-/* Title styling on task-list-view */
-.title-display {
+/* Title styling on task-Card-view */
+.card-title-display {
 	display: flex;
 	grid-column: 1 / 3;
-	padding-top: .5em;
+	margin-top: 2.6em;
 	grid-row: 3;
 	justify-self: left;
-	align-items: end;
+	align-items: start;
 	font-size: 18px;
-}
+	line-height: 1.4em;
+	height: 1.4em;
+} 
 
-.task .BBjStaticText .title-display {
-	font-weight: 900;
-}
-
-.status-display {
+.card-status-display {
 	grid-row: 2 / 2;
 	grid-column: 1 / 1;
 	padding-top: .2em;
@@ -373,31 +83,31 @@ dwc-checkbox {
 }
 
 /* Indicator flag styling on task-list-view */
-.priority-flag {
+.card-priority-flag {
 	background-color: transparent;
 	justify-self: right;
 	grid-column-start: 2;
 	grid-row: 1 / span 2;
 }
 
-.btn-complete-incomplete {
+.card-btn-complete-incomplete {
 	justify-self: right;
 	grid-row: 5;
 }
 
-.btn-complete-incomplete::part(control) {
+.card-btn-complete-incomplete::part(control) {
 	padding: 0 10px;
 	border-radius: 10px;
 }
 
 /* Trash can icon styling on Completed-task-list-view */
-.btn-delete-task {
+.card-btn-delete-task {
 	justify-self: right;
 	grid-row: 5;
 	margin-right: -10px;
 }
 
-.btn-delete-task::part(control), .btn-delete-task::part(control):before {
+.card-btn-delete-task::part(control), .card-btn-delete-task::part(control):before {
 	font-size: 15px;
 	background-color: transparent;
 	justify-self: right;
@@ -407,16 +117,16 @@ dwc-checkbox {
 	border: transparent;
 }
 
-.btn-delete-task::part(control):hover {
+.card-btn-delete-task::part(control):hover {
 	opacity: 1;
 }
 
-.btn-lock, .btn-lock-open {
+.card-btn-lock, .card-btn-lock-open {
 	margin-top: -7px;
 	margin-right: -7px;
 }
 
-.btn-lock::part(control), .btn-lock::part(control):before {
+.card-btn-lock::part(control), .card-btn-lock::part(control):before {
 	font-size: 15px;
 	background-color: transparent;
 	justify-self: right;
@@ -427,7 +137,7 @@ dwc-checkbox {
 	grid-row: 1 / span 2;
 }
 
-.btn-lock-open::part(control), .btn-lock-open::part(control):before {
+.card-btn-lock-open::part(control), .card-btn-lock-open::part(control):before {
 	font-size: 15px;
 	background-color: transparent;
 	justify-self: right;
@@ -438,46 +148,31 @@ dwc-checkbox {
 	grid-row: 1 / span 2;
 }
 
-.btn-save {
-	margin-top: 10px;
-}
-
-.btn-save::part(control) {
-	color: var(--dwc-color-white);
-}
-
-.btn-cancel {
-	margin-right: 10px;
-}
-
-.btn-cancel::part(control) {
-	background-color: transparent;
-	color: var(--dwc-color-black);
-	opacity: .4;
-}
-
-.btn-cancel::part(control):hover {
-	opacity: 1;
-}
-
-
 /* Description styling on task-list-view */
-.description-display {
+.card-description-display {
 	grid-row-start: 4;
  	grid-column: 1 / 3;
- 	overflow: hidden;
-    text-overflow: ellipsis;
+ 	line-height: 1.4em;
+   	height: 8.4em;
+  	/* overflow: hidden; */
 	opacity: .5;
+	
+	/* adds ellipsis to end of 6th line of paragraph - no full browser support of this feature yet */ 	
+	display: -webkit-box; 
+    -webkit-box-orient: vertical; 
+    -webkit-line-clamp: 6; 
+    overflow: hidden; 
+    text-overflow: ellipsis;
 }
 
-.due-date {
+.card-due-date {
 	background-color: lightgray;
 	width: fit-content;
 	padding: .3em;
 	border-radius: .4em;
 }
 
-.due-notice {
+.card-due-notice {
 	color: var(--dwc-color-danger);
 	justify-self: left;
 	white-space: nowrap;
@@ -516,14 +211,6 @@ dwc-checkbox {
 	color: transparent;
 }
 
-.menu-item::part(control) {
-	padding: none;
-}
-
-.menu-item::part(label) {
-	display: none;
-}
-
 .status-blocked {
 	background-color:rgba(197, 124, 124, .1);
 }
@@ -533,82 +220,5 @@ dwc-checkbox {
 }
 
 .status-complete {
-	background-color: rgba(6, 209, 60, .05);
-}
-
-/* adding alpha to bbj color - color: hsla(var(--dwc-color-primary-h), var(--dwc-color-primary-s), 40%, 0.25); */
-
-/* ANIMATIONS */
-/* ========================================  */
-@keyframes completion-animation {
-	0% {background-color: transparent;}
-	50% {background-color: #47942f;}
-	100% {background-color: transparent;}
-}
-
-
-
-/* FAB Floating Action Button  */
-/* ========================================  */
-.btnAddTaskFAB {
-    position: absolute;
-    right: 1em;
-    bottom: 1em;
-    z-index: 1000;
-    width: 3em;
-    height: 3em;
-    line-height: 1.25rem;
-}
-.btnAddTaskFAB::part(control) {
-    border-radius: 100em;
-    box-shadow: 0 0.1em 0.5em hsla(0, 0%, 0%, 0.35);
-}
-.btnAddTaskFAB::part(label) {
-    font-size: 200%;
-}
-
-/*  Toolbar Icons */
-/* ========================================  */
-.toolbar_icon::part(control), .toolbar_icon::part(control):before {
-    background: transparent;
-    color: var(--app-color-text-faint);
-    transition: all 100ms ease;
-    border-color: transparent;
-    border-radius: 0.5em;
-}
-.toolbar_icon::part(control):hover, .toolbar_icon::part(control):before:hover {
-    border-color: transparent;
-    color: var(--app-color-text-normal);
-}
-
-.icon_reload.toolbar_icon::part(control) {
-    color: var(--dwc-color-danger);
-    opacity: 0.75;
-    transition: all 0.1s ease-in-out;
-}
-.icon_reload.toolbar_icon::part(control):hover {
-    opacity: 1.0;
-    background: var(--dwc-color-danger);
-    color: var(--dwc-color-white);
-}
-
-.icon-completed.toolbar_icon::part(control) {
-    color: var(--dwc-color-success);
-    opacity: 0.75;
-    transition: all 0.1s ease-in-out;
-}
-.icon-completed.toolbar_icon::part(control):hover {
-    opacity: 1.0;
-    background: var(--dwc-color-success);
-    color: var(--dwc-color-white);
-}
-
-.icon-completed-selected.icon-completed.toolbar_icon::part(control) {
-    opacity: 1.0;
-    background: var(--dwc-color-success);
-    color: var(--dwc-color-white);
-}
-
-.menu_collapse::part(control) {
-    height: 3em;
+	background-color: rgba(6, 209, 60, .05); 
 }
