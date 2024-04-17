@@ -1,12 +1,9 @@
 /*  Task due today and past due badges              */
 /* ================================================ */
-.task .due-today {
+.task .dueToday, 
+.task .pastDue {
 	color: var(--dwc-color-danger);
 	white-space: nowrap;
-	font-weight: 600;
-}
-
-.task .past-due {
 	font-weight: 600;
 }
 

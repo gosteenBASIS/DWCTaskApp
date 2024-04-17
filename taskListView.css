@@ -23,13 +23,6 @@ dwc-checkbox {
     white-space: nowrap;
 }
 
-/*  Task due today and past due badges              */
-/* ================================================ */
-.winListView .due-today {
-	color: var(--dwc-color-danger);
-	font-weight: 600;
-}
-
 .task .BBjStaticText {
     font-family: var(--app-font-family-task);
     font-weight: var(--app-font-weight-task);

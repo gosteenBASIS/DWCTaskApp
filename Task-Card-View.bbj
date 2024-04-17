@@ -107,7 +107,7 @@ REM         #win!.addClass(#task!.getStatusString(#task!.getStatus()))
             if (#task!.getDueDate() > -1 AND #task!.getDueDate() > jul(date(0))) then
                 due! = "Due " + STR(dueDate!)
                 #due!.setText(due!)
-                #due!.addClass("card-due-date")
+                #due!.addClass("dueDate")
             endif
         endif
 

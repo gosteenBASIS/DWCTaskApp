@@ -166,7 +166,7 @@
 	text-wrap: wrap;
 }
 
-.card-due-date {
+.winCardView .dueDate {
 	background-color: lightgray;
 	width: fit-content;
 	padding: .3em;
@@ -185,7 +185,7 @@
 
 /*  Task due today and past due badges              */
 /* ================================================ */
-.winCardView .due-today {
+.winCardView .dueToday {
 	color: var(--dwc-color-danger);
 	justify-self: left;
 	white-space: nowrap;

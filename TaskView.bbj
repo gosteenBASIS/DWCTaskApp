@@ -84,23 +84,22 @@ class public TaskView
     method public void clearStyles()
         #win!.removeClass("complete incomplete blocked deferred")
         #win!.removeClass("status-complete status-blocked status-deferred")
-REM         if (#due! <> null()) then #due!.removeClass("card-due-notice card-due-date")
     methodend
 
     method public void setDueNotice()
-        #due!.removeClass("due-today past-due")
+        #due!.removeClass("dueToday pastDue")
         due! = ""
         dueDate! = #task!.getDueDate()
         formattedDueDate! = date(#task!.getDueDate():"%Dl, %Ml %D")
 
         if (dueDate! > -1) AND (dueDate! < jul(date(0))) then
             due! = "Past Due!"
-            #due!.addClass("past-due")
+            #due!.addClass("pastDue")
         endif
 
         if (dueDate! = jul(date(0))) then
             due! = "Due Today!"
-            #due!.addClass("due-today")
+            #due!.addClass("dueToday")
         endif
 
         #due!.setText(due!)
