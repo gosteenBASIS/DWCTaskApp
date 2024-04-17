@@ -25,6 +25,7 @@ class public TaskCardView extends TaskView
 
 REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()))
         #status! = #win!.addStaticText("")
+        #status!.addClass("textStatus")
 REM         if (#task!.getDueDate() = -1 AND #task!.getComplete() = 0) then #status! = #win!.addStaticText("")
         if (#task!.getComplete()) then #status!.setText("Date of Completion")
 
@@ -34,8 +35,7 @@ REM         if (#task!.getDueDate() = -1 AND #task!.getComplete() = 0) then #sta
             #setPriorityFlag()
 
             if (#task!.getDueDate() > -1) then
-                #status! = #win!.addStaticText("Status: " + #task!.getStatusString(#task!.getStatus()))
-                #status!.addClass("card-status-display")
+                #status!.setText("Status: " + #task!.getStatusString(#task!.getStatus()))
             endif
         else
             #btnLock! = #win!.addButton(#lock!)
@@ -44,9 +44,8 @@ REM         if (#task!.getDueDate() = -1 AND #task!.getComplete() = 0) then #sta
             #btnLock!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "setLock")
         endif
 
-        #title!.addClass("card-title-display")
+        #title!.addClass("textTitle")
 
-        #description!.addClass("card-description-display")
 
         if (#task!.getComplete() = 0) then
             #btnSetComplete! = #win!.addButton("Mark as Complete")

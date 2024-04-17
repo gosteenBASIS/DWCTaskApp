@@ -19,7 +19,7 @@
   	padding-bottom: 130px;
 }
 
-.card-task {
+.winCardView {
 	/* background-color: var(--app-color-window-bg); */
 	border: transparent;
 	border-radius: 2em;
@@ -35,13 +35,13 @@
 	transition: all 300ms ease !important;
 }
 
-.card-task:hover {
+.winCardView:hover {
 	transform: scale(0.95);
 	box-shadow: 0 0 4px rgba(149, 157, 165, 0.2);
 	cursor: pointer;
 }
 
-.card-task-complete {
+.winCardTask .complete {
 	/* background-color: var(--app-color-window-bg); */
 	border: transparent;
 	border-radius: 2em;
@@ -57,17 +57,16 @@
 	cursor: pointer;
 }
 
-.card-task .BBjStaticText {
+.winCardView .BBjStaticText {
     font-family: var(--app-font-task);
     font-weight: 500;
 }
 
 /* Title styling on task-Card-view */
-.card-title-display {
-	display: flex;
+.winCardView .textTitle {
 	grid-column: 1 / 3;
-	margin-top: 2.6em;
 	grid-row: 3;
+	margin-top: 1.5em;
 	justify-self: left;
 	align-items: start;
 	font-size: 18px;
@@ -83,8 +82,7 @@
 }
 
 /* Indicator flag styling on task-list-view */
-.card-priority-flag {
-	background-color: transparent;
+.winCardView .priorityFlag {
 	justify-self: right;
 	grid-column-start: 2;
 	grid-row: 1 / span 2;
@@ -149,7 +147,7 @@
 }
 
 /* Description styling on task-list-view */
-.card-description-display {
+.winCardView .textDescription {
 	grid-row-start: 4;
  	grid-column: 1 / 3;
  	line-height: 1.4em;
@@ -172,7 +170,7 @@
 	border-radius: .4em;
 }
 
-.card-due-notice {
+.winCardView .dueNotice {
 	color: var(--dwc-color-danger);
 	justify-self: left;
 	white-space: nowrap;
@@ -180,6 +178,15 @@
 	grid-column: 1 / 1;
 	padding-top: 5px;
 	display: flex;
+}
+
+/*  Task due today and past due badges              */
+/* ================================================ */
+.winCardView .due-today {
+	color: var(--dwc-color-danger);
+	justify-self: left;
+	white-space: nowrap;
+	font-weight: 600;
 }
 
 .priority-0 {

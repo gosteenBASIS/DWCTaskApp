@@ -10,6 +10,7 @@ class public TaskListView extends TaskView
 
     method public TaskListView(BBjWindow parent!, Task t!)
         #super!(parent!,t!)
+        #win!.addClass("winListView")
         #checkbox! = #win!.addCheckBox("")
         #checkbox!.addClass("checkbox")
         #checkbox!.setCallback(BBjControl.ON_CHECK_CHANGE, #this!, "onTaskCheck")
@@ -21,7 +22,8 @@ class public TaskListView extends TaskView
     rem  * This is called from the TaskApp class when a TASK_UPDATE event is posted.
     rem  */
     method public void refresh()
-        #refresh()
+        #super!.refresh()
+        #checkbox!.setSelected(#task!.getComplete())
         #checkbox!.addClass(#task!.getStatusString(#task!.getStatus()))
     methodend
 
