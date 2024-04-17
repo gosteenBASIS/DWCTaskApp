@@ -138,6 +138,8 @@ class public TaskApp
         #webManager!.injectStyle(css!, 0, "name=taskapp_css")
         css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"taskListView.css"))
         #webManager!.injectStyle(css!, 0, "name=taskapp_list_view_css")
+        css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"taskView.css"))
+        #webManager!.injectStyle(css!, 0, "name=taskapp_taskview_css")
         css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"Task-Card-View.css"))
         #webManager!.injectStyle(css!, 0, "name=taskapp_card_view_css")
         css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"Settings.css"))
