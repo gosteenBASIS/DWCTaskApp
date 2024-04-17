@@ -14,7 +14,6 @@ class public TaskView
     field public    BBjStaticText   title!
     field public    BBjStaticText   description!
     field public    BBjStaticText   due!
-    field protected BBjString       flagIcon! = "<html><dwc-icon pool='tabler' name='flag-2-filled' style='width: 30px; height: 30px'></dwc-icon>"
     field public    BBjStaticText   priorityFlag!
     field protected BBjVector       flagVector! = BBjAPI().makeVector()
     field public    BBjString       flagText!
@@ -29,19 +28,21 @@ class public TaskView
         #win!.addClass("task clickable")
 
         #title! = #win!.addStaticText("")
-        #title!.addClass("title-display")
+        #title!.addClass("textTitle")
         #description! = #win!.addStaticText("")
-        #description!.addClass("description-display")
+        #description!.addClass("textDescription")
 
         #due! = #win!.addStaticText("")
-        #due!.addClass("due-notice")
-        #priorityFlag! = #win!.addStaticText("")
+        #due!.addClass("dueNotice")
+        flagIcon! = "<html><dwc-icon pool='tabler' name='flag-2-filled' style='width: 30px; height: 30px'></dwc-icon>"
+        #priorityFlag! = #win!.addStaticText(flagIcon!)
+        #priorityFlag!.addClass("priorityFlag")
         #priorityFlag!.setCallback(BBjControl.ON_POPUP_REQUEST, #this!, "OnShowPriorityPopup")
         #setPriorityFlag()
     methodend
 
     rem /**
-    rem  * Refresh the TaskListView with the latest information from its Task object.
+    rem  * Refresh the TaskView with the latest information from its Task object.
     rem  * This is called from the TaskApp class when a TASK_UPDATE event is posted.
     rem  */
     method public void refresh()
@@ -107,42 +108,16 @@ REM         if (#due! <> null()) then #due!.removeClass("card-due-notice card-du
         #due!.setToolTipText("Due " + formattedDueDate!)
     methodend
 
-
-    method public void setPriorityFlag()
-        #flagText! = "Priority " + STR(#task!.getPriority())
-
-REM         if (#task!.getPriority() > 0) then
-REM             #flagIcon! = "<html><dwc-icon pool='tabler' name='flag-2-filled'></dwc-icon>"
-REM         else
-REM             #flagIcon! = ""
-REM         endif
-
-        #flagIcon! = "<html><dwc-icon pool='tabler' name='flag-2-filled'></dwc-icon>"
-
-        #priorityFlag!.setText(#flagIcon!)
-        #priorityFlag!.removeClass("priority-1 priority-2 priority-3 priority-4 priority-5 priority-0")
-        #priorityFlag!.addClass("priority-flag")
-        #priorityFlag!.addClass("priority-" + STR(#task!.getPriority()))
-        #priorityFlag!.setToolTipText(#flagText!)
-    methodend
-
     rem /**
     rem  * - Adds a priority flag icon which represents the task's priority level
     rem  * - Icon is set to BBjStaticText #priorityFlag!
     rem  */
-REM     method public void setPriorityFlag()
-REM         if (#task!.getComplete() = 0) then
-REM             #flagText! = "Priority " + STR(#task!.getPriority())
-REM
-REM             if (#priorityFlag! <> null()) then
-REM                 #priorityFlag!.setText(#flagIcon!)
-REM                 #priorityFlag!.removeClass("priority-1 priority-2 priority-3 priority-4 priority-5 priority-0")
-REM                 #priorityFlag!.addClass("card-priority-flag")
-REM                 #priorityFlag!.addClass("priority-" + STR(#task!.getPriority()))
-REM                 #priorityFlag!.setToolTipText(#flagText!)
-REM             endif
-REM         endif
-REM     methodend
+    method public void setPriorityFlag()
+        #flagText! = "Priority " + STR(#task!.getPriority())
+        #priorityFlag!.removeClass("priority-1 priority-2 priority-3 priority-4 priority-5 priority-0")
+        #priorityFlag!.addClass("priority-" + STR(#task!.getPriority()))
+        #priorityFlag!.setToolTipText(#flagText!)
+    methodend
 
     rem /**
     rem  * - Creates a BBjPopupMenu that contains flag icons representing every priority level except for
