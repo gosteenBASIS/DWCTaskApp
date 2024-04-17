@@ -16,7 +16,6 @@ class public TaskView
     field public    BBjStaticText   due!
     field public    BBjStaticText   priorityFlag!
     field protected BBjVector       flagVector! = BBjAPI().makeVector()
-    field public    BBjString       flagText!
 
     method public TaskView(BBjWindow parent!, Task t!)
         #sysgui! = BBjAPI().getSysGui()
@@ -113,10 +112,10 @@ REM         if (#due! <> null()) then #due!.removeClass("card-due-notice card-du
     rem  * - Icon is set to BBjStaticText #priorityFlag!
     rem  */
     method public void setPriorityFlag()
-        #flagText! = "Priority " + STR(#task!.getPriority())
+        flagText! = "Priority " + STR(#task!.getPriority())
         #priorityFlag!.removeClass("priority-1 priority-2 priority-3 priority-4 priority-5 priority-0")
         #priorityFlag!.addClass("priority-" + STR(#task!.getPriority()))
-        #priorityFlag!.setToolTipText(#flagText!)
+        #priorityFlag!.setToolTipText(flagText!)
     methodend
 
     rem /**
