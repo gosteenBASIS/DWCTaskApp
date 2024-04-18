@@ -101,13 +101,13 @@
 }
 
 /* Trash can icon styling on Completed-task-list-view */
-.card-btn-delete-task {
+.card-btn-deleteTask {
 	justify-self: right;
 	grid-row: 5;
 	margin-right: -10px;
 }
 
-.card-btn-delete-task::part(control), .card-btn-delete-task::part(control):before {
+.btnDeleteTask::part(control), .card-btn-delete-task::part(control):before {
 	font-size: 15px;
 	background-color: transparent;
 	justify-self: right;
@@ -117,16 +117,16 @@
 	border: transparent;
 }
 
-.card-btn-delete-task::part(control):hover {
+.btnDeleteTask::part(control):hover {
 	opacity: 1;
 }
 
-.card-btn-lock, .card-btn-lock-open {
+.btnLock, .btnLockOpen {
 	margin-top: -7px;
 	margin-right: -7px;
 }
 
-.card-btn-lock::part(control), .card-btn-lock::part(control):before {
+.winCardView .btnLock::part(control), .card-btn-lock::part(control):before {
 	font-size: 15px;
 	background-color: transparent;
 	justify-self: right;
@@ -137,7 +137,7 @@
 	grid-row: 1 / span 2;
 }
 
-.card-btn-lock-open::part(control), .card-btn-lock-open::part(control):before {
+.winCardView .btnLockOpen::part(control), .card-btn-lock-open::part(control):before {
 	font-size: 15px;
 	background-color: transparent;
 	justify-self: right;
