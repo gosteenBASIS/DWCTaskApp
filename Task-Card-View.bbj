@@ -22,14 +22,18 @@ class public TaskCardView extends TaskView
     method public TaskCardView(BBjWindow parent!, Task t!)
         #super!(parent!,t!)
         #win!.addClass("winCardView")
+        #title!.addClass("textTitle")
 
 REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()))
+
         #status! = #win!.addStaticText("")
         #status!.addClass("textStatus")
-REM         if (#task!.getDueDate() = -1 AND #task!.getComplete() = 0) then #status! = #win!.addStaticText("")
         if (#task!.getComplete()) then #status!.setText("Date of Completion")
 
+        #btnLock! = #win!.addButton(#lock!)
+
         if (#task!.getComplete() = 0) then
+            #btnLock!.setVisible(0)
             #createPopupMenu()
             #priorityFlag!.setPopupMenu(#flagPopupMenu!)
             #setPriorityFlag()
@@ -38,26 +42,18 @@ REM         if (#task!.getDueDate() = -1 AND #task!.getComplete() = 0) then #sta
                 #status!.setText("Status: " + #task!.getStatusString(#task!.getStatus()))
             endif
         else
-            #btnLock! = #win!.addButton(#lock!)
             #win!.setUserData(#btnLock!)
-            #btnLock!.addClass("card-btn-lock")
+            #btnLock!.addClass("btnLock")
             #btnLock!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "setLock")
         endif
 
-        #title!.addClass("textTitle")
+        #btnSetComplete! = #win!.addButton("")
 
-
-        if (#task!.getComplete() = 0) then
-            #btnSetComplete! = #win!.addButton("Mark as Complete")
-        else
-            #btnSetComplete! = #win!.addButton("Mark as Incomplete")
-        endif
-
-        #btnSetComplete!.addClass("card-btn-complete-incomplete")
+        #btnSetComplete!.addClass("btnSetComplete")
         #btnSetComplete!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "setComplete")
 
         #btnDeleteTask! = #win!.addButton(#trashIcon!)
-        #btnDeleteTask!.addClass("card-btn-delete-task")
+        #btnDeleteTask!.addClass("btnDelete")
         #btnDeleteTask!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onDelete")
 
         #refresh()
@@ -70,11 +66,22 @@ REM         if (#task!.getDueDate() = -1 AND #task!.getComplete() = 0) then #sta
         #super!.refresh()
 
         if (#task!.getComplete()) then
-            #win!.removeClass("card-task")
-            #win!.addClass("card-task-complete")
+            #win!.addClass("complete")
+            #btnSetComplete!.setText("Mark as Incomplete")
             #win!.setToolTipText("Unlock to edit task")
+            #btnLock!.addClass("btnLock")
+            #btnLock!.removeClass("btnLockOpen")
+            #btnLock!.setText(#lock!)
+            if (#priorityFlag! <> null()) then #priorityFlag!.addClass("priority-transparent")
         else
+            #win!.removeClass("complete")
             #win!.setToolTipText("Click to edit task")
+            #btnSetComplete!.setText("Mark as Complete")
+            #btnLock!.removeClass("btnLock")
+            #btnLock!.addClass("btnLockOpen")
+            #btnLock!.setText(#lockOpen!)
+            #win!.removeClass("complete")
+            if (#priorityFlag! <> null()) then #priorityFlag!.removeClass("priority-transparent")
         endif
 
         #description!.setToolTipText(#task!.getDescription())
@@ -84,7 +91,7 @@ REM         #win!.addClass(#task!.getStatusString(#task!.getStatus()))
         if (#task!.getComplete() = 0) then #status!.setText("Status: " + #task!.getStatusString(#task!.getStatus()))
         if (#task!.getComplete()) then #status!.setText("Date of Completion")
 
-        #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()))
+        #win!.addClass(#task!.getStatusString(#task!.getStatus()))
     methodend
 
     rem /**
@@ -113,7 +120,7 @@ REM         #win!.addClass(#task!.getStatusString(#task!.getStatus()))
 
         if (#task!.getComplete()) then
             #status!.setText("Date of Completion")
-            #status!.addClass("card-status-display")
+            #status!.addClass("textStatus")
         endif
 
     methodend
@@ -128,17 +135,15 @@ REM         #win!.addClass(#task!.getStatusString(#task!.getStatus()))
     method public void setLock(BBjButtonPushEvent e!)
         if (#btnLock!.getText() = #lock!) then
             #btnLock!.setText(#lockOpen!)
-            #btnLock!.removeClass("card-btn-lock")
-            #btnLock!.addClass("card-btn-lock-open")
-            #win!.removeClass("card-task-complete")
-            #win!.addClass("card-task")
+            #btnLock!.removeClass("btnLock")
+            #btnLock!.addClass("btnLockOpen")
+            #win!.removeClass("complete")
             #win!.setToolTipText("Click to edit task")
         else
             #btnLock!.setText(#lock!)
-            #btnLock!.removeClass("card-btn-lock-open")
-            #btnLock!.addClass("card-btn-lock")
-            #win!.removeClass("card-task")
-            #win!.addClass("card-task-complete")
+            #btnLock!.removeClass("btnLockOpen")
+            #btnLock!.addClass("btnLock")
+            #win!.addClass("complete")
             #win!.setToolTipText("Unlock to edit task")
         endif
     methodend
@@ -151,33 +156,14 @@ REM         #win!.addClass(#task!.getStatusString(#task!.getStatus()))
     rem  * @param e!      The BBjButtonPushEvent that causes this method to be executed
     rem  */
     method public void setComplete(BBjButtonPushEvent e!)
-         btnTaskCompletion! = e!.getControl()
-
-        if (#task!.getComplete()) then
+         if (#task!.getComplete()) then
             #task!.setStatus(#task!.STATUS_INCOMPLETE())
-            btnTaskCompletion!.setText("Mark as Complete")
-            #win!.removeClass("card-status-complete")
-            if (#priorityFlag! <> null()) then #priorityFlag!.removeClass("priority-transparent")
-            if (#btnLock! <> null()) then
-                #btnLock!.removeClass("card-btn-lock")
-                #btnLock!.addClass("card-btn-lock-open")
-                #btnLock!.setText(#lockOpen!)
-                #win!.removeClass("card-task-complete")
-                #win!.addClass("card-task")
-            endif
+            #task!.setComplete(0)
         else
             #task!.setStatus(#task!.STATUS_COMPLETE())
-            btnTaskCompletion!.setText("Mark as Incomplete")
-            #win!.addClass("card-status-complete")
-            if (#priorityFlag! <> null()) then #priorityFlag!.addClass("priority-transparent")
-            if (#btnLock! <> null()) then
-                #btnLock!.addClass("card-btn-lock")
-                #btnLock!.removeClass("card-btn-lock-open")
-                #btnLock!.setText(#lock!)
-                #win!.removeClass("card-task")
-                #win!.addClass("card-task-complete")
-            endif
+            #task!.setComplete(1)
         endif
+
         BBjAPI().postCustomEvent("TASK_UPDATE",#task!)
     methodend
 
