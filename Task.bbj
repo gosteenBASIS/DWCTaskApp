@@ -57,8 +57,9 @@ class public Task
     rem /** The unique auto-generated ID for the task that may be used to distinguish between instances of the class. */
     field protected BBjString Uuid!
 
-    rem /** The instant in time that the user created the task */
-    field protected Instant Created!
+    rem /** The instant in time that the user created the task, in ISO 8601 format (YYYY-MM-DDTHH:MM:SS)
+    field protected BBjString Created!
+
 
     rem Constants
     rem ========================================
@@ -131,7 +132,7 @@ class public Task
         #Priority! = json!.get("priority",err=*NEXT).getAsInt()
         #Status! = json!.get("status",err=*NEXT).getAsInt()
         #DueDate! = json!.get("duedate",err=*NEXT).getAsInt()
-        #Created! = Instant.parse(json!.get("created").getAsString())
+        #Created! = json!.get("created",err=*NEXT).getAsString()
         if (json!.has("complete")) then #Complete! = json!.get("complete",err=*NEXT).getAsInt()
     methodend
 
@@ -149,7 +150,7 @@ class public Task
         #Status! = task!.getStatus()
         #Complete! = task!.getComplete()
         #Uuid! = task!.getUuid()
-REM         #Created! = task!.getCreated()
+        #Created! = task!.getCreated()
     methodend
 
     rem /**
@@ -166,7 +167,7 @@ REM         #Created! = task!.getCreated()
 REM         #Flags!.addItem(#FLAG_INCOMPLETE())
         #Complete! = 0
         #DueDate! = -1
-        #Created! = Instant.now()
+        #Created! = date(jul(date(0)), tim, "%Yz-%Mz-%DzT%hz:%mz")
     methodend
 
     rem /**
@@ -243,7 +244,7 @@ REM                 throw "Invalid status provided to Task.getStatusString(): " 
         ? "Priority: ", #Priority!
         ? "Due Date: ", #DueDate!
         ? "UUID: ", #Uuid!
-        ? "Creation Timestamp: ", #Created!.toString()
+        ? "Creation Timestamp: ", #Created!
 
         ?
         ? "getAsJsonObject(): "
@@ -302,10 +303,10 @@ classend
 
 rem BBj USE Statements
 use ::TaskListView.bbj::TaskListView
+use ::Utils.bbj::Utils
 
 rem Java USE Statements
 use java.time.LocalDate; rem https://docs.oracle.com/javase/8/docs/api/java/time/LocalDate.html
-use java.time.Instant;   rem https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Instant.html
 use java.util.UUID;      rem https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/UUID.html
 use java.util.TreeMap;   rem https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/TreeMap.html
 use java.sql.Timestamp;  rem https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Timestamp.html
