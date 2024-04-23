@@ -58,36 +58,34 @@ class public TaskListView
         #flagPopupMenu! = #sysgui!.addPopupMenu()
         #flagPopupMenu!.addClass("flag-popup")
 
-        deleteFlag! = "<html><dwc-icon pool='tabler' name='x' class='priority-0 menu-item'></dwc-icon>"
-        blueFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' class='priority-1 menu-item no-events'></dwc-icon>"
-        greenFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' class='priority-2 menu-item no-events'></dwc-icon>"
-        yellowFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' class='priority-3 menu-item no-events'></dwc-icon>"
-        orangeFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' class='priority-4 menu-item no-events'></dwc-icon>"
-        redFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' class='priority-5 menu-item no-events'></dwc-icon>"
+        redFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-1' style='pointer-events: none;'></dwc-icon>"  
+        orangeFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-2' style='pointer-events: none;'></dwc-icon>"
+        yellowFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-3' style='pointer-events: none;'></dwc-icon>"
+        greenFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-4' style='pointer-events: none;'></dwc-icon>"
+        blueFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-5' style='pointer-events: none;'></dwc-icon>"   
+        noPriorityFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-6' style='pointer-events: none;'></dwc-icon>"
 
         #flagVector! = BBjAPI().makeVector()
-        #flagVector!.add(deleteFlag!)
-        #flagVector!.add(blueFlag!)
-        #flagVector!.add(greenFlag!)
-        #flagVector!.add(yellowFlag!)
-        #flagVector!.add(orangeFlag!)
         #flagVector!.add(redFlag!)
+        #flagVector!.add(orangeFlag!)
+        #flagVector!.add(yellowFlag!)
+        #flagVector!.add(greenFlag!)
+        #flagVector!.add(blueFlag!)
+        #flagVector!.add(noPriorityFlag!)
 
-        i! = 0
+        i! = 1
         id! = -1
-        while (i! < #flagVector!.size())
+        while (i! < #flagVector!.size() + 1)
             currentPriority! = #task!.getPriority()
-            flag! = #flagVector!.getItem(i!)
+            flag! = #flagVector!.getItem(i! - 1)
 
-            if (i! = 0) then
-                flagItem! = #flagPopupMenu!.addMenuItem(-6, flag!)
-            else
-                flagItem! = #flagPopupMenu!.addMenuItem(id!, flag!)
-                if (currentPriority! = i!) then flagItem!.setVisible(0)
-                id! = id! - 1
-            endif
+            flagItem! = #flagPopupMenu!.addMenuItem(id!, flag!)
+            if (currentPriority! = i!) then flagItem!.setVisible(0)
+
             flagItem!.addClass("priority-" + str(i!))
             flagItem!.setCallback(flagItem!.ON_POPUP_ITEM_SELECT, #this!, "changePriority")
+
+            id! = id! - 1
             i! = i! + 1
         wend
     methodend
@@ -110,7 +108,11 @@ class public TaskListView
     methodend
 
     method public void setPriorityFlag()
-        #flagText! = "Priority " + STR(#task!.getPriority())
+        if (#task!.getPriority() = 6) then
+            #flagText! = "No priority"
+        else
+            #flagText! = "Priority " + STR(#task!.getPriority())
+        endif
 
         if (#task!.getPriority() > 0) then
             #flagIcon! = "<html><dwc-icon pool='tabler' name='flag-2-filled'></dwc-icon>"
@@ -119,7 +121,7 @@ class public TaskListView
         endif
 
         #priorityFlag!.setText(#flagIcon!)
-        #priorityFlag!.removeClass("priority-1 priority-2 priority-3 priority-4 priority-5 priority-0")
+        #priorityFlag!.removeClass("priority-1 priority-2 priority-3 priority-4 priority-5 priority-6")
         #priorityFlag!.addClass("priority-flag")
         #priorityFlag!.addClass("priority-" + STR(#task!.getPriority()))
         #priorityFlag!.setToolTipText(#flagText!)
@@ -128,10 +130,9 @@ class public TaskListView
     method public void changePriority(BBjPopupSelectEvent e!)
         newPriority! = ABS(e!.getMenuItem().getID())
 
-        if (newPriority! = 6) then newPriority! = 0
-
         #task!.setPriority(newPriority!)
         BBjAPI().postCustomEvent("TASK_UPDATE", #task!)
+        #refresh()
     methodend
 
     rem /**
@@ -157,6 +158,7 @@ class public TaskListView
         if (#task!.getComplete()) then
             #win!.addClass("complete")
         endif
+        Utils.consoleLog(#task!.getAsString())
         #checkbox!.addClass(#task!.getStatusString(#task!.getStatus()))
         #setPriorityFlag()
         #setDueNotice()
@@ -164,7 +166,7 @@ class public TaskListView
             for i = 1 to #flagPopupMenu!.getChildCount()
                 menuItem! = #flagPopupMenu!.getMenuItem(i)
                 menuItem!.setVisible(1)
-                if (#task!.getPriority() = mod(i,6)) then
+                if (#task!.getPriority() = mod(i,7)) then
                     menuItem!.setVisible(0)
                 endif
             next i
@@ -196,9 +198,11 @@ class public TaskListView
             #task!.setComplete(1)
         endif
         BBjAPI().postCustomEvent("TASK_UPDATE",#task!)
+        Utils.consoleLog("just posted task update custom event")
     methodend
 
 
 classend
 
 use ::Task.bbj::Task
+use ::Utils.bbj::Utils
