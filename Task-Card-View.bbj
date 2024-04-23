@@ -11,10 +11,9 @@ class public TaskCardView
     field protected BBjButton       btnSetComplete!
     field protected BBjStaticText   description!
     field protected BBjStaticText   due!
-    field protected BBjString       flagIcon! = "<html><dwc-icon pool='tabler' name='flag-2-filled' style='width: 30px; height: 30px'></dwc-icon>"
+    field protected BBjString       flagIcon! = "<html><dwc-icon pool='tabler' name='flag-2-filled'></dwc-icon>"
     field protected BBjPopupMenu    flagPopupMenu!
     field protected BBjString       flagText!
-    field protected BBjVector       flagVector! = BBjAPI().makeVector()
     field protected BBjString       lock! = "<html><dwc-icon pool='tabler' name='lock' style='width: 30px; height: 30px'></dwc-icon>"
     field protected BBjString       lockOpen! = "<html><dwc-icon pool='tabler' name='lock-open' style='width: 30px; height: 30px'></dwc-icon>"
     field protected BBjStaticText   priorityFlag!
@@ -100,39 +99,15 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
     rem  */
     method public void createPopupMenu()
         #flagPopupMenu! = #sysgui!.addPopupMenu()
-
-        noPriorityFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-1' style='pointer-events: none;'></dwc-icon>"
-        blueFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-1' style='pointer-events: none;'></dwc-icon>"   
-        greenFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-2' style='pointer-events: none;'></dwc-icon>"
-        yellowFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-3' style='pointer-events: none;'></dwc-icon>"
-        orangeFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-4' style='pointer-events: none;'></dwc-icon>"
-        redFlag! = "<html><dwc-icon pool='tabler' name='flag-2-filled' id='-5' style='pointer-events: none;'></dwc-icon>"  
-
-        #flagVector!.add(noPriorityFlag!)
-        #flagVector!.add(blueFlag!)
-        #flagVector!.add(greenFlag!)
-        #flagVector!.add(yellowFlag!)
-        #flagVector!.add(orangeFlag!)
-        #flagVector!.add(redFlag!)    
+        
          
-        i! = 0
-        id! = -1
-        while (i! < #flagVector!.size()) 
-            currentPriority! = #task!.getPriority()
-            flag! = #flagVector!.getItem(i!)
+        for i = Task.PRIORITY_MAX() to Task.PRIORITY_MIN()             
+            flagItem! = #flagPopupMenu!.addMenuItem(-i, #flagIcon!)
+            if (#task!.getPriority() = i) then flagItem!.setVisible(0)
             
-            if (i! = 0) then
-                flagItem! = #flagPopupMenu!.addMenuItem(-6, flag!)
-            else
-                flagItem! = #flagPopupMenu!.addMenuItem(id!, flag!)
-                if (currentPriority! = i!) then flagItem!.setVisible(0)
-                id! = id! - 1
-            endif
-            
-            flagItem!.addClass("priority-" + str(i!))
+            flagItem!.addClass("priority-flag priority-" + str(i))
             flagItem!.setCallback(flagItem!.ON_POPUP_ITEM_SELECT, #this!, "changePriority")
-            i! = i! + 1
-        wend
+        next i
     methodend
     
     rem /**
@@ -184,11 +159,15 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
     rem  */
     method public void setPriorityFlag()     
         if (#task!.getComplete() = 0) then
-            #flagText! = "Priority " + STR(#task!.getPriority())           
+            if (#task!.getPriority() = 6) then
+                #flagText! = "No priority"
+            else
+                #flagText! = "Priority " + STR(#task!.getPriority())
+            endif           
         
             if (#priorityFlag! <> null()) then 
                 #priorityFlag!.setText(#flagIcon!)
-                #priorityFlag!.removeClass("priority-1 priority-2 priority-3 priority-4 priority-5 priority-0")
+                #priorityFlag!.removeClass("priority-1 priority-2 priority-3 priority-4 priority-5 priority-6")
                 #priorityFlag!.addClass("card-priority-flag")
                 #priorityFlag!.addClass("priority-" + STR(#task!.getPriority()))
                 #priorityFlag!.setToolTipText(#flagText!)
@@ -203,8 +182,6 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
     rem  */
     method public void changePriority(BBjPopupSelectEvent e!)
         newPriority! = ABS(e!.getMenuItem().getID())
-        
-        if (newPriority! = 6) then newPriority! = 0
         
         #task!.setPriority(newPriority!)
         BBjAPI().postCustomEvent("TASK_UPDATE", #task!)
@@ -294,8 +271,6 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
         #description!.setText(#task!.getDescription())
         #description!.setToolTipText(#task!.getDescription())
         
-REM         #win!.addClass(#task!.getStatusString(#task!.getStatus()))
-        
         if (#task!.getComplete() = 0) then #status!.setText("Status: " + #task!.getStatusString(#task!.getStatus()))
         if (#task!.getComplete()) then #status!.setText("Date of Completion")
 
@@ -312,14 +287,13 @@ REM         #win!.addClass(#task!.getStatusString(#task!.getStatus()))
                 for i = 1 to #flagPopupMenu!.getChildCount()
                     menuItem! = #flagPopupMenu!.getMenuItem(i)
                     menuItem!.setVisible(1)
-                    if (#task!.getPriority() = mod(i,6)) then
-                        menuItem!.setVisible(0)
-                    endif
+                    if (#task!.getPriority() = mod(i,7)) then menuItem!.setVisible(0)
                 next i
             endif
         endif
         
-        #win!.removeClass("complete")      
+        Utils.consoleLog("in task card view")
+REM         #win!.removeClass("complete")      
     methodend
     
     rem /**
@@ -334,3 +308,4 @@ classend
 
 use ::Task.bbj::Task
 use ::TaskApp.bbj::TaskApp
+use ::Utils.bbj::Utils

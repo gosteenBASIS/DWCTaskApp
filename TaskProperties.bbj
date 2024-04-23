@@ -54,8 +54,9 @@ REM     field public BBjChildWindow    winButtons!
 
         #listPriority! = #winTaskProperties!.addListButton("")
         #listPriority!.setAttribute("label", "Priority")
-        for i = Task.PRIORITY_MIN() to Task.PRIORITY_MAX()
-            if (i = 0) then
+REM         for i = Task.PRIORITY_MIN() to Task.PRIORITY_MAX()
+        for i = Task.PRIORITY_MAX() to Task.PRIORITY_MIN()
+            if (i = 6) then
                 #listPriority!.addItem("No Priority")
             else
                 #listPriority!.addItem("Priority " + str(i))

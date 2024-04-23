@@ -42,7 +42,7 @@ class public Task
 
     rem Is a "number" the best way to do priority? It should be restricted to certain values.
     rem TODO: 1 should be highest priority.
-    rem /** The priority of the task as a numeric that goes from 1 to 5, where 1 = lowest priority and 5 = highest priority. */
+    rem /** The priority of the task is a numeric that goes from 1 to 6, where 1 = highest priority and 6 = no priority. */
     field public BBjNumber Priority!
 
     rem /** The due date for the task as a Julian number.
@@ -79,12 +79,12 @@ class public Task
 
     rem /** A constant value that represents the minimum allowed priority value */
     method public static BBjNumber PRIORITY_MIN()
-        methodret 0
+        methodret 6
     methodend
 
     rem /** A constant value that represents the maximum allowed priority value */
     method public static BBjNumber PRIORITY_MAX()
-        methodret 5
+        methodret 1
     methodend
 
     rem Constructors
@@ -149,7 +149,7 @@ REM         #Created! = task!.getCreated()
         #Title! = ""
         #Description! = ""
         #Uuid! = java.util.UUID.randomUUID().toString()
-        #Priority! = 0
+        #Priority! = 6
         #Status! = Task.STATUS_INCOMPLETE()
         #Complete! = 0
         #DueDate! = -1
@@ -176,10 +176,10 @@ REM         #Created! = task!.getCreated()
     rem  * @param BBjNumber priority!  The task's priority
     rem  */
     method public void setPriority(BBjNumber priority!)
-        if priority! > #PRIORITY_MAX() then
+        if priority! < #PRIORITY_MAX() then
             priority! = #PRIORITY_MAX()
         endif
-        if priority! < #PRIORITY_MIN() then
+        if priority! > #PRIORITY_MIN() then
             priority! = #PRIORITY_MIN()
         endif
         #Priority! = priority!

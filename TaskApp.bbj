@@ -313,41 +313,16 @@ class public TaskApp
         #winTaskCardComplete! = #winTaskCardView!.addChildWindow("Completed Tasks", $00108800$, #sysgui!.getAvailableContext())
         #winTaskCardComplete!.addClass("winCardTasks")
         #winTaskCardComplete!.setVisible(0)
-REM         #winTaskCardIncomplete! = #winTaskCardView!.addChildWindow("Incomplete Tasks", $00108800$, #sysgui!.getAvailableContext())
-REM         #winTaskCardIncomplete!.addClass("winTasks")
-REM         #winTaskCardPriority! = #winTaskCardView!.addChildWindow("Tasks by Priority", $00108800$, #sysgui!.getAvailableContext())
-REM         #winTaskCardPriority!.addClass("winTasks")
-REM         #winTaskCardDueDate! = #winTasCardkView!.addChildWindow("Tasks by Due Date", $00108800$, #sysgui!.getAvailableContext())
-REM         #winTaskCardDueDate!.addClass("winTasks")
-
-
 
         #addTaskList("incomplete")
         #addTaskList("waiting")
         #addTaskList("deferred")
         #addTaskList("complete")
         
-
         #labelDay! = #winTitle!.addStaticText("Today", $4000$)
         #labelDay!.addClass("labelDay")
         #labelDate! = #winTitle!.addStaticText(date(0:"%Dl, %Ml %D"), $4000$)
         #labelDate!.addClass("labelDate")
-        
-        rem TASK CARD VIEW: buttons 
-REM         #winViews! = #winTitle!.addChildWindow("Title", $00108800$, #sysgui!.getAvailableContext())
-REM         #winViews!.addClass("winViews")
-
-REM         #btnIncompleteView! = #winViews!.addButton("Incomplete")
-REM         #btnIncompleteView!.addClass("btnView")
-REM         #btnIncompleteView!.addClass("view-btn-selected")
-REM         #btnPriorityView! = #winViews!.addButton("Priority Level")
-REM         #btnPriorityView!.addClass("btnView")
-REM         #btnDueView! = #winViews!.addButton("Due Date")
-REM         #btnDueView!.addClass("btnView")
-REM
-REM         #btnIncompleteView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onIncompleteView")
-REM         #btnPriorityView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onPriorityView")
-REM         #btnDueView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onDueView")
 
         rem Create the FAB (floating action button) and the toolbar buttons
         #btnAddTaskFAB! = #winMain!.addButton("<html><dwc-icon pool='tabler' name='plus'></dwc-icon>")
@@ -416,10 +391,6 @@ REM         #btnAddTask! = #winToolBar!.addButton("<html><bbj-icon pool='tabler'
         rem Original code that uses the #tasks object which isn't sorted
         rem it! = #tasks!.values().iterator()
 
-
-        rem TASK CARD VIEW: created sorted view to create (replaces line 334)
-REM         orderedTasks! = #getSortedTasks(#displayType!) look at lines 398 - 402 for updating this
-
         rem New code that gets a sorted TreeMap of the tasks
         #labelDate!.setText("<html>" + date(0:"%Dl, %Ml %D") + $0A$ + "<span style='font-size:50%;'>Tasks Sorted by Priority")
         orderedTasks! = #getSortedTasks("priority")
@@ -435,13 +406,6 @@ REM                 view!.setVisible(0)
                 view!.setVisible(1)
             endif
         wend
-
-        rem TASK CARD VIEW: task loop - added Above
-REM         while it!.hasNext()
-REM             task! = it!.next()
-REM             view! = #addTaskCardView(task!)
-REM         wend
-REM         
     methodend
 
     rem /**
@@ -465,7 +429,6 @@ REM
             task! = #tasks!.get(uuid!)
 
             rem If the task's priority is 0, meaning that it's unset, then we'll use priority 9 so that it appears at the end of the sorted list
-REM             priority! = iff(task!.getPriority()>0, task!.getPriority(), 9)
             priority! = task!.getPriority()
 
             dueDate! = task!.getDueDate()
@@ -475,34 +438,19 @@ REM             created! = task!.getCreated()
                 taskDate! = date(dueDate!:"%Yl-%Mz-%Dz")
             else
                 rem If the due date isn't set, then we'll push it into the distant future for correct sorting
-                taskDate! = "2100-01-01"
+                taskDate! = "none"
             endif
 
             rem This determines the sort order, which is based on the provide parameter
             if (sortType!.toLowerCase().trim().contains("date")) then
                 rem Sort by the task's due date
                 rem The TreeMap's key will be comprised of the date, then the priority, then the UUID
-REM                 key! = taskDate! + str(priority!) + uuid!
-                key! = taskDate! + str(5-priority!) + uuid!
+                key! = taskDate! + str(priority!) + uuid!
             else
                 rem Sort by the task's priority
                 rem The TreeMap's key will be comprised of the priority, then the date, then the UUID
-REM                   key! = str(priority!) + taskDate! + uuid!
-                key! = str(5-priority!) + taskDate! + uuid!
+                key! = str(priority!) + taskDate! + uuid!
             endif
-
-             rem TASK CARD VIEW: This determines the sort order, which is based on the provide parameter (replaces lines 384-388)
-REM             if (byPriority = 0) then
-REM                 key! = taskDate! + str(5-priority!) + uuid!
-REM             endif
-REM
-REM             if (byPriority = 1) then
-REM                 key! = str(5-priority!) + taskDate! + uuid!
-REM             endif
-REM
-REM             if (byPriority = 2) then
-REM                 key! = STR(created!.toEpochMilli()) + uuid!
-REM             endif
 
             sortedTasks!.put(key!, task!)
         wend
@@ -513,22 +461,12 @@ REM             endif
     rem  * Adds a TaskCardView for the given Task, and returns the TaskCardView
     rem  */
     method public TaskCardView addTaskCardView(Task task!)
-REM         view! = new TaskCardView(#winTaskCard!, task!)
-REM         if (task!.getComplete() = 0) then
-REM             if (#displayType! = 0) then view! = new TaskCardView(#winTaskCardDueDate!, task!)
-REM             if (#displayType! = 1) then view! = new TaskCardView(#winTaskCardPriority!, task!)
-REM             if (#displayType! = 2) then view! = new TaskCardView(#winTaskCardIncomplete!, task!)
-REM         else
-
         if (task!.getComplete()) then
             view! = new TaskCardView(#winTaskCardComplete!, task!)
         else
             view! = new TaskCardView(#winTaskCard!, task!)
         endif
-REM         #winTaskCard!.setVisible(0)
         #winTaskCardComplete!.setVisible(0)
-REM         #winTaskCardPriority!.setVisible(0)
-REM         #winTaskCardDueDate!.setVisible(0)
         #taskViews!.put(task!.getUuid(), view!)
         view!.getwin().setCallback(BBjControl.ON_CLICK, #this!, "onTaskClick")
         methodret view!
@@ -669,7 +607,8 @@ REM         #winTaskCardDueDate!.setVisible(0)
         declare auto Task t!
         task! = event!.getObject()
         uuid! = task!.getUuid()
-
+        
+        Utils.consoleLog("IN ON task update")
         rem If the UUID is not present in #tasks!, this is a new Task to be added.
         if (#tasks!.containsKey(uuid!) = 0) then
             #addTask(task!)
@@ -679,6 +618,9 @@ REM         #winTaskCardDueDate!.setVisible(0)
         view! = #taskViews!.get(uuid!)
         if (view! <> null()) then
             view!.refresh()
+            Utils.consoleLog("refreshed view")
+        else
+            Utils.consoleLog("did not refresh view")
         endif
 
         if (task!.getDeleted()) then
@@ -1122,7 +1064,7 @@ REM         parser!.setLenient(BBjAPI().TRUE)
         if (err=11) then
             methodret null()
         else
-            throw "Error reading cookie.  The error message was: " + errmes(-1), 720
+            throw "Error: " + err + ", With error message: " + errmes(-1), 720
         endif
     methodend
 
@@ -1182,6 +1124,7 @@ use ::TaskProperties.bbj::TaskProperties
 use ::TaskListView.bbj::TaskListView
 use ::Settings.bbj::Settings
 use ::Task-Card-View.bbj::TaskCardView
+use ::Utils.bbj::Utils
 
 rem Java USE Statements
 use java.time.LocalDate
