@@ -34,6 +34,8 @@ class public Task
     rem  *  */
     field public BBjNumber Status!
 
+    field public BBjVector Tags!
+
     rem /** Boolean indicating whether the task is complete. */
     field public BBjNumber Complete! = 0
 
@@ -55,8 +57,9 @@ class public Task
     rem /** The unique auto-generated ID for the task that may be used to distinguish between instances of the class. */
     field protected BBjString Uuid!
 
-    rem /** The instant in time that the user created the task */
-    field protected Instant Created!
+    rem /** The instant in time that the user created the task, in ISO 8601 format (YYYY-MM-DDTHH:MM:SS)
+    field protected BBjString Created!
+
 
     rem Constants
     rem ========================================
@@ -75,6 +78,14 @@ class public Task
     rem /** A constant value that's used to set the Task's status to blocked (can not complete this task until a prerequisite has been completed) */
     method public static BBjNumber STATUS_BLOCKED()
         methodret 3
+    methodend
+
+    method public static BBjString FLAG_BLOCKED()
+        methodret "blocked"
+    methodend
+
+    method public static BBjString FLAG_DEFERRED()
+        methodret "deferred"
     methodend
 
     rem /** A constant value that represents the minimum allowed priority value */
@@ -121,7 +132,7 @@ class public Task
         #Priority! = json!.get("priority",err=*NEXT).getAsInt()
         #Status! = json!.get("status",err=*NEXT).getAsInt()
         #DueDate! = json!.get("duedate",err=*NEXT).getAsInt()
-        #Created! = Instant.parse(json!.get("created").getAsString())
+        #Created! = json!.get("created",err=*NEXT).getAsString()
         if (json!.has("complete")) then #Complete! = json!.get("complete",err=*NEXT).getAsInt()
     methodend
 
@@ -131,6 +142,7 @@ class public Task
     rem  * @param task!        The task to clone.
     rem  */
     method public Task(Task task!)
+        #init()
         #Title! = task!.getTitle()
         #Description! = task!.getDescription()
         #Priority! = task!.getPriority()
@@ -138,7 +150,7 @@ class public Task
         #Status! = task!.getStatus()
         #Complete! = task!.getComplete()
         #Uuid! = task!.getUuid()
-REM         #Created! = task!.getCreated()
+        #Created! = task!.getCreated()
     methodend
 
     rem /**
@@ -151,9 +163,11 @@ REM         #Created! = task!.getCreated()
         #Uuid! = java.util.UUID.randomUUID().toString()
         #Priority! = 6
         #Status! = Task.STATUS_INCOMPLETE()
+        #Tags! = BBjAPI().makeVector()
+REM         #Flags!.addItem(#FLAG_INCOMPLETE())
         #Complete! = 0
         #DueDate! = -1
-        #Created! = Instant.now()
+        #Created! = date(jul(date(0)), tim, "%Yz-%Mz-%DzT%hz:%mz")
     methodend
 
     rem /**
@@ -230,7 +244,7 @@ REM                 throw "Invalid status provided to Task.getStatusString(): " 
         ? "Priority: ", #Priority!
         ? "Due Date: ", #DueDate!
         ? "UUID: ", #Uuid!
-        ? "Creation Timestamp: ", #Created!.toString()
+        ? "Creation Timestamp: ", #Created!
 
         ?
         ? "getAsJsonObject(): "
@@ -239,18 +253,6 @@ REM                 throw "Invalid status provided to Task.getStatusString(): " 
         ?
         ? "getAsFormattedString(): "
         ? #getAsFormattedString()
-    methodend
-
-    rem /**
-    rem  * TODO: make docs for these
-    rem  */
-    method public static LocalDate getLocalDate(BBjNumber jul!)
-        rem Julian date of 1/1/1970 is 2440588
-        methodret LocalDate.ofEpochDay(jul!-2440588)
-    methodend
-
-    method public static BBjNumber getJulian(LocalDate ld!)
-        methodret ld!.toEpochDay()+2440588
     methodend
 
     rem /**
@@ -301,10 +303,10 @@ classend
 
 rem BBj USE Statements
 use ::TaskListView.bbj::TaskListView
+use ::Utils.bbj::Utils
 
 rem Java USE Statements
 use java.time.LocalDate; rem https://docs.oracle.com/javase/8/docs/api/java/time/LocalDate.html
-use java.time.Instant;   rem https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Instant.html
 use java.util.UUID;      rem https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/UUID.html
 use java.util.TreeMap;   rem https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/TreeMap.html
 use java.sql.Timestamp;  rem https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Timestamp.html

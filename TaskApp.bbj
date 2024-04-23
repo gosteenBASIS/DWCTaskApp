@@ -136,8 +136,10 @@ class public TaskApp
         #webManager! = BBjAPI().getWebManager()
         css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"TaskApp.css"))
         #webManager!.injectStyle(css!, 0, "name=taskapp_css")
-        css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"TaskListView.css"))
+        css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"taskListView.css"))
         #webManager!.injectStyle(css!, 0, "name=taskapp_list_view_css")
+        css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"taskView.css"))
+        #webManager!.injectStyle(css!, 0, "name=taskapp_taskview_css")
         css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"Task-Card-View.css"))
         #webManager!.injectStyle(css!, 0, "name=taskapp_card_view_css")
         css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"Settings.css"))
@@ -318,11 +320,27 @@ class public TaskApp
         #addTaskList("waiting")
         #addTaskList("deferred")
         #addTaskList("complete")
-        
+
         #labelDay! = #winTitle!.addStaticText("Today", $4000$)
         #labelDay!.addClass("labelDay")
         #labelDate! = #winTitle!.addStaticText(date(0:"%Dl, %Ml %D"), $4000$)
         #labelDate!.addClass("labelDate")
+
+        rem TASK CARD VIEW: buttons
+REM         #winViews! = #winTitle!.addChildWindow("Title", $00108800$, #sysgui!.getAvailableContext())
+REM         #winViews!.addClass("winViews")
+
+REM         #btnIncompleteView! = #winViews!.addButton("Incomplete")
+REM         #btnIncompleteView!.addClass("btnView")
+REM         #btnIncompleteView!.addClass("view-btn-selected")
+REM         #btnPriorityView! = #winViews!.addButton("Priority Level")
+REM         #btnPriorityView!.addClass("btnView")
+REM         #btnDueView! = #winViews!.addButton("Due Date")
+REM         #btnDueView!.addClass("btnView")
+REM
+REM         #btnIncompleteView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onIncompleteView")
+REM         #btnPriorityView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onPriorityView")
+REM         #btnDueView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onDueView")
 
         rem Create the FAB (floating action button) and the toolbar buttons
         #btnAddTaskFAB! = #winMain!.addButton("<html><dwc-icon pool='tabler' name='plus'></dwc-icon>")
@@ -372,10 +390,9 @@ REM         #btnAddTask! = #winToolBar!.addButton("<html><bbj-icon pool='tabler'
 
         #btnImport!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onImport")
         #btnExport!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onExport")
-        
+
         rem TASK CARD VIEW: completed tasks callback
         #btnShowCompletedTasks!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onShowCompletedTasks")
-
 
         #displayTasks()
         #winMain!.setVisible(1)
@@ -400,6 +417,7 @@ REM         #btnAddTask! = #winToolBar!.addButton("<html><bbj-icon pool='tabler'
         while it!.hasNext()
             task! = it!.next()
             view! = #addTaskListView(task!)
+
             cardView! = #addTaskCardView(task!)
             if (task!.getComplete()) then
 REM                 view!.setVisible(0)
@@ -528,7 +546,7 @@ REM             created! = task!.getCreated()
                 if (#taskProperties! = null()) then
                     #taskProperties! = new TaskProperties()
                 endif
-                
+
                 btnLock!.setText(lockOpen!)
                 btnLock!.removeClass("card-btn-lock")
                 btnLock!.addClass("card-btn-lock-open")
@@ -593,7 +611,7 @@ REM             created! = task!.getCreated()
     rem toggles visibility for both view windows
         #winTasks!.setVisible(!#winTasks!.isVisible())
         #winTaskCardView!.setVisible(!#winTaskCardView!.isVisible())
-        methodret            
+        methodret
     methodend
 
     rem /**
@@ -677,8 +695,6 @@ REM             created! = task!.getCreated()
         #tasks!.remove(task!.getUuid())
         #taskViews!.remove(task!.getUuid())
     methodend
-
-
 
     rem /**
     rem  * Displays the app's settings window
@@ -765,7 +781,7 @@ rem /**
     rem  */
 REM     method public void onIncompleteView(BBjButtonPushEvent e!)
 REM         winIncompleteControls! = #winTaskCardIncomplete!.getAllControls()
-REM 
+REM
 REM         if (#winTaskCardIncomplete!.isVisible()) then
 REM             #winTaskCardIncomplete!.setVisible(0)
 REM             #btnIncompleteView!.removeClass("view-btn-selected")
@@ -774,13 +790,13 @@ REM             #displayType!= 2
 REM             #winTaskCardComplete!.setVisible(0)
 REM             #winTaskCardPriority!.setVisible(0)
 REM             #winTaskCardDueDate!.setVisible(0)
-REM 
+REM
 REM             if (winIncompleteControls!.size() = 0) then
 REM                 #displayTasks()
 REM             else
 REM                 #winTaskCardIncomplete!.setVisible(1)
 REM             endif
-REM 
+REM
 REM             #taskView! = "incomplete"
 REM             #labelDay!.setText("Today")
 REM             #btnIncompleteView!.addClass("view-btn-selected")
@@ -1064,55 +1080,8 @@ REM         parser!.setLenient(BBjAPI().TRUE)
         if (err=11) then
             methodret null()
         else
-            throw "Error: " + err + ", With error message: " + errmes(-1), 720
+            throw "Error: " + str(err) + ", With error message: " + errmes(-1), 720
         endif
-    methodend
-
-
-    rem /**
-    rem  * Logs the provided string into the user's browser Developer Tools console.
-    rem  *
-    rem  * Note that this is a convenience method that calls the consoleLogValues() method
-    rem  * with an empty string for the second parameter (the value).
-    rem  *
-    rem  * @param logEntry!     The information to display in the Developer Tools console
-    rem  */
-    method protected void consoleLog(BBjString logEntry!)
-        #consoleLogValues(logEntry!, "")
-    methodend
-
-
-    rem /**
-    rem  * Logs the provided strings, usually key/value pairs, into the user's browser Developer Tools console.
-    rem  * <p>
-    rem  * If you're developing with VS Code, you can use its debug capabilities so that the
-    rem  * browser's Developer Tools console is available in VS Code's debug console.  This
-    rem  * allows you to view the browser's console output and interact with the interpreter
-    rem  * from within VS Code.
-    rem  *
-    rem  * @param key!          The first information to display in the Developer Tools console, typically the key in a key/value pair
-    rem  * @param value!        The second information to display in the Developer Tools console, typically the value in a key/value pair
-    rem  */
-    method public static void consoleLogValues(BBjString key!, BBjString value!)
-        rem Sanitize the log entries by escaping single quotes
-        key! = key!.replaceAll("'", "\'")
-        value! = value!.replaceAll("'", "\'")
-
-        rem Define the CSS to format the console output
-        space! = " "
-        cssSpace! = "'background: white;'"
-        cssDebugPrefix! = "'background: hsl(60, 100%, 65%); color: hsl(350, 100%, 25%); padding: 2px 4px; border-radius: 3px; border: 1px solid hsl(350, 100%, 25%); font-weight: 700;'"
-        cssKey! = "'background: hsl(210, 90%, 94%); color: hsl(210, 35%, 35%); padding: 2px 4px; border-radius: 3px; border: 1px solid hsl(210, 35%, 35%);'"
-        cssValue! = "'background: hsl(115, 90%, 94%); color: hsl(115, 35%, 35%); padding: 2px 4px; border-radius: 3px; border: 1px solid hsl(115, 35%, 35%);'"
-
-        rem Define the JavaScript that logs the information
-        js! = "console.log('%cDebug Log:%c%s%c%s%c%s%c%s', " + cssDebugPrefix! + ", " + cssSpace! + ", `" + space! + "`," + cssKey! + ", `" + key! + "`," + cssSpace! + ", `" + space! + "`," + cssValue! + ",`" + value! + "`);"
-
-        rem Get the SysGui device and execute the JavaScript to log the information to the Developer Tools console
-        sg! = BBjAPI().getSysGui(err=*NEXT)
-        if (sg! = null()) then sg! = BBjAPI().openSysGui("X0"); sgChan! = sg!.getChannel()
-        sg!.executeScript(js!)
-        if (sgChan! <> null()) then close(sgChan!,err=*NEXT)
     methodend
 
 classend
@@ -1122,6 +1091,7 @@ rem BBj USE Statements
 use ::Task.bbj::Task
 use ::TaskProperties.bbj::TaskProperties
 use ::TaskListView.bbj::TaskListView
+use ::TaskView.bbj::TaskView
 use ::Settings.bbj::Settings
 use ::Task-Card-View.bbj::TaskCardView
 use ::Utils.bbj::Utils

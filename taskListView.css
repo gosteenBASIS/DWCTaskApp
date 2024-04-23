@@ -1,6 +1,6 @@
 /* Task Styling                                     */
 /* ================================================ */
-.task {
+.winListView {
 	display: grid;
 	grid-template-columns: 1.8em 1fr 9ch;
     grid-template-rows: 2.5em 2em;
@@ -9,6 +9,18 @@
     justify-items: start;
     border: transparent;
     border-bottom-color: var(--dwc-color-gray-80);
+}
+
+dwc-checkbox {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.winListView .dueNotice {
+    grid-row: 1;
+    grid-column: 3;
+    justify-self: right;
+    white-space: nowrap;
 }
 
 .task .BBjStaticText {
@@ -29,14 +41,21 @@
 }
 
 /* Description styling on task-list-view */
-.task .description-display {
+.winListView .textDescription {
     opacity: 0.5;
     align-self: start;
     grid-column: 2 / 2;
 }
 
+.winListView .priorityFlag {
+    justify-self: right;
+    align-self: start;
+    grid-column: 3 / 3;
+    grid-row: 2;
+}
+
 /* Task items that are incomplete */
-.task dwc-checkbox::part(input-wrapper) {
+.winListView dwc-checkbox::part(input-wrapper) {
     border-color: var(--dwc-color-gray-50);
     background-color: var(--dwc-color-white);
 }
@@ -73,6 +92,7 @@
 .task:hover dwc-checkbox {
     animation: pulse 500ms ease-in-out 1 forwards;
 }
+
 
 /* Checkbox styling on task-list-view */
 dwc-checkbox::part(input-wrapper) {
