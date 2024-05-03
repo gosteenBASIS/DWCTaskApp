@@ -42,8 +42,6 @@ class public Task
     rem /** Boolean indicating whether the task is deleted. */
     field public BBjNumber Deleted! = 0
 
-    rem Is a "number" the best way to do priority? It should be restricted to certain values.
-    rem TODO: 1 should be highest priority.
     rem /** The priority of the task is a numeric that goes from 1 to 6, where 1 = highest priority and 6 = no priority. */
     field public BBjNumber Priority!
 
@@ -297,7 +295,6 @@ REM                 throw "Invalid status provided to Task.getStatusString(): " 
         methodret gson!.toJson(map!)
 
     methodend
-
 classend
 
 
