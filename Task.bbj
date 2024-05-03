@@ -28,12 +28,6 @@ class public Task
     rem /** The description of the task. */
     field public BBjString Description!
 
-    rem /** The status of the task. Represents whether the task is deferred or blocked
-    rem  *  TODO: Should "status" be a String? Should it just be a vector of strings, representing flags?
-    rem  *  Make some constants -- add status Task.DEFERRED, Task.BLOCKED, etc.
-    rem  *  */
-    field public BBjNumber Status!
-
     field public BBjVector Tags!
 
     rem /** Boolean indicating whether the task is complete. */
@@ -55,28 +49,12 @@ class public Task
     rem /** The unique auto-generated ID for the task that may be used to distinguish between instances of the class. */
     field protected BBjString Uuid!
 
-    rem /** The instant in time that the user created the task, in ISO 8601 format (YYYY-MM-DDTHH:MM:SS)
+    rem /** The instant in time that the user created the task, in ISO 8601 format (YYYY-MM-DDTHH:MM:SS) */
     field protected BBjString Created!
 
 
     rem Constants
     rem ========================================
-    rem /** A constant value that's used to set the Task's status to incomplete (to do) */
-    method public static BBjNumber STATUS_INCOMPLETE()
-        methodret 0
-    methodend
-    rem /** A constant value that's used to set the Task's status to complete (finished or done) */
-    method public static BBjNumber STATUS_COMPLETE()
-        methodret 1
-    methodend
-    rem /** A constant value that's used to set the Task's status to deffered (on hold) */
-    method public static BBjNumber STATUS_DEFFERRED()
-        methodret 2
-    methodend
-    rem /** A constant value that's used to set the Task's status to blocked (can not complete this task until a prerequisite has been completed) */
-    method public static BBjNumber STATUS_BLOCKED()
-        methodret 3
-    methodend
 
     method public static BBjString FLAG_BLOCKED()
         methodret "blocked"
@@ -128,7 +106,6 @@ class public Task
         #Description! = json!.get("description",err=*NEXT).getAsString()
         #Uuid! = json!.get("uuid").getAsString()
         #Priority! = json!.get("priority",err=*NEXT).getAsInt()
-        #Status! = json!.get("status",err=*NEXT).getAsInt()
         #DueDate! = json!.get("duedate",err=*NEXT).getAsInt()
         #Created! = json!.get("created",err=*NEXT).getAsString()
         if (json!.has("complete")) then #Complete! = json!.get("complete",err=*NEXT).getAsInt()
@@ -145,7 +122,6 @@ class public Task
         #Description! = task!.getDescription()
         #Priority! = task!.getPriority()
         #DueDate! = task!.getDueDate()
-        #Status! = task!.getStatus()
         #Complete! = task!.getComplete()
         #Uuid! = task!.getUuid()
         #Created! = task!.getCreated()
@@ -160,7 +136,6 @@ class public Task
         #Description! = ""
         #Uuid! = java.util.UUID.randomUUID().toString()
         #Priority! = 6
-        #Status! = Task.STATUS_INCOMPLETE()
         #Tags! = BBjAPI().makeVector()
 REM         #Flags!.addItem(#FLAG_INCOMPLETE())
         #Complete! = 0
@@ -176,7 +151,6 @@ REM         #Flags!.addItem(#FLAG_INCOMPLETE())
         #Description! = source!.getDescription()
         #Priority! = source!.getPriority()
         #DueDate! = source!.getDueDate()
-        #Status! = source!.getStatus()
         #Complete! = source!.getComplete()
     methodend
 
@@ -208,26 +182,6 @@ REM         #Flags!.addItem(#FLAG_INCOMPLETE())
         methodret #Uuid!
     methodend
 
-    rem /**
-    rem  * Gets a string representation of the status
-    rem  * @return A string description of the status value
-    rem  */
-    method public static BBjString getStatusString(BBjNumber status!)
-        switch status!
-            case #STATUS_DEFFERRED()
-                s! = "deferred"
-                break
-            case #STATUS_BLOCKED()
-                s! = "blocked"
-                break
-            case default
-                s! = "none"
-REM                 throw "Invalid status provided to Task.getStatusString(): " + str(status!),17
-                break
-        swend
-        methodret s!
-    methodend
-
     rem Misc utility methods
     rem ========================================
     rem /**
@@ -238,7 +192,6 @@ REM                 throw "Invalid status provided to Task.getStatusString(): " 
         ? "Title: ", #Title!
         ? "Description: ", #Description!
         ? "Complete: ", #Complete!
-        ? "Status: ", #Status!
         ? "Priority: ", #Priority!
         ? "Due Date: ", #DueDate!
         ? "UUID: ", #Uuid!
@@ -265,7 +218,6 @@ REM                 throw "Invalid status provided to Task.getStatusString(): " 
         json!.addProperty("title", iff(#getTitle() <> null(), #getTitle(), ""))
         json!.addProperty("description", iff(#getDescription() <> null(), #getDescription(), ""))
         json!.addProperty("complete", iff(#getComplete() <> null(), str(#getComplete()), ""))
-        json!.addProperty("status", iff(#getStatus() <> null(), str(#getStatus()), ""))
         json!.addProperty("priority", iff(#getPriority() <> null(), str(#getPriority()), ""))
         json!.addProperty("duedate", iff(#getDueDate() <> null(), str(#getDueDate()), ""))
         json!.addProperty("created", #getCreated().toString())

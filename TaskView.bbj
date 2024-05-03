@@ -51,7 +51,6 @@ class public TaskView
         #clearStyles()
         #title!.setText(#task!.getTitle())
         #description!.setText(#task!.getDescription())
-        #win!.addClass(#task!.getStatusString(#task!.getStatus()))
         if (#task!.getComplete()) then
             #win!.addClass("complete")
         endif
@@ -82,8 +81,8 @@ class public TaskView
     rem  * Removes the style classes for all possible statuses.
     rem  */
     method public void clearStyles()
-        #win!.removeClass("complete incomplete blocked deferred")
-        #win!.removeClass("status-complete status-blocked status-deferred")
+        #win!.removeClass("complete incomplete")
+        #win!.removeClass("status-complete")
     methodend
 
     method public void setDueNotice()

@@ -25,7 +25,6 @@ class public TaskListView extends TaskView
     method public void refresh()
         #super!.refresh()
         #checkbox!.setSelected(#task!.getComplete())
-        #checkbox!.addClass(#task!.getStatusString(#task!.getStatus()))
     methodend
 
     rem /**
@@ -36,10 +35,8 @@ class public TaskListView extends TaskView
     method public void onTaskCheck(BBjCheckChangeEvent e!)
         #clearStyles()
         if (#task!.getComplete()) then
-            #task!.setStatus(#task!.STATUS_INCOMPLETE())
             #task!.setComplete(0)
         else
-            #task!.setStatus(#task!.STATUS_COMPLETE())
             #task!.setComplete(1)
         endif
         BBjAPI().postCustomEvent("TASK_UPDATE",#task!)

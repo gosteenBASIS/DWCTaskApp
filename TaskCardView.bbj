@@ -37,10 +37,6 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
             #createPopupMenu()
             #priorityFlag!.setPopupMenu(#flagPopupMenu!)
             #setPriorityFlag()
-
-            if (#task!.getDueDate() > -1) then
-                #status!.setText("Status: " + #task!.getStatusString(#task!.getStatus()))
-            endif
         else
             #win!.setUserData(#btnLock!)
             #btnLock!.addClass("btnLock")
@@ -87,10 +83,7 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
         #description!.setToolTipText(#task!.getDescription())
         #title!.setToolTipText(#task!.getTitle())
 
-        if (#task!.getComplete() = 0) then #status!.setText("Status: " + #task!.getStatusString(#task!.getStatus()))
         if (#task!.getComplete()) then #status!.setText("Date of Completion")
-
-        #win!.addClass(#task!.getStatusString(#task!.getStatus()))
     methodend
 
     rem /**
@@ -148,7 +141,7 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
     methodend
 
     rem /**
-    rem  * - Toggles the status of a task between complete and incomplete
+    rem  * - Toggles the completion of a task
     rem  * - Toggles the BBjButton btnTaskCompletion! text between "Mark as Complete" & "Mark as Incomplete"
     rem  * - toggles associated classes
     rem  *
@@ -156,10 +149,8 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
     rem  */
     method public void setComplete(BBjButtonPushEvent e!)
          if (#task!.getComplete()) then
-            #task!.setStatus(#task!.STATUS_INCOMPLETE())
             #task!.setComplete(0)
         else
-            #task!.setStatus(#task!.STATUS_COMPLETE())
             #task!.setComplete(1)
         endif
 

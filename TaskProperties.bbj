@@ -19,7 +19,6 @@ class public TaskProperties
     field public BBjTopLevelWindow winTaskProperties!
     field public BBjEditBox        editTitle!
     field public BBjCEdit          editDescription!
-    field public BBjListButton     listStatus!
     field public BBjListButton     listPriority!
     field public BBjInputD         dateDue!
 
@@ -49,9 +48,6 @@ REM     field public BBjChildWindow    winButtons!
         #editDescription!.setAttribute("label", "Description")
         #editDescription!.setPlaceholder("Task Description")
 
-        #listStatus! = #winTaskProperties!.addListButton("")
-        #listStatus!.setAttribute("label", "Status")
-
         #listPriority! = #winTaskProperties!.addListButton("")
         #listPriority!.setAttribute("label", "Priority")
         for i = Task.PRIORITY_MAX() to Task.PRIORITY_MIN()
@@ -60,12 +56,6 @@ REM     field public BBjChildWindow    winButtons!
             else
                 #listPriority!.addItem("Priority " + str(i))
             endif
-        next i
-
-        for i = 0 to 3
-            s! = Task.getStatusString(i)
-            s! = s!.substring(0,1).toUpperCase() + s!.substring(1)
-            #listStatus!.addItem(s!)
         next i
 
         #dateDue! = #winTaskProperties!.addInputD()
@@ -109,7 +99,6 @@ REM         a=msgbox("Date Mask: " + DateMask$ + $0a$ + "!COMPAT for SHORT_YEAR:
         endif
 
         #listPriority!.selectIndex(t!.getPriority())
-        #listStatus!.selectIndex(t!.getStatus())
         #winTaskProperties!.setVisible(1)
     methodend
 
@@ -165,7 +154,6 @@ REM     methodend
         #task!.setDescription(e!.getText(#editDescription!))
         #task!.setDueDate(date!)
         #task!.setPriority(e!.getSelectedIndex(#listPriority!))
-        #task!.setStatus(e!.getSelectedIndex(#listStatus!))
         #task!.setTitle(#editTitle!.getText())
         
         rem TASK CARD VIEW: sets completed task back to lock after saving
