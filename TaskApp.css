@@ -203,7 +203,7 @@ dwc-checkbox.hydrated {
 
 .taskList {
     min-width: 200px;
-    max-width: 500px;
+    max-width: 1000px;
     overflow-y: scroll;
     margin-top: 5%;
     padding: 5%;
