@@ -106,6 +106,9 @@ class public Task
         #Description! = json!.get("description",err=*NEXT).getAsString()
         #Uuid! = json!.get("uuid").getAsString()
         #Priority! = json!.get("priority",err=*NEXT).getAsInt()
+        if (#Priority! < #PRIORITY_MAX() or #Priority! > #PRIORITY_MIN()) then
+            #Priority! = #PRIORITY_MIN()
+        endif
         #DueDate! = json!.get("duedate",err=*NEXT).getAsInt()
         #Created! = json!.get("created",err=*NEXT).getAsString()
         if (json!.has("complete")) then #Complete! = json!.get("complete",err=*NEXT).getAsInt()

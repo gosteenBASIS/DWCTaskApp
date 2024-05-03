@@ -98,7 +98,7 @@ REM         a=msgbox("Date Mask: " + DateMask$ + $0a$ + "!COMPAT for SHORT_YEAR:
             #dateDue!.setValue(-1)
         endif
 
-        #listPriority!.selectIndex(t!.getPriority())
+        #listPriority!.selectIndex(t!.getPriority()-1)
         #winTaskProperties!.setVisible(1)
     methodend
 
@@ -153,7 +153,7 @@ REM     methodend
         #task!.setTitle(title!)
         #task!.setDescription(e!.getText(#editDescription!))
         #task!.setDueDate(date!)
-        #task!.setPriority(e!.getSelectedIndex(#listPriority!))
+        #task!.setPriority(e!.getSelectedIndex(#listPriority!)+1)
         #task!.setTitle(#editTitle!.getText())
         
         rem TASK CARD VIEW: sets completed task back to lock after saving

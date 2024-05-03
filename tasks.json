@@ -4,7 +4,7 @@
     "title": "Test: Long Titles.  This is a whole lot of extra text that seems to be unecessary at first glance, but in practice it really helps to test the sizing of the control when it comes to displaying very long titles.",
     "description": "Test: Long Descriptions.  This is a description for the task, which ought to be displayed an the second row in the CSS Grid, and has a reduced opacity so that it doesn\u0027t compete with the title when it comes to how the user percieves the data.  This particular description is very long on purpose, so that we can see how it\u0027s displayed under extreme circumstances.\n",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "2460311",
     "created": "2023-12-28T23:01:17.613473Z"
   },
@@ -22,7 +22,7 @@
     "title": "Make enter key work to save tasks",
     "description": "",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "-1",
     "created": "2023-12-28T23:01:17.612473300Z"
   },
@@ -31,7 +31,7 @@
     "title": "Fix import/export functionality",
     "description": "e",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "-1",
     "created": "2023-12-28T23:01:17.613473Z"
   },
@@ -58,7 +58,7 @@
     "title": "Task 1",
     "description": "",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "-1",
     "created": "2023-12-28T23:01:17.609474600Z"
   },
@@ -103,7 +103,7 @@
     "title": "Update Properties Window",
     "description": "flex-flow: row wrap\njustify-content: space-between\n\nWidth: 100% for most controls, constrain the window size\nOR\n\nGrid\n",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "-1",
     "created": "2023-12-28T23:01:17.610474500Z"
   },
@@ -112,7 +112,7 @@
     "title": "Reverse order of buttons depending on user agent",
     "description": "info(3,8)\nWe could put save on the correct side based on what OS the user is on.",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "-1",
     "created": "2024-02-02T20:42:37.986942400Z"
   },
@@ -121,7 +121,7 @@
     "title": "Task 28",
     "description": "",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "2460307",
     "created": "2023-12-28T23:01:17.612473300Z"
   },
@@ -130,7 +130,7 @@
     "title": "Vertical Alignment of Add Task button on Garrison\u0027s computer",
     "description": "Description\n",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "-1",
     "created": "2023-12-28T23:01:17.611474400Z"
   },
@@ -139,7 +139,7 @@
     "title": "Sometimes the view of a task title isn\u0027t getting updated",
     "description": "",
     "complete": "0",
-    "priority": "0",
+    "priority": "5",
     "duedate": "2460307",
     "created": "2023-12-28T23:01:17.612473300Z"
   },
@@ -148,7 +148,7 @@
     "title": "Task title shouldn\u0027t get cropped when it\u0027s long",
     "description": "",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "-1",
     "created": "2023-12-28T23:01:17.612473300Z"
   },
@@ -157,7 +157,7 @@
     "title": "Filtering of tasks",
     "description": "",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "-1",
     "created": "2023-12-28T23:01:17.612473300Z"
   },
@@ -175,7 +175,7 @@
     "title": "Right-click on tasks",
     "description": "oaeu\n",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "2460307",
     "created": "2023-12-28T23:01:17.611474400Z"
   },
@@ -184,7 +184,7 @@
     "title": "Task Properties window shouldn\u0027t get too small",
     "description": "min width?\nMedia query?\n",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "2460316",
     "created": "2023-12-28T23:01:17.610474500Z"
   },
@@ -202,7 +202,7 @@
     "title": "Task Properties should be adaptable to smaller heights",
     "description": "",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "2460307",
     "created": "2023-12-28T23:01:17.609474600Z"
   },
@@ -211,7 +211,7 @@
     "title": "Scrollbars on the TaskProperties?",
     "description": "",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "-1",
     "created": "2023-12-28T23:01:17.613473Z"
   },
@@ -220,7 +220,7 @@
     "title": "Task titles seem to get cropped too soon.",
     "description": "",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "-1",
     "created": "2023-12-28T23:01:17.612473300Z"
   },
@@ -229,7 +229,7 @@
     "title": "Fix layout of TaskProperties buttons",
     "description": "The delete button should never be on the same line as the due date. Is it possible to prevent this?",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "2460307",
     "created": "2023-12-28T23:01:17.610474500Z"
   },
@@ -238,7 +238,7 @@
     "title": "Indication when you delete a task.",
     "description": "Some sort of \"Task deleted\" indicator, a toast maybe?",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "-1",
     "created": "2023-12-28T23:01:17.613473Z"
   },
@@ -247,7 +247,7 @@
     "title": "Task 24",
     "description": "",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "2460307",
     "created": "2023-12-28T23:01:17.612473300Z"
   },
@@ -256,7 +256,7 @@
     "title": "Task 37",
     "description": "",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "-1",
     "created": "2023-12-28T23:01:17.613473Z"
   },
@@ -265,7 +265,7 @@
     "title": "Toasts!",
     "description": "",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "2460307",
     "created": "2023-12-28T23:01:17.613473Z"
   },
@@ -274,7 +274,7 @@
     "title": "Task 34",
     "description": "",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "2460307",
     "created": "2023-12-28T23:01:17.613473Z"
   },
@@ -283,7 +283,7 @@
     "title": "Task 0",
     "description": "",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "2460307",
     "created": "2023-12-28T23:01:17.608477600Z"
   },
@@ -292,7 +292,7 @@
     "title": "Task 49",
     "description": "",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "-1",
     "created": "2023-12-28T23:01:17.614472800Z"
   },
@@ -301,7 +301,7 @@
     "title": "Task 23",
     "description": "",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "-1",
     "created": "2023-12-28T23:01:17.612473300Z"
   },
@@ -310,7 +310,7 @@
     "title": "The description field should be bigger by default.",
     "description": "",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "-1",
     "created": "2023-12-28T23:01:17.612473300Z"
   },
@@ -319,7 +319,7 @@
     "title": "NEW TASK",
     "description": "",
     "complete": "0",
-    "priority": "0",
+    "priority": "5",
     "duedate": "-1",
     "created": "2024-02-02T20:39:29.426530300Z"
   },
@@ -328,7 +328,7 @@
     "title": "Task 30",
     "description": "",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "2460307",
     "created": "2023-12-28T23:01:17.612473300Z"
   },
@@ -337,7 +337,7 @@
     "title": "Task 44",
     "description": "",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "2460307",
     "created": "2023-12-28T23:01:17.613473Z"
   },
@@ -346,7 +346,7 @@
     "title": "Task 11",
     "description": "",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "-1",
     "created": "2023-12-28T23:01:17.610474500Z"
   },
@@ -355,7 +355,7 @@
     "title": "Task 35",
     "description": "",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "-1",
     "created": "2023-12-28T23:01:17.613473Z"
   },
@@ -373,7 +373,7 @@
     "title": "Task 3",
     "description": "",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "-1",
     "created": "2023-12-28T23:01:17.609474600Z"
   },
@@ -382,7 +382,7 @@
     "title": "Check for Invalid Dates",
     "description": "",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "2460307",
     "created": "2023-12-28T23:01:17.613473Z"
   },
@@ -391,7 +391,7 @@
     "title": "Task 12",
     "description": "",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "2460307",
     "created": "2023-12-28T23:01:17.610474500Z"
   },
@@ -400,7 +400,7 @@
     "title": "aoeuao",
     "description": "",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "2460307",
     "created": "2023-12-28T23:01:17.609474600Z"
   },
@@ -409,7 +409,7 @@
     "title": "SECOND NEW TASK",
     "description": "",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "-1",
     "created": "2024-02-02T20:39:39.640278800Z"
   },
@@ -418,7 +418,7 @@
     "title": "Task 38",
     "description": "",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "2460307",
     "created": "2023-12-28T23:01:17.613473Z"
   },
@@ -427,7 +427,7 @@
     "title": "Task 19",
     "description": "",
     "complete": "0",
-    "priority": "0",
+    "priority": "6",
     "duedate": "-1",
     "created": "2023-12-28T23:01:17.612473300Z"
   }

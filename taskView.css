@@ -18,12 +18,12 @@
 
 /* Priority 1 is blue, so we'd typically use the DWC's primary color but since we allow the user */
 /* to customize the primary color hue, then we have to force this to the default primary color hue */
-.priority-1 {
+.priority-5 {
 	color: hsl(211, 100%, 40%);
     /* color: #2c80d4; */
 }
 
-.priority-2 {
+.priority-4 {
 	/* color: var(--dwc-color-success); */
 	color: #47942f;
 }
@@ -33,12 +33,12 @@
 	/* color: #f5e102; */
 }
 
-.priority-4 {
+.priority-2 {
 	color: hsl(30, 100%, 50%);
 	/* color: #f58402; */
 }
 
-.priority-5 {
+.priority-1 {
 	color: var(--dwc-color-danger);
 	/* color: #f50202; */
 }
