@@ -140,7 +140,7 @@ class public TaskApp
         #webManager!.injectStyle(css!, 0, "name=taskapp_list_view_css")
         css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"taskView.css"))
         #webManager!.injectStyle(css!, 0, "name=taskapp_taskview_css")
-        css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"Task-Card-View.css"))
+        css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"taskCardView.css"))
         #webManager!.injectStyle(css!, 0, "name=taskapp_card_view_css")
         css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"Settings.css"))
         #webManager!.injectStyle(css!, 0, "name=taskapp_settings_css")
@@ -1093,7 +1093,7 @@ use ::TaskProperties.bbj::TaskProperties
 use ::TaskListView.bbj::TaskListView
 use ::TaskView.bbj::TaskView
 use ::Settings.bbj::Settings
-use ::Task-Card-View.bbj::TaskCardView
+use ::TaskCardView.bbj::TaskCardView
 use ::Utils.bbj::Utils
 
 rem Java USE Statements
