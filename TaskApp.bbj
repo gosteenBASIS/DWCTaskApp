@@ -131,15 +131,15 @@ class public TaskApp
         rem Instatiate the WebManager and use it to inject the app's CSS
         rem Add conditional to inject CSS file depending on view choice (list or card)
         #webManager! = BBjAPI().getWebManager()
-        css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"TaskApp.css"))
+        css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(#appPath!+"TaskApp.css"))
         #webManager!.injectStyle(css!, 0, "name=taskapp_css")
-        css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"taskListView.css"))
+        css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(#appPath!+"taskListView.css"))
         #webManager!.injectStyle(css!, 0, "name=taskapp_list_view_css")
-        css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"taskView.css"))
+        css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(#appPath!+"taskView.css"))
         #webManager!.injectStyle(css!, 0, "name=taskapp_taskview_css")
-        css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"taskCardView.css"))
+        css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(#appPath!+"taskCardView.css"))
         #webManager!.injectStyle(css!, 0, "name=taskapp_card_view_css")
-        css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(dsk("")+dir("")+"Settings.css"))
+        css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(#appPath!+"Settings.css"))
         #webManager!.injectStyle(css!, 0, "name=taskapp_settings_css")
         rem ' set legacy BBj className values when running in DWC.
         if info(3,6)="6" then
@@ -246,7 +246,7 @@ class public TaskApp
     method public void createMainWindow()
         #winMain! = #sysgui!.addWindow("TaskApp", $011C1091$)
         #winMain!.addClass("winMain")
-        #winMain!.setIcon(dsk("")+dir("")+"images/DWCTaskApp.png")
+        #winMain!.setIcon(#appPath!+"images/DWCTaskApp.png")
 
         rem Create the child windows
         #winNavBar! = #winMain!.addChildWindow("NavBar", $00108800$, #sysgui!.getAvailableContext())
