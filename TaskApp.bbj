@@ -129,21 +129,20 @@ class public TaskApp
     rem ========================================
     method public TaskApp()
         rem Instatiate the WebManager and use it to inject the app's CSS
-        rem Add conditional to inject CSS file depending on view choice (list or card)
         #webManager! = BBjAPI().getWebManager()
         css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(#appPath!+"TaskApp.css"))
         #webManager!.injectStyle(css!, 0, "name=taskapp_css")
-        css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(#appPath!+"taskListView.css"))
-        #webManager!.injectStyle(css!, 0, "name=taskapp_list_view_css")
         css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(#appPath!+"taskView.css"))
         #webManager!.injectStyle(css!, 0, "name=taskapp_taskview_css")
+        css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(#appPath!+"taskListView.css"))
+        #webManager!.injectStyle(css!, 0, "name=taskapp_list_view_css")
         css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(#appPath!+"taskCardView.css"))
         #webManager!.injectStyle(css!, 0, "name=taskapp_card_view_css")
         css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(#appPath!+"Settings.css"))
         #webManager!.injectStyle(css!, 0, "name=taskapp_settings_css")
         rem ' set legacy BBj className values when running in DWC.
         if info(3,6)="6" then
-        bbjapi().getWebManager().setAttribute("dwc.class","true")
+            bbjapi().getWebManager().setAttribute("dwc.class","true")
         endif
 
         rem Set the app's icon in the browser's tab
