@@ -313,10 +313,7 @@ class public TaskApp
         #winTaskCardComplete!.addClass("winCardTasks")
         #winTaskCardComplete!.setVisible(0)
 
-        #addTaskList("incomplete")
-        #addTaskList("waiting")
-        #addTaskList("deferred")
-        #addTaskList("complete")
+        #addTaskList("default")
 
         #labelDay! = #winTitle!.addStaticText("Today", $4000$)
         #labelDay!.addClass("labelDay")
