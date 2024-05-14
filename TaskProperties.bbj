@@ -3,7 +3,7 @@ REM  * WinTask.bbj
 REM  * @author gosteen
 REM  *C:\Users\gosteen\eclipse\workspaces\bbj-workspace\TaskApp\WinTask.bbj
 REM  */
-rem package TaskApp
+REM package TaskApp
 
 declare auto Task task!
 declare auto TaskProperties taskProperties!
@@ -64,7 +64,7 @@ REM     field public BBjChildWindow    winButtons!
         #dateDue!.setAttribute("visible-calendar-icon","true")
         #dateDue!.setAttribute("show-weeks","true")
 
-        rem Long Year
+        REM Long Year
 REM         short_year$ = STBL("!COMPAT!", "SHORT_YEAR=TRUE")
 REM         DateMask$=stbl("!DATE"),DateMask=pos($00$=DateMask$),DateMask$=DateMask$(1,DateMask-1)
 REM         #dateDue!.setLocale("en-US")
@@ -76,16 +76,16 @@ REM         a=msgbox("Date Mask: " + DateMask$ + $0a$ + "!COMPAT for SHORT_YEAR:
         #buttonSave!   = #winTaskProperties!.addButton(1, "&Save")
         #buttonSave!.setAttribute("theme","primary")
 
-        rem Callbacks
+        REM Callbacks
         #buttonCancel!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onCancel")
         #buttonSave!.setCallback(BBjControl.ON_FORM_VALIDATION, #this!, "onSave")
         #buttonDelete!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onDelete")
     methodend
 
-    rem /**
-    rem  * Given a task object, load its properties into the Task Properties window,
-    rem  * and make the window visible.
-    rem  */
+    REM /**
+    REM  * Given a task object, load its properties into the Task Properties window,
+    REM  * and make the window visible.
+    REM  */
     method public void loadTask(Task t!)
         #task! = t!
         #editTitle!.setAttribute("label", "<html>Title <span style='opacity:0.25;position:absolute;right:0;'>" + #task!.getUuid())
@@ -102,26 +102,26 @@ REM         a=msgbox("Date Mask: " + DateMask$ + $0a$ + "!COMPAT for SHORT_YEAR:
         #winTaskProperties!.setVisible(1)
     methodend
 
-    rem /** 
-    rem  * Receives vector from TaskApp onTaskClick method and sets vector as userData
-    rem  * on the cancel and save buttons
-    rem  * 
-    rem  * @param BBjVector that contains lock icon and task window
-    rem  */
-        rem TASK CARD VIEW: passData method
+    REM /** 
+    REM  * Receives vector from TaskApp onTaskClick method and sets vector as userData
+    REM  * on the cancel and save buttons
+    REM  * 
+    REM  * @param BBjVector that contains lock icon and task window
+    REM  */
+        REM TASK CARD VIEW: passData method
 REM     method public void passData(BBjVector dataVector!)
 REM         #buttonCancel!.setUserData(dataVector!)
 REM         #buttonSave!.setUserData(dataVector!)
 REM         #dataPassed! = 1
 REM     methodend
 
-    rem /**
-    rem  * Save the information from the current fields into the Task object in the #task! variable
-    rem  */
+    REM /**
+    REM  * Save the information from the current fields into the Task object in the #task! variable
+    REM  */
     method public void onSave(BBjFormValidationEvent e!)
         if (#task! = null()) then methodret
 
-        rem validate title
+        REM validate title
         title! = e!.getText(#editTitle!)
         if (title!.trim().length() = 0) then
             e!.accept(0)
@@ -129,14 +129,14 @@ REM     methodend
             methodret
         endif
 
-        rem validate date
+        REM validate date
         date! = e!.getValue(#dateDue!)
         today! = jul(date(0))
         limit! = 5*365
         difference! = date!-today!
 
         if (abs(difference!) > limit!) AND (date! <> -1) then
-            rem date out of bounds
+            REM date out of bounds
             e!.accept(0)
             message! = "Date cannot be more than 5 years in the "
             if (difference! < 0) then
@@ -149,15 +149,15 @@ REM     methodend
             methodret
         endif
 
-        rem Passed validations; update task and post event
+        REM Passed validations; update task and post event
         #task!.setTitle(title!)
         #task!.setDescription(e!.getText(#editDescription!))
         #task!.setDueDate(date!)
         #task!.setPriority(e!.getSelectedIndex(#listPriority!)+1)
         #task!.setTitle(#editTitle!.getText())
         
-        rem TASK CARD VIEW: sets completed task back to lock after saving
-        rem change lock icon back to close and update classes on task window to lock task
+        REM TASK CARD VIEW: sets completed task back to lock after saving
+        REM change lock icon back to close and update classes on task window to lock task
 REM         if (#dataPassed!) then
 REM             dataVector! = e!.getControl().getUserData()
 REM             win! = dataVector!.getItem(0)
@@ -173,14 +173,14 @@ REM         endif
         BBjAPI().postCustomEvent("TASK_UPDATE",#task!)
         e!.accept(1)
         
-        rem TASK CARD VIEW: reset data passed back to 0
+        REM TASK CARD VIEW: reset data passed back to 0
 REM         #dataPassed! = 0
     methodend
 
     method public void onCancel(BBjButtonPushEvent e!)   
         
-        rem TASK CARD VIEW: sets completed task back to lock after canceling
-        rem change lock icon back to close and update classes on task window to lock task
+        REM TASK CARD VIEW: sets completed task back to lock after canceling
+        REM change lock icon back to close and update classes on task window to lock task
 REM         if (#dataPassed!) then
 REM             dataVector! = e!.getControl().getUserData()
 REM             win! = dataVector!.getItem(0)
@@ -193,27 +193,27 @@ REM             win!.addClass("task-complete")
 REM         endif
         
         #winTaskProperties!.setVisible(0)
-        rem Clear fields, set task to null?
+        REM Clear fields, set task to null?
         
-        rem TASK CARD VIEW: reset data passed back to 0
+        REM TASK CARD VIEW: reset data passed back to 0
         #dataPassed! = 0
     methodend
 
-    rem /**
-    rem  * Activated by the Delete button.
-    rem  * Sets the Deleted flag on the task, posts a TASK_UPDATE event, and hides the TaskProperties window.
-    rem  */
+    REM /**
+    REM  * Activated by the Delete button.
+    REM  * Sets the Deleted flag on the task, posts a TASK_UPDATE event, and hides the TaskProperties window.
+    REM  */
     method public void onDelete(BBjButtonPushEvent event!)
         #task!.setDeleted(1)
         BBjAPI().postCustomEvent("TASK_UPDATE",#task!)
         #winTaskProperties!.setVisible(0)
     methodend
 
-    rem /**
-    rem  * Sets the visibility on the BBjChildWindow for this class.
-    rem  *
-    rem  * @param visible! A number representing the visibility to set. 0 = invisible.
-    rem  */
+    REM /**
+    REM  * Sets the visibility on the BBjChildWindow for this class.
+    REM  *
+    REM  * @param visible! A number representing the visibility to set. 0 = invisible.
+    REM  */
     method public void setVisible(BBjNumber visible!)
         #winTaskProperties!.setVisible(visible!)
     methodend

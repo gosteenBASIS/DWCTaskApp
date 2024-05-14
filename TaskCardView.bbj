@@ -14,11 +14,11 @@ class public TaskCardView extends TaskView
     field protected BBjString       trashIcon! = "<html><dwc-icon pool='tabler' name='trash' style='width: 25px; height: 25px'></dwc-icon>"
     field protected BBjStaticText   status!
 
-    rem /**
-    rem  * Creates a task card view for every task
-    rem  *
-    rem  * @param parent!, t!           parent! is the parent window which contains all task child windows of a given view, t! is the Task that is to be added to a given view
-    rem  */
+    REM /**
+    REM  * Creates a task card view for every task
+    REM  *
+    REM  * @param parent!, t!           parent! is the parent window which contains all task child windows of a given view, t! is the Task that is to be added to a given view
+    REM  */
     method public TaskCardView(BBjWindow parent!, Task t!)
         #super!(parent!,t!)
         #win!.addClass("winCardView")
@@ -55,9 +55,9 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
         #refresh()
     methodend
 
-    rem /**
-    rem  * - Updates task data on refresh
-    rem  */
+    REM /**
+    REM  * - Updates task data on refresh
+    REM  */
     method public void refresh()
         #super!.refresh()
 
@@ -86,17 +86,17 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
         if (#task!.getComplete()) then #status!.setText("Date of Completion")
     methodend
 
-    rem /**
-    rem  * If task is incomplete:
-    rem  * - If a task is past due, adds a "Past Due!" notice
-    rem  * - If a task is due today, adds a "Due Today!" notice
-    rem  * - Otherwise, adds the task's due date
-    rem  * - Notices are set to BBjStaticText #due!
-    rem  *
-    rem  * If task is complete:
-    rem  * - adds the date of completion
-    rem  * - Completion date is set to BBjStaticText #status!
-    rem  */
+    REM /**
+    REM  * If task is incomplete:
+    REM  * - If a task is past due, adds a "Past Due!" notice
+    REM  * - If a task is due today, adds a "Due Today!" notice
+    REM  * - Otherwise, adds the task's due date
+    REM  * - Notices are set to BBjStaticText #due!
+    REM  *
+    REM  * If task is complete:
+    REM  * - adds the date of completion
+    REM  * - Completion date is set to BBjStaticText #status!
+    REM  */
     method public void setDueNotice()
         #super!.setDueNotice()
         dueDate! = date(#task!.getDueDate():"%Dl, %Ml %D")
@@ -117,13 +117,13 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
         endif
     methodend
 
-    rem /**
-    rem  * - Toggles a completed task lock icon between open and closed
-    rem  * - Icon is set to BBjStaticText #btnLock!
-    rem  * - Toggles associated classes
-    rem  *
-    rem  * @param e!      The BBjButtonPushEvent that causes this method to be executed
-    rem  */
+    REM /**
+    REM  * - Toggles a completed task lock icon between open and closed
+    REM  * - Icon is set to BBjStaticText #btnLock!
+    REM  * - Toggles associated classes
+    REM  *
+    REM  * @param e!      The BBjButtonPushEvent that causes this method to be executed
+    REM  */
     method public void setLock(BBjButtonPushEvent e!)
         if (#btnLock!.getText() = #lock!) then
             #btnLock!.setText(#lockOpen!)
@@ -140,13 +140,13 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
         endif
     methodend
 
-    rem /**
-    rem  * - Toggles the completion of a task
-    rem  * - Toggles the BBjButton btnTaskCompletion! text between "Mark as Complete" & "Mark as Incomplete"
-    rem  * - toggles associated classes
-    rem  *
-    rem  * @param e!      The BBjButtonPushEvent that causes this method to be executed
-    rem  */
+    REM /**
+    REM  * - Toggles the completion of a task
+    REM  * - Toggles the BBjButton btnTaskCompletion! text between "Mark as Complete" & "Mark as Incomplete"
+    REM  * - toggles associated classes
+    REM  *
+    REM  * @param e!      The BBjButtonPushEvent that causes this method to be executed
+    REM  */
     method public void setComplete(BBjButtonPushEvent e!)
          if (#task!.getComplete()) then
             #task!.setComplete(0)
@@ -157,11 +157,11 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
         BBjAPI().postCustomEvent("TASK_UPDATE",#task!)
     methodend
 
-    rem /**
-    rem  * Triggers message box which prompts user for confirmation before deleting a task
-    rem  *
-    rem  * @param e!      The BBjButtonPushEvent that causes this method to be executed
-    rem  */
+    REM /**
+    REM  * Triggers message box which prompts user for confirmation before deleting a task
+    REM  *
+    REM  * @param e!      The BBjButtonPushEvent that causes this method to be executed
+    REM  */
     method public void onDelete(BBjButtonPushEvent e!)
         i = msgbox("This won't do anything yet", BBjSysGui.MSGBOX_BUTTONS_YES_NO + BBjSysGui.MSGBOX_ICON_EXCLAMATION, "Delete Task")
     methodend
