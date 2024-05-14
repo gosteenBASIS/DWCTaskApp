@@ -47,13 +47,10 @@ class public Settings
 
     REM /**
     REM  * Shows the TaskApp's settings window
+    REM  * 
+    REM  * @param HashMap hashPrefs!    A HashMap containing all of the user's preferences
     REM  */
     method public void onShowSettings(HashMap hashPrefs!)
-        REM To Do
-            REM - Define the user's preferred theme (dark/light/etc)
-            REM - Define the theme colors
-            REM - Define background colors or gradients for the main window (winMain)
-            REM - Define the font family, size, weight, and spacing
 
         #hashPrefs! = hashPrefs!
 
@@ -80,7 +77,6 @@ class public Settings
             win!.addClass("settingsChildWindow")
             text! = win!.addStaticText("<html><dwc-icon pool='tabler' name='palette' class='icon'></dwc-icon>&&nbsp; Theme")
             text!.addClass("settingsLabel")
-            REM text! = win!.addStaticText(themeColor!)
             settingsThemeColor! = win!.addButton("<html>" + themeColor! + " <dwc-icon pool='tabler' name='chevron-right' class='chevron'></dwc-icon>")
             settingsThemeColor!.addClass("toolbar_icon")
 
@@ -115,12 +111,29 @@ class public Settings
         #winSettings!.setVisible(1)
     methodend
 
+    REM /**
+    REM  * Hides settings dialog window.
+    REM  * 
+    REM  * @param BBjButtonPushEvent e! The button push event.
+    REM  */
     method public void onSettingsDone(BBjButtonPushEvent e!)
         #winSettings!.setVisible(0)
     methodend
+
+    REM /**
+    REM  * Sets the theme color to the color selected from the drop down.
+    REM  * 
+    REM  * @param BBjButtonPushEvent e! The button push event.
+    REM  */
     method public void onSettingsThemeColor(BBjButtonPushEvent e!)
         temp = msgbox("Not Yet Implemented", BBjSysGui.MSGBOX_ICON_STOP, "TaskApp", mode="theme=warning")
     methodend
+
+    REM /**
+    REM  * Displays information about the TaskApp
+    REM  * 
+    REM  * @param BBjButtonPushEvent e! The button push event.
+    REM  */
     method public void onSettingsAbout(BBjButtonPushEvent e!)
         REM msg! = "<html><img src=""https://public.basis.cloud/images/DWCTaskApp.svg"" height=""0px""> DWC TaskApp version " + #version!
         msg! = "<html><div style='padding: 0.75em 0 0 0;'>The TaskApp application was authored by: "
@@ -135,7 +148,11 @@ class public Settings
     methodend
 
 
-    REM Opens the dialog that lets the user choose a font family from a variety of sources that originate from the CSSFonts.csv file
+    REM /**
+    REM  * Opens the dialog that lets the user choose a font family from a variety of sources that originate from the CSSFonts.csv file
+    REM  * 
+    REM  * @param BBjButtonPushEvent e! The button push event.
+    REM  */
     method public void onSettingsTypography(BBjButtonPushEvent e!)
         REM ========================================================================================================================
         REM Create the App's Font Chooser Window when it's first needed, then simply hide/show it later via CSS
@@ -223,13 +240,19 @@ class public Settings
     methodend
 
 
-    REM Fill the Font Families listbox based on the chosen type and source
+    REM /**
+    REM  * Fill the Font Families listbox based on the chosen type and source.
+    REM  * 
+    REM  * @param BBjListClickEvent event!  The invoking BBjListClickEvent
+    REM  */
     method public void onFontChooserTypeChange(BBjListClickEvent event!)
         #onFontChooserFillFontFamilies()
     methodend
 
 
-    REM Method to fill the Font Families listbox based on the chosen type and source
+    REM /**
+    REM  * Fills the Font Families listbox based on the chosen type and source.
+    REM  */
     method public void onFontChooserFillFontFamilies()
         declare auto CssFontFamily font!
         declare auto LinkedHashMap hash!
@@ -296,12 +319,15 @@ REM                 family! =  family! + " <html>&nbsp;&nbsp;<span style='font-f
     methodend
 
 
-    REM Method to apply the selected font family
+    REM /**
+    REM  * Applies the selected font family to all text.
+    REM  * 
+    REM  * @param BBjString family! The name of the chosen font family
+    REM  */
     method public void onFontChooserFamilySelection(BBjString family!)
         declare auto CssFontFamily font!
 
         REM Parse the chosen font family to remove all HTML tags that style the text, leaving just the font family
-
 
         #fontChooserChosenFamily! = family!
 
@@ -324,20 +350,32 @@ REM                 family! =  family! + " <html>&nbsp;&nbsp;<span style='font-f
     methodend
 
 
-    REM Callback for when the user changes the Font Source
+    REM /**
+    REM  * Callback for when the user changes the Font Source.
+    REM  * 
+    REM  * @param BBjListClickEvent event!
+    REM  */
     method public void onFontChooserSourceChange(BBjListClickEvent event!)
         #onFontChooserFillFontFamilies()
     methodend
 
 
-    REM Callback for when the user changes the Font Family by selecting a listbox item
+    REM /**
+    REM  * Callback for when the user changes the Font Family by selecting a listbox item.
+    REM  * 
+    REM  * @param BBjListClickEvent event!
+    REM  */
     method public void onFontChooserFamilyChange(BBjListClickEvent event!)
         #fontChooserChosenFamily! = #lbFontChooserFamilies!.getAllItems().get(event!.getSelectedIndex()).toString()
         #onFontChooserFamilySelection(#fontChooserChosenFamily!)
     methodend
 
 
-    REM Callback for when the user changes the Font Family by typing in the EditBox
+    REM /**
+    REM  * Callback for when the user changes the Font Family by typing in the EditBox.
+    REM  * 
+    REM  * @param BBjEditModifyEvent event!
+    REM  */
     method public void onFontChooserFamilyEdit(BBjEditModifyEvent event!)
         declare auto BBjString family!
         #fontChooserChosenFamily! = event!.getText()
@@ -367,7 +405,11 @@ REM                 family! =  family! + " <html>&nbsp;&nbsp;<span style='font-f
     methodend
 
 
-    REM Callback for when the user clicks the OK button, which means that they DID change the font family
+    REM /**
+    REM  * Callback for when the user clicks the OK button, which means that they DID change the font family.
+    REM  * 
+    REM  * @param BBjButtonPushEvent event!
+    REM  */
     method protected void onFontChooserOk(BBjButtonPushEvent event!)
         REM Set the CSS custom property to the selected font family
         #setRootStyle(#winFontChooser!.getUserData().toString(), #fontChooserChosenFamily!)
@@ -375,7 +417,11 @@ REM                 family! =  family! + " <html>&nbsp;&nbsp;<span style='font-f
     methodend
 
 
-    REM Callback for when the user closes the Font Chooser window or clicks the Cancel button, which means they did NOT change the font family
+    REM /**
+    REM  * Callback for when the user closes the Font Chooser window or clicks the Cancel button, which means they did NOT change the font family.
+    REM  * 
+    REM  * @param BBjEvent event!
+    REM  */
     method protected void onFontChooserClose(BBjEvent event!)
         #fontChooserChosenFamily! = ""
         #setWindowVisibility(#winFontChooser!, 0)
