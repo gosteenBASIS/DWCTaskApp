@@ -47,13 +47,7 @@ class public TaskApp
 
     REM NavBar and ToolBar controls
     field protected BBjButton           btnAddTaskFAB!
-    field protected BBjButton           btnAddTask!
-    field protected BBjButton           btnSettings!
-    field protected BBjButton           btnReload!
-    field protected BBjButton           btnExport!
-    field protected BBjButton           btnImport!
     field protected BBjListButton       lstFontFamily!
-    field protected BBjButton           btnShowCompletedTasks!
     field protected BBjRadioButton      switchLayout!
 
     REM Misc Data
@@ -284,18 +278,15 @@ class public TaskApp
             #setCssProperty("--app-font-task", str(#vectFontFamilies!.getItem(0)))
         endif
 
-
         #switchLayout! = #winNavBar!.addRadioButton("Layout Type")
         #switchLayout!.addClass("switchLayout")
         #switchLayout!.setAttribute("switch", "")
         #switchLayout!.setAttribute("expanse", "m")
         #switchLayout!.setCallback(BBjControl.ON_CHECK_CHANGE, #this!, "OnSwitchChangeLayout")
 
-        #winToolBar! = #winMain!.addChildWindow("ToolBar", $00108800$, #sysgui!.getAvailableContext())
-        #winToolBar!.addClass("winToolBar")
+        #winToolBar! = #createWinToolBar()
+        #winTitle! = #createWinTitle()
 
-        #winTitle! = #winMain!.addChildWindow("Title", $00108800$, #sysgui!.getAvailableContext())
-        #winTitle!.addClass("winTitle")
 
         REM TASK LIST VIEW: main window
         #winTasks! = #winMain!.addChildWindow("Tasks", $00108800$, #sysgui!.getAvailableContext())
@@ -313,11 +304,6 @@ class public TaskApp
         #winTaskCardComplete!.setVisible(0)
 
         #addTaskList("default")
-
-        #labelDay! = #winTitle!.addStaticText("Today", $4000$)
-        #labelDay!.addClass("labelDay")
-        #labelDate! = #winTitle!.addStaticText(date(0:"%Dl, %Ml %D"), $4000$)
-        #labelDate!.addClass("labelDate")
 
         REM TASK CARD VIEW: buttons
 REM         #winViews! = #winTitle!.addChildWindow("Title", $00108800$, #sysgui!.getAvailableContext())
@@ -340,55 +326,72 @@ REM         #btnDueView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onDueVi
         #btnAddTaskFAB!.addClass("btnAddTaskFAB")
         #btnAddTaskFAB!.setAttribute("theme", "primary")
         #btnAddTaskFAB!.setAttribute("expanse", "xs")
-
-        #btnAddTask! = #winToolBar!.addButton("<html><dwc-icon pool='tabler' name='plus'></dwc-icon>")
-
-        REM TASK CARD VIEW: show completed task cards (completed tasks button on toolbar) - Currently only set up for TASK CARD VIEW - should add list view functionality
-        #btnShowCompletedTasks! = #winToolBar!.addButton("<html><dwc-icon pool='tabler' name='checks'></dwc-icon>")
-        #btnShowCompletedTasks!.addClass("toolbar_icon icon-completed")
-        #btnShowCompletedTasks!.setToolTipText("Completed Tasks")
-        #btnShowCompletedTasks!.setAttribute("expanse", "xs")
-
-REM         #btnAddTask! = #winToolBar!.addButton("<html><bbj-icon pool='tabler' name='plus'></bbj-icon>")
-
-        #btnAddTask!.addClass("toolbar_icon")
-        #btnAddTask!.setToolTipText("Add Task")
-        #btnAddTask!.setAttribute("expanse", "xs")
-
-        #btnSettings! = #winToolBar!.addButton("<html><dwc-icon pool='tabler' name='settings'></dwc-icon>")
-        #btnSettings!.addClass("toolbar_icon")
-        #btnSettings!.setToolTipText("Settings")
-        #btnSettings!.setAttribute("expanse", "xs")
-
-        #btnExport! = #winToolBar!.addButton("<html><dwc-icon pool='tabler' name='file-download'></dwc-icon>")
-        #btnExport!.addClass("toolbar_icon")
-        #btnExport!.setToolTipText("Export tasks")
-        #btnExport!.setAttribute("expanse", "xs")
-
-        #btnImport! = #winToolBar!.addButton("<html><dwc-icon pool='tabler' name='file-upload'></dwc-icon>")
-        #btnImport!.addClass("toolbar_icon")
-        #btnImport!.setToolTipText("Import tasks")
-        #btnImport!.setAttribute("expanse", "xs")
-
-        #btnReload! = #winToolBar!.addButton("<html><dwc-icon pool='tabler' name='reload'></dwc-icon>")
-        #btnReload!.addClass("toolbar_icon icon_reload")
-        #btnReload!.setToolTipText("Reload")
-        #btnReload!.setAttribute("expanse", "xs")
-
-        REM Set callbacks for the UI controls
         #btnAddTaskFAB!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onAddTask")
-        #btnAddTask!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onAddTask")
-        #btnSettings!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onShowSettings")
-        #btnReload!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onReload")
-
-        #btnImport!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onImport")
-        #btnExport!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onExport")
-
-        REM TASK CARD VIEW: completed tasks callback
-        #btnShowCompletedTasks!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onShowCompletedTasks")
 
         #displayTasks()
         #winMain!.setVisible(1)
+    methodend
+    
+    REM /**
+    REM  * Creates the winTitle window with the date and day labels.
+    REM  * @return The BBjChildWindow that holds the title elements. 
+    REM  */
+    method public BBjChildWindow createWinTitle()
+        winTitle! = #winMain!.addChildWindow("Title", $00108800$, #sysgui!.getAvailableContext())
+        winTitle!.addClass("winTitle")
+        #labelDay! = winTitle!.addStaticText("Today", $4000$)
+        #labelDay!.addClass("labelDay")
+        #labelDate! = winTitle!.addStaticText(date(0:"%Dl, %Ml %D"), $4000$)
+        #labelDate!.addClass("labelDate")
+        
+        methodret winTitle!
+    methodend
+    
+    REM /**
+    REM  * Creates the toolbar window "winToolBar" with various buttons.
+    REM  * @return The toolbar window, as a BBjChildWindow.
+    REM  */
+    method public BBjChildWindow createWinToolBar()
+        winToolBar! = #winMain!.addChildWindow("ToolBar", $00108800$, #sysgui!.getAvailableContext())
+        winToolBar!.addClass("winToolBar")
+        
+        btnAddTask! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='plus'></dwc-icon>")
+        btnAddTask!.addClass("toolbar_icon")
+        btnAddTask!.setToolTipText("Add Task")
+        btnAddTask!.setAttribute("expanse", "xs")
+        btnAddTask!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onAddTask")
+                 
+        btnShowCompletedTasks! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='checks'></dwc-icon>")
+        btnShowCompletedTasks!.addClass("toolbar_icon icon-completed")
+        btnShowCompletedTasks!.setToolTipText("Completed Tasks")
+        btnShowCompletedTasks!.setAttribute("expanse", "xs")
+        btnShowCompletedTasks!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onShowCompletedTasks")
+                
+        btnSettings! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='settings'></dwc-icon>")
+        btnSettings!.addClass("toolbar_icon")
+        btnSettings!.setToolTipText("Settings")
+        btnSettings!.setAttribute("expanse", "xs")
+        btnSettings!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onShowSettings")
+
+        btnExport! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='file-download'></dwc-icon>")
+        btnExport!.addClass("toolbar_icon")
+        btnExport!.setToolTipText("Export tasks")
+        btnExport!.setAttribute("expanse", "xs")
+        btnExport!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onExport")
+
+        btnImport! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='file-upload'></dwc-icon>")
+        btnImport!.addClass("toolbar_icon")
+        btnImport!.setToolTipText("Import tasks")
+        btnImport!.setAttribute("expanse", "xs")
+        btnImport!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onImport")
+
+        btnReload! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='reload'></dwc-icon>")
+        btnReload!.addClass("toolbar_icon icon_reload")
+        btnReload!.setToolTipText("Reload")
+        btnReload!.setAttribute("expanse", "xs")
+        btnReload!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onReload")
+                
+        methodret winToolBar!
     methodend
 
     REM /**
@@ -743,9 +746,10 @@ REM             created! = task!.getCreated()
     REM  * @param e!        The BBjButtonPushEvent that causes this method to be executed
     REM  */
     method public void onShowCompletedTasks(BBjButtonPushEvent e!)
+        btnShowCompletedTasks! = e!.getControl()
+        btnShowCompletedTasks!.toggleClass("icon-completed-selected")
         if (#taskView! = "incomplete") then
             #taskView! = "complete"
-            #btnShowCompletedTasks!.addClass("icon-completed-selected")
 REM             #winTaskCardIncomplete!.setVisible(0)
 REM             #btnIncompleteView!.removeClass("view-btn-selected")
 REM             #winTaskCardPriority!.setVisible(0)
@@ -757,7 +761,6 @@ REM             #labelDay!.setText("Completed Tasks")
 REM             #btnIncompleteView!.removeClass("view-btn-selected")
         else
             #taskView! = "incomplete"
-            #btnShowCompletedTasks!.removeClass("icon-completed-selected")
 REM             #winTaskCardIncomplete!.setVisible(1)
             #winTaskCardComplete!.setVisible(0)
 REM             #labelDay!.setText("Today")

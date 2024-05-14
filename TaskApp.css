@@ -375,6 +375,12 @@ dwc-checkbox.hydrated {
     color: var(--dwc-color-white);
 }
 
+.icon-completed-selected dwc-icon {
+    opacity: 1.0;
+    color: green;
+}
+
+
 
 /* FAB (Floating Action Button) to add a task       */
 /* ================================================ */
