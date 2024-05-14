@@ -910,8 +910,6 @@ REM     methodend
     REM  * It ensures that the CSS property is properly formatted, then builds a CSS
     REM  * string from the iformation and adds it to the DOM, thus overriding any
     REM  * previous setting
-    REM  *
-    REM  * BBjListChangeEvent e!    The BBjListButton's ON_LIST_CHANGE event
     REM  */
     method public void setCssProperty(BBjString property!, BBjString value!)
         REM Sanitize the property by ensuring that it starts with '--' and changing all spaces to dashes
