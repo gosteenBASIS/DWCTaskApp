@@ -3,7 +3,7 @@ REM  * TaskView.bbj
 REM  * @author gosteen
 REM  *C:\Users\gosteen\eclipse\workspaces\bbj-workspace\TaskApp\TaskView.bbj
 REM  */
-rem package TaskApp
+REM package TaskApp
 
 class public TaskView
     field public    Task            task!
@@ -40,10 +40,10 @@ class public TaskView
         #setPriorityFlag()
     methodend
 
-    rem /**
-    rem  * Refresh the TaskView with the latest information from its Task object.
-    rem  * This is called from the TaskApp class when a TASK_UPDATE event is posted.
-    rem  */
+    REM /**
+    REM  * Refresh the TaskView with the latest information from its Task object.
+    REM  * This is called from the TaskApp class when a TASK_UPDATE event is posted.
+    REM  */
     method public void refresh()
         if (#task!.getDeleted()) then
             #setVisible(0)
@@ -67,19 +67,19 @@ class public TaskView
         endif
     methodend
 
-    rem /**
-    rem  * Sets the visibility of the ChildWindow of the TaskView
-    rem  * Calls setVisible on #win!
-    rem  *
-    rem  * @param visible!   BBjNumber acting as a boolean specifying the visibility
-    rem  */
+    REM /**
+    REM  * Sets the visibility of the ChildWindow of the TaskView
+    REM  * Calls setVisible on #win!
+    REM  *
+    REM  * @param visible!   BBjNumber acting as a boolean specifying the visibility
+    REM  */
     method public void setVisible(BBjNumber visible!)
         #win!.setVisible(visible!)
     methodend
 
-    rem /**
-    rem  * Removes the style classes for all possible statuses.
-    rem  */
+    REM /**
+    REM  * Removes the style classes for all possible statuses.
+    REM  */
     method public void clearStyles()
         #win!.removeClass("complete incomplete")
         #win!.removeClass("status-complete")
@@ -105,10 +105,10 @@ class public TaskView
         #due!.setToolTipText("Due " + formattedDueDate!)
     methodend
 
-    rem /**
-    rem  * - Adds a priority flag icon which represents the task's priority level
-    rem  * - Icon is set to BBjStaticText #priorityFlag!
-    rem  */
+    REM /**
+    REM  * - Adds a priority flag icon which represents the task's priority level
+    REM  * - Icon is set to BBjStaticText #priorityFlag!
+    REM  */
     method public void setPriorityFlag()
         flagText! = "Priority " + STR(#task!.getPriority())
         #priorityFlag!.removeClass("priority-1 priority-2 priority-3 priority-4 priority-5 priority-0")
@@ -116,11 +116,11 @@ class public TaskView
         #priorityFlag!.setToolTipText(flagText!)
     methodend
 
-    rem /**
-    rem  * - Creates a BBjPopupMenu that contains flag icons representing every priority level except for
-    rem  * the task's priority level
-    rem  * - Adds a call back which triggers the #changePriority() method when a new priority flag is selected
-    rem  */
+    REM /**
+    REM  * - Creates a BBjPopupMenu that contains flag icons representing every priority level except for
+    REM  * the task's priority level
+    REM  * - Adds a call back which triggers the #changePriority() method when a new priority flag is selected
+    REM  */
     method public void createPopupMenu()
         #flagPopupMenu! = #sysgui!.addPopupMenu()
         
@@ -140,11 +140,11 @@ class public TaskView
         #flagPopupMenu!.show(event!.getControl(), 0, 0)
     methodend
 
-    rem /**
-    rem  * - Changes task priority level to priority level selected from the #flagPopupMenu!
-    rem  *
-    rem  * @param e!      The BBjPopupSelectEvent that causes this method to be executed
-    rem  */
+    REM /**
+    REM  * - Changes task priority level to priority level selected from the #flagPopupMenu!
+    REM  *
+    REM  * @param e!      The BBjPopupSelectEvent that causes this method to be executed
+    REM  */
     method public void changePriority(BBjPopupSelectEvent e!)
         newPriority! = ABS(e!.getMenuItem().getID())
 

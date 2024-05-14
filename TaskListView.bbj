@@ -18,20 +18,20 @@ class public TaskListView extends TaskView
     methodend
 
 
-    rem /**
-    rem  * Refresh the TaskListView with the latest information from its Task object.
-    rem  * This is called from the TaskApp class when a TASK_UPDATE event is posted.
-    rem  */
+    REM /**
+    REM  * Refresh the TaskListView with the latest information from its Task object.
+    REM  * This is called from the TaskApp class when a TASK_UPDATE event is posted.
+    REM  */
     method public void refresh()
         #super!.refresh()
         #checkbox!.setSelected(#task!.getComplete())
     methodend
 
-    rem /**
-    rem  * Method to run when a task's checkbox is changed
-    rem  *
-    rem  * @param e!    A BBjCheckChangeEvent
-    rem  */
+    REM /**
+    REM  * Method to run when a task's checkbox is changed
+    REM  *
+    REM  * @param e!    A BBjCheckChangeEvent
+    REM  */
     method public void onTaskCheck(BBjCheckChangeEvent e!)
         #clearStyles()
         if (#task!.getComplete()) then

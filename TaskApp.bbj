@@ -1,9 +1,9 @@
-rem /**
-rem  * TaskApp.bbj
-rem  * @author gosteen, ndecker
-rem  *
-rem  */
-rem package TaskApp
+REM /**
+REM  * TaskApp.bbj
+REM  * @author gosteen, ndecker
+REM  *
+REM  */
+REM package TaskApp
 
 
 declare auto TaskApp app!
@@ -12,19 +12,19 @@ app!.run()
 end
 
 
-rem /**
-rem  * A DWC-specific task manager BBj program.
-rem  *
-rem  * The TaskApp program was designed to a be part of a tutorial series that covers
-rem  * how to write a graphical web-based application in BBj. It's designed to run
-rem  * in the BASIS Dynamic Web Client (DWC), and takes advantage of several DWC
-rem  * features including light/dark theme support, responsive design, and making
-rem  * use of 3rd-party web components.
-rem  */
+REM /**
+REM  * A DWC-specific task manager BBj program.
+REM  *
+REM  * The TaskApp program was designed to a be part of a tutorial series that covers
+REM  * how to write a graphical web-based application in BBj. It's designed to run
+REM  * in the BASIS Dynamic Web Client (DWC), and takes advantage of several DWC
+REM  * features including light/dark theme support, responsive design, and making
+REM  * use of 3rd-party web components.
+REM  */
 class public TaskApp
 
-    rem Protected Fields
-    rem ========================================
+    REM Protected Fields
+    REM ========================================
     field protected BBjSysGui           sysgui!
     field protected BBjWebManager       webManager!
     field protected BBjTopLevelWindow   winMain!
@@ -45,7 +45,7 @@ class public TaskApp
     field protected BBjStaticText       labelDate!
     field protected BBjVector           vectTaskLists! = BBjAPI().makeVector()
 
-    rem NavBar and ToolBar controls
+    REM NavBar and ToolBar controls
     field protected BBjButton           btnAddTaskFAB!
     field protected BBjButton           btnAddTask!
     field protected BBjButton           btnSettings!
@@ -56,7 +56,7 @@ class public TaskApp
     field protected BBjButton           btnShowCompletedTasks!
     field protected BBjRadioButton      switchLayout!
 
-    rem Misc Data
+    REM Misc Data
     field protected BBjString           appName! = "TaskApp"
     field protected BBjString           version! = "0.07"
     field protected BBjString           appPath! = dsk("") + dir("")
@@ -69,66 +69,66 @@ class public TaskApp
     field public    BBjButton           btnDueView!
     field public    BBjNumber           displayType! = 2
 
-    rem Some sort of list of tasks.
-    rem ========================================
-    rem It could be a BBjVector or BBjArray of tasks.
-    rem It could also be a Java Collection class like:
-    rem     Set     https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Set.html
-    rem     List    https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html
-    rem     Map     https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html
-    rem /**
-    rem  * A collection of Task objects in a Java TreeMap
-    rem  * Key:   UUID of the Task
-    rem  * Value: Task object
-    rem  * @see <a href='https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/TreeMap.html' target='_blank'>TreeMap</a> documentation
-    rem  */
+    REM Some sort of list of tasks.
+    REM ========================================
+    REM It could be a BBjVector or BBjArray of tasks.
+    REM It could also be a Java Collection class like:
+    REM     Set     https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Set.html
+    REM     List    https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html
+    REM     Map     https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html
+    REM /**
+    REM  * A collection of Task objects in a Java TreeMap
+    REM  * Key:   UUID of the Task
+    REM  * Value: Task object
+    REM  * @see <a href='https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/TreeMap.html' target='_blank'>TreeMap</a> documentation
+    REM  */
     field protected TreeMap tasks!
     field protected TreeMap taskViews!
     field protected TreeMap taskPriorityViews!
     field protected TreeMap taskDueDateViews!
 
-    rem Constants
-    rem ========================================
-    rem /** A constant value that's used to set the TaskApp's theme to the DWC's light theme */
+    REM Constants
+    REM ========================================
+    REM /** A constant value that's used to set the TaskApp's theme to the DWC's light theme */
     method public static BBjString THEME_LIGHT()
         methodret "light"
     methodend
-    rem /** A constant value that's used to set the TaskApp's theme to the DWC's dark theme */
+    REM /** A constant value that's used to set the TaskApp's theme to the DWC's dark theme */
     method public static BBjString THEME_DARK()
         methodret "dark"
     methodend
-    rem /** A constant value that's used to set the TaskApp's theme to the DWC's system theme,
-    rem  * meaning that it follows the operating system's configuration.  For example, when the
-    rem  * user's device switches to its dark theme, then the app will also switch its theme
-    rem  * to the DWC's dark theme. */
+    REM /** A constant value that's used to set the TaskApp's theme to the DWC's system theme,
+    REM  * meaning that it follows the operating system's configuration.  For example, when the
+    REM  * user's device switches to its dark theme, then the app will also switch its theme
+    REM  * to the DWC's dark theme. */
     method public static BBjString THEME_SYSTEM()
         methodret "system"
     methodend
 
-    rem Define the user preferences which will be stored in a HashMap and saved out as a cookie
-    rem ========================================
-    rem /** The hashmap that stores all the user's preferences */
+    REM Define the user preferences which will be stored in a HashMap and saved out as a cookie
+    REM ========================================
+    REM /** The hashmap that stores all the user's preferences */
     field private HashMap hashPrefs!
-    rem /** The user's preferred DWC theme to use for the UI, i.e. light, dark, dark-pure, or system */
+    REM /** The user's preferred DWC theme to use for the UI, i.e. light, dark, dark-pure, or system */
     field protected BBjString prefsTheme! = #THEME_SYSTEM()
-    rem /** The user's preferred font family (CSS: font-family)for the tasks */
+    REM /** The user's preferred font family (CSS: font-family)for the tasks */
     field protected BBjString prefsTaskFontFamily! = "Rambla"
-    rem /** The user's preferred font weight (CSS: font-weight)for the tasks */
+    REM /** The user's preferred font weight (CSS: font-weight)for the tasks */
     field protected BBjString prefsTaskFontWeight! = "var(--dwc-font-weight-semibold)"
-    rem /** The user's preferred font size for the tasks.
+    REM /** The user's preferred font size for the tasks.
     field protected BBjString prefsTaskFontSize! = "var(--dwc-font-size-m)"
-    rem /** The user's preferred font letter spacing (CSS: letter-spacing) for the tasks.  This will usually be 'normal', but can be a length as in '0.5px'. */
+    REM /** The user's preferred font letter spacing (CSS: letter-spacing) for the tasks.  This will usually be 'normal', but can be a length as in '0.5px'. */
     field protected BBjString prefsTaskFontSpacing! = "normal"
-    rem /** The user's preferred font weight for the tasks */
+    REM /** The user's preferred font weight for the tasks */
     field protected BBjNumber prefsDefaultTaskPriority! = 3
-    rem /** The TaskApp's version, used for display purposes only */
+    REM /** The TaskApp's version, used for display purposes only */
     field protected BBjString prefsVersion! = #version!
 
 
-    rem Constructors
-    rem ========================================
+    REM Constructors
+    REM ========================================
     method public TaskApp()
-        rem Instatiate the WebManager and use it to inject the app's CSS
+        REM Instatiate the WebManager and use it to inject the app's CSS
         #webManager! = BBjAPI().getWebManager()
         css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(#appPath!+"TaskApp.css"))
         #webManager!.injectStyle(css!, 0, "name=taskapp_css")
@@ -140,39 +140,39 @@ class public TaskApp
         #webManager!.injectStyle(css!, 0, "name=taskapp_card_view_css")
         css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(#appPath!+"Settings.css"))
         #webManager!.injectStyle(css!, 0, "name=taskapp_settings_css")
-        rem ' set legacy BBj className values when running in DWC.
+        REM ' set legacy BBj className values when running in DWC.
         if info(3,6)="6" then
             bbjapi().getWebManager().setAttribute("dwc.class","true")
         endif
 
-        rem Set the app's icon in the browser's tab
+        REM Set the app's icon in the browser's tab
         url! = "https://public.basis.cloud/images/DWCTaskApp.svg"
         attrib! = "rel=icon,type=image/svg,id=dwc_taskapp_icon"
         #webManager!.injectLinkUrl(url!, 1, attrib!, err=*NEXT)
 
-        rem Inject links for a number of custom Google fonts
+        REM Inject links for a number of custom Google fonts
         fontFamily! = "?family=Asap&family=Bebas+Neue&family=Fira+Sans&family=Fredoka:wght@300..700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Marcellus+SC&family=Marko+One&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Oswald:wght@200..700&family=Rambla:ital,wght@0,400;0,700;1,400;1,700&family=Signika:wght@300;400&family=Teko:wght@300..700&family=Ubuntu&family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Work+Sans"
         fontFamily! = fontFamily! + "&family=K2D:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800"
         #webManager!.injectLinkUrl("https://fonts.googleapis.com", 1, "rel=preconnect")
         #webManager!.injectLinkUrl("https://fonts.gstatic.com", 1, "crossorigin")
         #webManager!.injectLinkUrl("https://fonts.googleapis.com/css2?" + fontFamily!, 1, "rel=stylesheet,display=swap")
 
-        rem Create a list of font families filled with Google fonts that the user will be able to choose from to style the tasks
+        REM Create a list of font families filled with Google fonts that the user will be able to choose from to style the tasks
         DATA "Marcellus SC", "Marko One", "Merriweather", "Oswald", "Rambla", "Signika", "Teko", "Ubuntu", "Ubuntu Mono", "Work Sans", "Asap", "K2D", "Bebas Neue", "Fira Sans", "Fredoka",  "Lato"
         while 1
             DREAD family$,err=*BREAK
             #vectFontFamilies!.addItem(family$)
         wend
-        rem Sort the vector of fonts alphabetically by name
+        REM Sort the vector of fonts alphabetically by name
         java.util.Collections.sort(#vectFontFamilies!)
 
-        rem Create the collection for the tasks
+        REM Create the collection for the tasks
         #tasks! = new TreeMap()
         #taskViews! = new TreeMap()
         #taskPriorityViews! = new TreeMap()
         #taskDueDateViews! = new TreeMap()
 
-        rem Create the HashMap to store the user preferences and load it up with the default values
+        REM Create the HashMap to store the user preferences and load it up with the default values
         #hashPrefs! = new HashMap()
         #hashPrefs!.put("prefsTheme", #prefsTheme!)
         #hashPrefs!.put("prefsTaskFontFamily", #prefsTaskFontFamily!)
@@ -183,8 +183,8 @@ class public TaskApp
         #hashPrefs!.put("prefsVersion", #prefsVersion!)
 
 
-        rem Read the user's preferences from a cookie, then apply all saved values to the HashMap of user preferences
-        rem This means that the HashMap is initially filled with default values, but then the user's saved preferences replace the defaults
+        REM Read the user's preferences from a cookie, then apply all saved values to the HashMap of user preferences
+        REM This means that the HashMap is initially filled with default values, but then the user's saved preferences replace the defaults
         hashPrefsFromCookie! = #getCookies(#appName!,err=*NEXT)
         if (hashPrefsFromCookie! <> null()) then
             it! = hashPrefsFromCookie!.keySet().iterator()
@@ -197,7 +197,7 @@ class public TaskApp
             wend
         endif
 
-        rem Get the updated preferences from the HashMap and apply the values to our field variables
+        REM Get the updated preferences from the HashMap and apply the values to our field variables
         #prefsTheme! = #hashPrefs!.get("prefsTheme").toString()
         #prefsTaskFontFamily! = #hashPrefs!.get("prefsTaskFontFamily").toString()
         #prefsTaskFontWeight! = #hashPrefs!.get("prefsTaskFontWeight").toString()
@@ -205,23 +205,23 @@ class public TaskApp
         #prefsTaskFontSpacing! = #hashPrefs!.get("prefsTaskFontSpacing").toString()
         #prefsDefaultTaskPriority! = num(#hashPrefs!.get("prefsDefaultTaskPriority"))
 
-        rem Finally, apply user preferences
+        REM Finally, apply user preferences
         #webManager!.setTheme(#prefsTheme!, err=*NEXT)
         #setCssProperty("--app-font-family-task", #prefsTaskFontFamily!)
         #setCssProperty("--app-font-weight-task", #prefsTaskFontWeight!)
         #setCssProperty("--app-font-size-task", #prefsTaskFontSize!)
         #setCssProperty("--app-font-spacing-task", #prefsTaskFontSpacing!)
 
-        rem Register for a custom event that the TaskProperties fires after the user is done editing or adding a task
+        REM Register for a custom event that the TaskProperties fires after the user is done editing or adding a task
         BBjAPI().setCustomEventCallback("TASK_UPDATE",#this!,"onTaskUpdate")
     methodend
 
 
-    rem Methods
-    rem ========================================
-    rem /**
-    rem  * Runs the TaskApp application
-    rem  */
+    REM Methods
+    REM ========================================
+    REM /**
+    REM  * Runs the TaskApp application
+    REM  */
     method public void run()
         if (new java.io.File(#appPath!+"tasks.json").exists()) then
             #onImport(null(), err=*next)
@@ -233,25 +233,25 @@ class public TaskApp
             #createSampleTasks(50)
         endif
 
-        rem Create the UI and display the tasks
+        REM Create the UI and display the tasks
         #sysgui! = BBjAPI().openSysGui("X0")
         #createMainWindow()
         process_events
     methodend
 
-    rem /**
-    rem  * Create the main window for the application
-    rem  */
+    REM /**
+    REM  * Create the main window for the application
+    REM  */
     method public void createMainWindow()
         #winMain! = #sysgui!.addWindow("TaskApp", $011C1091$)
         #winMain!.addClass("winMain")
         #winMain!.setIcon(#appPath!+"images/DWCTaskApp.png")
 
-        rem Create the child windows
+        REM Create the child windows
         #winNavBar! = #winMain!.addChildWindow("NavBar", $00108800$, #sysgui!.getAvailableContext())
         #winNavBar!.addClass("winNavBar")
 
-        rem Determine the user's name and initials for the profile display in the NavBar
+        REM Determine the user's name and initials for the profile display in the NavBar
         userName! = System.getProperty("com.basis.jetty.company_name")
         if (userName! = null()) then userName! = "Guest User"
         userInitials! = userName!.toUpperCase().substring(0,2)
@@ -259,14 +259,14 @@ class public TaskApp
         lblUserName!.addClass("nav_item nav_user_name")
         #webManager!.injectStyle(".nav_item.nav_user_name::before { content: '" + userInitials! + "';")
 
-        rem Create a linefeed-delimited list of font families from the vectory to populate the BBjListButton
+        REM Create a linefeed-delimited list of font families from the vectory to populate the BBjListButton
         fontFamiliesList! = java.lang.String.join($0a$, java.util.Arrays.asList(#vectFontFamilies!))
-        rem Modfify each entry in the list so that use uses HTML markup to style the font name to that font family
+        REM Modfify each entry in the list so that use uses HTML markup to style the font name to that font family
         regExSearchFor! = "(?mi)^(.*)$"
         regExReplaceWith! = "<html><span style='font-family:$1;font-weight:var(--app-font-weight-task);font-size:var(--app-font-size-task);letter-spacing:var(--app-font-spacing-task);'>$1</span>"
         fontFamiliesList! = fontFamiliesList!.replaceAll(regExSearchFor!, regExReplaceWith!)
 
-        rem Add the font family listbutton, add some custom classes, and set the callback
+        REM Add the font family listbutton, add some custom classes, and set the callback
         #lstFontFamily! = #winNavBar!.addListButton(fontFamiliesList!)
         #lstFontFamily!.setAttribute("button-height", "2.25em")
         #lstFontFamily!.setAttribute("label", "Font Family")
@@ -274,12 +274,12 @@ class public TaskApp
         #lstFontFamily!.addClass("nav_item nav_fonts")
         #lstFontFamily!.setCallback(BBjControl.ON_LIST_CHANGE, #this!, "onListChangeFontFamilies")
 
-        rem Select the correct font family for the tasks in the BBjListButton
+        REM Select the correct font family for the tasks in the BBjListButton
         if (#vectFontFamilies!.contains(#prefsTaskFontFamily!)) then
-            rem Select the user's preferred font family in the list
+            REM Select the user's preferred font family in the list
             #lstFontFamily!.selectIndex(#vectFontFamilies!.indexOf(#prefsTaskFontFamily!))
         else
-            rem Since the user's preferred font family for the tasks wasn't in the vector, we'll default to the first item in the list
+            REM Since the user's preferred font family for the tasks wasn't in the vector, we'll default to the first item in the list
             #lstFontFamily!.selectIndex(0)
             #setCssProperty("--app-font-task", str(#vectFontFamilies!.getItem(0)))
         endif
@@ -297,11 +297,11 @@ class public TaskApp
         #winTitle! = #winMain!.addChildWindow("Title", $00108800$, #sysgui!.getAvailableContext())
         #winTitle!.addClass("winTitle")
 
-        rem TASK LIST VIEW: main window
+        REM TASK LIST VIEW: main window
         #winTasks! = #winMain!.addChildWindow("Tasks", $00108800$, #sysgui!.getAvailableContext())
         #winTasks!.addClass("winTasks listLayout")
 
-        rem TASK CARD VIEW: main window
+        REM TASK CARD VIEW: main window
         #winTaskCardView! = #winMain!.addChildWindow("Tasks", $00108800$, #sysgui!.getAvailableContext())
         #winTaskCardView!.addClass("winTaskCardView")
         #winTaskCardView!.setVisible(0)
@@ -319,7 +319,7 @@ class public TaskApp
         #labelDate! = #winTitle!.addStaticText(date(0:"%Dl, %Ml %D"), $4000$)
         #labelDate!.addClass("labelDate")
 
-        rem TASK CARD VIEW: buttons
+        REM TASK CARD VIEW: buttons
 REM         #winViews! = #winTitle!.addChildWindow("Title", $00108800$, #sysgui!.getAvailableContext())
 REM         #winViews!.addClass("winViews")
 
@@ -335,7 +335,7 @@ REM         #btnIncompleteView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "
 REM         #btnPriorityView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onPriorityView")
 REM         #btnDueView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onDueView")
 
-        rem Create the FAB (floating action button) and the toolbar buttons
+        REM Create the FAB (floating action button) and the toolbar buttons
         #btnAddTaskFAB! = #winMain!.addButton("<html><dwc-icon pool='tabler' name='plus'></dwc-icon>")
         #btnAddTaskFAB!.addClass("btnAddTaskFAB")
         #btnAddTaskFAB!.setAttribute("theme", "primary")
@@ -343,7 +343,7 @@ REM         #btnDueView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onDueVi
 
         #btnAddTask! = #winToolBar!.addButton("<html><dwc-icon pool='tabler' name='plus'></dwc-icon>")
 
-        rem TASK CARD VIEW: show completed task cards (completed tasks button on toolbar) - Currently only set up for TASK CARD VIEW - should add list view functionality
+        REM TASK CARD VIEW: show completed task cards (completed tasks button on toolbar) - Currently only set up for TASK CARD VIEW - should add list view functionality
         #btnShowCompletedTasks! = #winToolBar!.addButton("<html><dwc-icon pool='tabler' name='checks'></dwc-icon>")
         #btnShowCompletedTasks!.addClass("toolbar_icon icon-completed")
         #btnShowCompletedTasks!.setToolTipText("Completed Tasks")
@@ -375,7 +375,7 @@ REM         #btnAddTask! = #winToolBar!.addButton("<html><bbj-icon pool='tabler'
         #btnReload!.setToolTipText("Reload")
         #btnReload!.setAttribute("expanse", "xs")
 
-        rem Set callbacks for the UI controls
+        REM Set callbacks for the UI controls
         #btnAddTaskFAB!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onAddTask")
         #btnAddTask!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onAddTask")
         #btnSettings!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onShowSettings")
@@ -384,29 +384,29 @@ REM         #btnAddTask! = #winToolBar!.addButton("<html><bbj-icon pool='tabler'
         #btnImport!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onImport")
         #btnExport!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onExport")
 
-        rem TASK CARD VIEW: completed tasks callback
+        REM TASK CARD VIEW: completed tasks callback
         #btnShowCompletedTasks!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onShowCompletedTasks")
 
         #displayTasks()
         #winMain!.setVisible(1)
     methodend
 
-    rem /**
-    rem  * Add a child window to the main window for each task
-    rem  * This will eventually need to be a full-blown task manager, probably
-    rem  */
+    REM /**
+    REM  * Add a child window to the main window for each task
+    REM  * This will eventually need to be a full-blown task manager, probably
+    REM  */
     method public void displayTasks()
         declare auto Task task!
 
-        rem Original code that uses the #tasks object which isn't sorted
-        rem it! = #tasks!.values().iterator()
+        REM Original code that uses the #tasks object which isn't sorted
+        REM it! = #tasks!.values().iterator()
 
-        rem New code that gets a sorted TreeMap of the tasks
+        REM New code that gets a sorted TreeMap of the tasks
         #labelDate!.setText("<html>" + date(0:"%Dl, %Ml %D") + $0A$ + "<span style='font-size:50%;'>Tasks Sorted by Priority")
         orderedTasks! = #getSortedTasks("priority")
         it! = orderedTasks!.values().iterator()
 
-        rem TASK LIST VIEW: task loop
+        REM TASK LIST VIEW: task loop
         while it!.hasNext()
             task! = it!.next()
             view! = #addTaskListView(task!)
@@ -419,18 +419,18 @@ REM                 view!.setVisible(0)
         wend
     methodend
 
-    rem /**
-    rem  * Returns a sorted TreeMap that's similar to the #tasks! TreeMap, except
-    rem  * that its key is the priority+dueDate+Uuid (when sorted by priority),
-    rem  * or dueDate+priority+Uuid (when sorted by date).  We're concatenating
-    rem  * the three fields and letting the TreeMap object sort the tasks for us
-    rem  * based on the constructed key.  This new TreeMap still contains the task
-    rem  * objects in the value, so it can be used to fill the task list view in
-    rem  * a sorted manner.
+    REM /**
+    REM  * Returns a sorted TreeMap that's similar to the #tasks! TreeMap, except
+    REM  * that its key is the priority+dueDate+Uuid (when sorted by priority),
+    REM  * or dueDate+priority+Uuid (when sorted by date).  We're concatenating
+    REM  * the three fields and letting the TreeMap object sort the tasks for us
+    REM  * based on the constructed key.  This new TreeMap still contains the task
+    REM  * objects in the value, so it can be used to fill the task list view in
+    REM  * a sorted manner.
     REM  *
     REM  * @param BBjString sortType!       The desired sorting type for the returned TreeMap.  Values can be "priority" or "date"
     REM  * @return TreeMap                  A TreeMap where the values are the tasks objects and the key is based on the sorting type
-    rem  */
+    REM  */
     method public TreeMap getSortedTasks(BBjString sortType!)
         sortedTasks! = new TreeMap()
 
@@ -439,7 +439,7 @@ REM                 view!.setVisible(0)
             uuid! = it!.next()
             task! = #tasks!.get(uuid!)
 
-            rem If the task's priority is 0, meaning that it's unset, then we'll use priority 9 so that it appears at the end of the sorted list
+            REM If the task's priority is 0, meaning that it's unset, then we'll use priority 9 so that it appears at the end of the sorted list
             priority! = task!.getPriority()
 
             dueDate! = task!.getDueDate()
@@ -448,18 +448,18 @@ REM             created! = task!.getCreated()
             if (dueDate! > -1) then
                 taskDate! = date(dueDate!:"%Yl-%Mz-%Dz")
             else
-                rem If the due date isn't set, then we'll push it into the distant future for correct sorting
+                REM If the due date isn't set, then we'll push it into the distant future for correct sorting
                 taskDate! = "none"
             endif
 
-            rem This determines the sort order, which is based on the provide parameter
+            REM This determines the sort order, which is based on the provide parameter
             if (sortType!.toLowerCase().trim().contains("date")) then
-                rem Sort by the task's due date
-                rem The TreeMap's key will be comprised of the date, then the priority, then the UUID
+                REM Sort by the task's due date
+                REM The TreeMap's key will be comprised of the date, then the priority, then the UUID
                 key! = taskDate! + str(priority!) + uuid!
             else
-                rem Sort by the task's priority
-                rem The TreeMap's key will be comprised of the priority, then the date, then the UUID
+                REM Sort by the task's priority
+                REM The TreeMap's key will be comprised of the priority, then the date, then the UUID
                 key! = str(priority!) + taskDate! + uuid!
             endif
 
@@ -468,9 +468,9 @@ REM             created! = task!.getCreated()
         methodret sortedTasks!
     methodend
 
-    rem /**
-    rem  * Adds a TaskCardView for the given Task, and returns the TaskCardView
-    rem  */
+    REM /**
+    REM  * Adds a TaskCardView for the given Task, and returns the TaskCardView
+    REM  */
     method public TaskCardView addTaskCardView(Task task!)
         if (task!.getComplete()) then
             view! = new TaskCardView(#winTaskCardComplete!, task!)
@@ -483,20 +483,20 @@ REM             created! = task!.getCreated()
         methodret view!
     methodend
 
-    rem /**
-    rem  * Add a Task List Window
-    rem  */
+    REM /**
+    REM  * Add a Task List Window
+    REM  */
     method public BBjChildWindow addTaskList(BBjString name!)
         taskList! = #winTasks!.addChildWindow(name!, $00108800$, #sysgui!.getAvailableContext())
-        rem Probably remove winTasks, just use taskList
+        REM Probably remove winTasks, just use taskList
         taskList!.addClass("taskList fadeIn")
         #vectTaskLists!.addItem(taskList!)
         methodret taskList!
     methodend
 
-    rem /**
-    rem  * Adds a TaskListView for the given Task, and returns the TaskListView
-    rem  */
+    REM /**
+    REM  * Adds a TaskListView for the given Task, and returns the TaskListView
+    REM  */
     method public TaskListView addTaskListView(Task t!)
         index = 0
         taskList! = #vectTaskLists!.getItem(index)
@@ -507,14 +507,14 @@ REM             created! = task!.getCreated()
         methodret view!
     methodend
 
-    rem /**
-    rem  * Open an edit window to edit or create a new task
-    rem  *
-    rem  * @param e!    A BBjClickEvent
-    rem  */
+    REM /**
+    REM  * Open an edit window to edit or create a new task
+    REM  *
+    REM  * @param e!    A BBjClickEvent
+    REM  */
     method public void onTaskClick(BBjClickEvent e!)
-        rem Only open window if it doesn't exist, this should be a field variable
-        rem We're not using the click event as a click; it could be more efficient to pass a more useful object
+        REM Only open window if it doesn't exist, this should be a field variable
+        REM We're not using the click event as a click; it could be more efficient to pass a more useful object
         declare auto Task t!
         if (#taskProperties! = null()) then
             #taskProperties! = new TaskProperties()
@@ -522,7 +522,7 @@ REM             created! = task!.getCreated()
         t! = #tasks!.get(e!.getControl().getAttribute("id"))
         #taskProperties!.loadTask(t!)
 
-        rem TASK CARD VIEW: onTaskClick method
+        REM TASK CARD VIEW: onTaskClick method
         win! = e!.getControl()
         lock! = "<html><dwc-icon pool='tabler' name='lock' style='width: 30px; height: 30px'></dwc-icon>"
         lockOpen! = "<html><dwc-icon pool='tabler' name='lock-open' style='width: 30px; height: 30px'></dwc-icon>"
@@ -559,11 +559,11 @@ REM             created! = task!.getCreated()
 
     methodend
 
-    rem /**
-    rem  * Creates sample tasks to use for a demo
-    rem  *
-    rem  * @param numTasks! The number of sample tasks to create
-    rem  */
+    REM /**
+    REM  * Creates sample tasks to use for a demo
+    REM  *
+    REM  * @param numTasks! The number of sample tasks to create
+    REM  */
     method public void createSampleTasks(BBjNumber numTasks!)
         declare auto BBjString  taskName!
         declare auto Task       task!
@@ -573,46 +573,46 @@ REM             created! = task!.getCreated()
             task! = new Task()
             task!.setTitle(taskName!)
             if (mod(i,2) = 0) then
-                rem Set due date for even-numbered tasks
+                REM Set due date for even-numbered tasks
                 task!.setDueDate(jul(date(0)))
             endif
             #addTask(task!)
         next i
     methodend
 
-    rem /**
-    rem  * Adds a Task to the tasklist (the app's collection of Task objects)
-    rem  *
-    rem  * @param task!     The Task object
-    rem  */
+    REM /**
+    REM  * Adds a Task to the tasklist (the app's collection of Task objects)
+    REM  *
+    REM  * @param task!     The Task object
+    REM  */
     method public void addTask(Task task!)
         uuid! = task!.getUuid()
         #tasks!.put(uuid!, task!)
     methodend
 
-    rem /**
-    rem  * Returns the Task with the given UUID from the TreeMap of tasks.
-    rem  */
+    REM /**
+    REM  * Returns the Task with the given UUID from the TreeMap of tasks.
+    REM  */
     method public Task getTask(BBjString uuid!)
         methodret cast(Task, #tasks!.get(uuid!))
     methodend
 
-    rem /**
-    rem  * Toggles the layout type for the tasks, alternating betweeen a list (default) and card layout
-    rem  */
+    REM /**
+    REM  * Toggles the layout type for the tasks, alternating betweeen a list (default) and card layout
+    REM  */
     method public void OnSwitchChangeLayout(BBjCheckChangeEvent event!)
-    rem toggles visibility for both view windows
+    REM toggles visibility for both view windows
         #winTasks!.setVisible(!#winTasks!.isVisible())
         #winTaskCardView!.setVisible(!#winTaskCardView!.isVisible())
         methodret
     methodend
 
-    rem /**
-    rem  * Activated by custom event TASK_UPDATE
-    rem  * This method handles any UI or data updates that may be necessary when a Task is modified.
-    rem  *
-    rem  * @param event!    A BBjCustomEvent that has a Task Object as a payload.
-    rem  */
+    REM /**
+    REM  * Activated by custom event TASK_UPDATE
+    REM  * This method handles any UI or data updates that may be necessary when a Task is modified.
+    REM  *
+    REM  * @param event!    A BBjCustomEvent that has a Task Object as a payload.
+    REM  */
     method public void onTaskUpdate(BBjCustomEvent event!)
         declare auto TaskListView view!
         declare auto Task t!
@@ -620,7 +620,7 @@ REM             created! = task!.getCreated()
         uuid! = task!.getUuid()
         
         Utils.consoleLog("IN ON task update")
-        rem If the UUID is not present in #tasks!, this is a new Task to be added.
+        REM If the UUID is not present in #tasks!, this is a new Task to be added.
         if (#tasks!.containsKey(uuid!) = 0) then
             #addTask(task!)
             #addTaskListView(task!)
@@ -638,16 +638,16 @@ REM             created! = task!.getCreated()
             #removeTask(task!)
         endif
 
-        rem Automatically export every time a task is updated
+        REM Automatically export every time a task is updated
         #onExport(null())
 
-        rem TASK CARD VIEW: onTaskUpdate method
+        REM TASK CARD VIEW: onTaskUpdate method
         declare auto TaskCardView view!
         declare auto Task t!
         task! = event!.getObject()
         uuid! = task!.getUuid()
-        rem check if dirty
-        rem check if task is in list
+        REM check if dirty
+        REM check if task is in list
         if (#tasks!.containsKey(uuid!) = 0) then
             #addTask(task!)
             #addTaskCardView(task!)
@@ -665,35 +665,35 @@ REM             created! = task!.getCreated()
                 viewDueDate!.refresh()
             endif
         endif
-        rem Automatically export every time you save
+        REM Automatically export every time you save
         #onExport(null())
     methodend
 
-    rem /**
-    rem  * Removes a Task from the tasklist by specifying the tasks's ID
-    rem  *
-    rem  * @param id        The task's unique ID
-    rem  */
+    REM /**
+    REM  * Removes a Task from the tasklist by specifying the tasks's ID
+    REM  *
+    REM  * @param id        The task's unique ID
+    REM  */
     method public void removeTask(BBjString uuid!)
         #tasks!.remove(uuid!)
         #taskViews!.remove(uuid!)
     methodend
 
-    rem /**
-    rem  * Removes a Task from the tasklist by specifying the tasks object
-    rem  *
-    rem  * @param task!     The Task object
-    rem  */
+    REM /**
+    REM  * Removes a Task from the tasklist by specifying the tasks object
+    REM  *
+    REM  * @param task!     The Task object
+    REM  */
     method public void removeTask(Task task!)
         #tasks!.remove(task!.getUuid())
         #taskViews!.remove(task!.getUuid())
     methodend
 
-    rem /**
-    rem  * Displays the app's settings window
-    rem  *
-    rem  * @param e!        The BBjButtonPushEvent that causes this method to be executed
-    rem  */
+    REM /**
+    REM  * Displays the app's settings window
+    REM  *
+    REM  * @param e!        The BBjButtonPushEvent that causes this method to be executed
+    REM  */
     method public void onShowSettings(BBjButtonPushEvent e!)
         if (#settings! = null()) then
             #settings! = new Settings()
@@ -701,31 +701,31 @@ REM             created! = task!.getCreated()
         #settings!.onShowSettings(#hashPrefs!)
     methodend
 
-    rem /**
-    rem  * Reloads the application at the push of a button, which is typically only useful in development mode
-    rem  * <p>
-    rem  * The code creates a BBjBuiUrlCloseAction object to load the app's URL.  That way, the app can
-    rem  * do a RELEASE which causes the same app to be loaded and executed again.
-    rem  *
-    rem  * @param e!        The BBjButtonPushEvent that causes this method to be executed
-    rem  */
+    REM /**
+    REM  * Reloads the application at the push of a button, which is typically only useful in development mode
+    REM  * <p>
+    REM  * The code creates a BBjBuiUrlCloseAction object to load the app's URL.  That way, the app can
+    REM  * do a RELEASE which causes the same app to be loaded and executed again.
+    REM  *
+    REM  * @param e!        The BBjButtonPushEvent that causes this method to be executed
+    REM  */
     method public void onReload(BBjButtonPushEvent e!)
         action! = #webManager!.urlAction(#webManager!.getUrl())
         #webManager!.setEndAction(action!)
         release
     methodend
 
-    rem /**
-    rem  * Adds a new Task object by
+    REM /**
+    REM  * Adds a new Task object by
     REM  *  - creating a new Task object
     REM  *  - displaying the Task's property sheet to the user for customization
-    rem  *
-    rem  * @param e!        The BBjButtonPushEvent that causes this method to be executed
-    rem  */
+    REM  *
+    REM  * @param e!        The BBjButtonPushEvent that causes this method to be executed
+    REM  */
     method public void onAddTask(BBjButtonPushEvent e!)
-        rem create a new task
+        REM create a new task
         task! = new Task()
-        rem open the edit window on that task
+        REM open the edit window on that task
         if (#taskProperties! = null()) then
             #taskProperties! = new TaskProperties()
         endif
@@ -733,15 +733,15 @@ REM             created! = task!.getCreated()
     methodend
 
 
-    rem TASK CARD VIEW: different viewing methods
-    rem /**
-    rem  * - Toggles visibility of #winTaskCardComplete! which contains all complete task child windows
-    rem  * - When toggle is off, displays #winTaskCardIncomplete! which contains all incomplete task child windows
-    rem  * - Toggles all related classes
-    rem  * - Triggered by #btnCompleteView!
-    rem  *
-    rem  * @param e!        The BBjButtonPushEvent that causes this method to be executed
-    rem  */
+    REM TASK CARD VIEW: different viewing methods
+    REM /**
+    REM  * - Toggles visibility of #winTaskCardComplete! which contains all complete task child windows
+    REM  * - When toggle is off, displays #winTaskCardIncomplete! which contains all incomplete task child windows
+    REM  * - Toggles all related classes
+    REM  * - Triggered by #btnCompleteView!
+    REM  *
+    REM  * @param e!        The BBjButtonPushEvent that causes this method to be executed
+    REM  */
     method public void onShowCompletedTasks(BBjButtonPushEvent e!)
         if (#taskView! = "incomplete") then
             #taskView! = "complete"
@@ -765,13 +765,13 @@ REM             #btnIncompleteView!.addClass("view-btn-selected")
         endif
     methodend
 
-rem /**
-    rem  * - Toggles visibility of #winTaskCardIncomplete which contains all incomplete task child windows
-    rem  * - Toggles all related classes
-    rem  * - Triggered by #btnIncompleteView!
-    rem  *
-    rem  * @param e!        The BBjButtonPushEvent that causes this method to be executed
-    rem  */
+REM /**
+    REM  * - Toggles visibility of #winTaskCardIncomplete which contains all incomplete task child windows
+    REM  * - Toggles all related classes
+    REM  * - Triggered by #btnIncompleteView!
+    REM  *
+    REM  * @param e!        The BBjButtonPushEvent that causes this method to be executed
+    REM  */
 REM     method public void onIncompleteView(BBjButtonPushEvent e!)
 REM         winIncompleteControls! = #winTaskCardIncomplete!.getAllControls()
 REM
@@ -799,13 +799,13 @@ REM             #btnDueView!.removeClass("view-btn-selected")
 REM         endif
 REM     methodend
 
-    rem /**
-    rem  * - Toggles visibility of #winTaskCardPriority! which contains all incomplete task child windows organized by Priority
-    rem  * - Toggles all related classes
-    rem  * - Triggered by #btnPriorityView!
-    rem  *
-    rem  * @param e!        The BBjButtonPushEvent that causes this method to be executed
-    rem  */
+    REM /**
+    REM  * - Toggles visibility of #winTaskCardPriority! which contains all incomplete task child windows organized by Priority
+    REM  * - Toggles all related classes
+    REM  * - Triggered by #btnPriorityView!
+    REM  *
+    REM  * @param e!        The BBjButtonPushEvent that causes this method to be executed
+    REM  */
 REM     method public void onPriorityView(BBjButtonPushEvent e!)
 REM         winPriorityControls! = #winTaskCardPriority!.getAllControls()
 REM
@@ -834,13 +834,13 @@ REM             #btnPriorityView!.addClass("view-btn-selected")
 REM         endif
 REM     methodend
 
-    rem /**
-    rem  * - Toggles visibility of #winTaskCardDueDate! which contains all incomplete task child windows organized by Due Date
-    rem  * - Toggles all related classes
-    rem  * - Triggered by #btnDueView!
-    rem  *
-    rem  * @param e!        The BBjButtonPushEvent that causes this method to be executed
-    rem  */
+    REM /**
+    REM  * - Toggles visibility of #winTaskCardDueDate! which contains all incomplete task child windows organized by Due Date
+    REM  * - Toggles all related classes
+    REM  * - Triggered by #btnDueView!
+    REM  *
+    REM  * @param e!        The BBjButtonPushEvent that causes this method to be executed
+    REM  */
 REM     method public void onDueView(BBjButtonPushEvent e!)
 REM         winDueDateControls! = #winTaskCardDueDate!.getAllControls()
 REM
@@ -870,65 +870,65 @@ REM         endif
 REM     methodend
 
 
-    rem /**
-    rem  * Callback that's executed when the user selects a custom font family.
+    REM /**
+    REM  * Callback that's executed when the user selects a custom font family.
     REM  * This gets the list button's selected index, then resolves that to
     REM  * a custom font family that's stored in the #vectFontFamilies!
     REM  * vector.  It then sets the CSS custom property for the DWC's
     REM  * sans-serif font family to the chosen font.
-    rem  *
-    rem  * BBjListChangeEvent e!    The BBjListButton's ON_LIST_CHANGE event
-    rem  */
+    REM  *
+    REM  * BBjListChangeEvent e!    The BBjListButton's ON_LIST_CHANGE event
+    REM  */
     method public void onListChangeFontFamilies(BBjListChangeEvent e!)
         declare auto BBjString fontFamily!
 
-        rem Get the selected item from the list
+        REM Get the selected item from the list
         fontFamilyHtml! = e!.getSelectedItem()
 
-        rem Since the item has HTML markup to style the family namne, remove all the HTML tags
+        REM Since the item has HTML markup to style the family namne, remove all the HTML tags
         fontFamily! = fontFamilyHtml!.replaceAll("<[^>]*>", "")
 
-        rem Alternatively, since the backing vector of font families is a global field, we could also
-        rem get the selected font family by retrieving the item from the vector.  In this scenario,
-        rem we can use the event's getSelectedIndex() method to specify the item's index in the vector.
+        REM Alternatively, since the backing vector of font families is a global field, we could also
+        REM get the selected font family by retrieving the item from the vector.  In this scenario,
+        REM we can use the event's getSelectedIndex() method to specify the item's index in the vector.
         REM fontFamily! = str(#vectFontFamilies!.getItem(e!.getSelectedIndex()))
 
-        rem Now set the font for the tasks by setting the CSS custom property that we defined for that purpose
+        REM Now set the font for the tasks by setting the CSS custom property that we defined for that purpose
         #setCssProperty("--app-font-family-task", fontFamily!)
 
-        rem Save out the user's preferred task font family in a cookie
+        REM Save out the user's preferred task font family in a cookie
         #prefsTaskFontFamily! = fontFamily!
         #hashPrefs!.put("prefsTaskFontFamily", #prefsTaskFontFamily!)
         #setCookies(#appName!, #hashPrefs!, err=*NEXT)
     methodend
 
-    rem /**
-    rem  * Utility method that sets a CSS custom property given the property and value.
+    REM /**
+    REM  * Utility method that sets a CSS custom property given the property and value.
     REM  * It ensures that the CSS property is properly formatted, then builds a CSS
     REM  * string from the iformation and adds it to the DOM, thus overriding any
     REM  * previous setting
-    rem  *
-    rem  * BBjListChangeEvent e!    The BBjListButton's ON_LIST_CHANGE event
-    rem  */
+    REM  *
+    REM  * BBjListChangeEvent e!    The BBjListButton's ON_LIST_CHANGE event
+    REM  */
     method public void setCssProperty(BBjString property!, BBjString value!)
-        rem Sanitize the property by ensuring that it starts with '--' and changing all spaces to dashes
+        REM Sanitize the property by ensuring that it starts with '--' and changing all spaces to dashes
         if !(property!.startsWith("--")) then property! = "--" + property!
         property! = property!.replaceAll(" ", "-").trim()
         value! = value!.trim()
         if (value!.contains(" ")) then value! = "'" + value! + "'"
 
-        rem Build the CSS string for the root element and append it to the DOM's <body> element
+        REM Build the CSS string for the root element and append it to the DOM's <body> element
         css! = ":root { " + property! + ": " + value! + "; }"
         #webManager!.injectStyle(css!, 0, "app_custom_css_property")
     methodend
 
-    rem /**
-    rem  * Returns the collection of Task objects in a JsonArray.  This is used to
-    rem  * serialize the tasks so that they can be exported, shared with another app,
-    rem  * or saved to disk.
-    rem  *
-    rem  * @return JsonArray     The tasks collection as a JsonArray
-    rem  */
+    REM /**
+    REM  * Returns the collection of Task objects in a JsonArray.  This is used to
+    REM  * serialize the tasks so that they can be exported, shared with another app,
+    REM  * or saved to disk.
+    REM  *
+    REM  * @return JsonArray     The tasks collection as a JsonArray
+    REM  */
     method protected JsonArray getTasksAsJsonArray()
         declare JsonArray array!
         declare auto BBjString uuid!
@@ -945,11 +945,11 @@ REM     methodend
     methodend
 
     method public void onExport(BBjButtonPushEvent e!)
-        rem todo: check if e! is null
-        rem save to default location if null
-        rem open save dialog if it's the export button
+        REM todo: check if e! is null
+        REM save to default location if null
+        REM open save dialog if it's the export button
 
-        rem todo: notify successful export
+        REM todo: notify successful export
         json! = #getTasksAsJsonArray()
         gson! = new GsonBuilder().setPrettyPrinting().create()
         chan = unt
@@ -974,9 +974,9 @@ REM         parser!.setLenient(BBjAPI().TRUE)
         REM #consoleLog(json!.toString())
         array! = gson!.fromJson(json!, JsonArray.class)
         it! = array!.iterator()
-        rem todo: clear treemap after checking if there are any tasks to import
-        rem todo: Error handling: what if the file doesn't exist? What if tasks aren't valid?
-        rem we could return something; number of imported tasks or something
+        REM todo: clear treemap after checking if there are any tasks to import
+        REM todo: Error handling: what if the file doesn't exist? What if tasks aren't valid?
+        REM we could return something; number of imported tasks or something
         while(it!.hasNext())
             jsonTask! = it!.next()
             t! = new Task(jsonTask!)
@@ -1080,7 +1080,7 @@ REM         parser!.setLenient(BBjAPI().TRUE)
 classend
 
 
-rem BBj USE Statements
+REM BBj USE Statements
 use ::Task.bbj::Task
 use ::TaskProperties.bbj::TaskProperties
 use ::TaskListView.bbj::TaskListView
@@ -1089,16 +1089,16 @@ use ::Settings.bbj::Settings
 use ::TaskCardView.bbj::TaskCardView
 use ::Utils.bbj::Utils
 
-rem Java USE Statements
+REM Java USE Statements
 use java.time.LocalDate
 use java.util.TreeMap
 use java.util.HashMap
 use java.net.URLEncoder
 use java.net.URLDecoder
 
-rem Google's Gson for JSON, which is included with BBj
-use com.google.gson.Gson;           rem https://javadoc.io/static/com.google.code.gson/gson/2.10.1/com.google.gson/com/google/gson/Gson.html
-use com.google.gson.GsonBuilder;    rem https://javadoc.io/doc/com.google.code.gson/gson/latest/com.google.gson/com/google/gson/GsonBuilder.html
-use com.google.gson.JsonObject;     rem https://javadoc.io/static/com.google.code.gson/gson/2.10.1/com.google.gson/com/google/gson/JsonObject.html
-use com.google.gson.JsonArray;      rem https://javadoc.io/static/com.google.code.gson/gson/2.10.1/com.google.gson/com/google/gson/JsonArray.html
-use com.google.gson.JsonParser;     rem https://javadoc.io/static/com.google.code.gson/gson/2.10.1/com.google.gson/com/google/gson/JsonParser.html
+REM Google's Gson for JSON, which is included with BBj
+use com.google.gson.Gson;           REM https://javadoc.io/static/com.google.code.gson/gson/2.10.1/com.google.gson/com/google/gson/Gson.html
+use com.google.gson.GsonBuilder;    REM https://javadoc.io/doc/com.google.code.gson/gson/latest/com.google.gson/com/google/gson/GsonBuilder.html
+use com.google.gson.JsonObject;     REM https://javadoc.io/static/com.google.code.gson/gson/2.10.1/com.google.gson/com/google/gson/JsonObject.html
+use com.google.gson.JsonArray;      REM https://javadoc.io/static/com.google.code.gson/gson/2.10.1/com.google.gson/com/google/gson/JsonArray.html
+use com.google.gson.JsonParser;     REM https://javadoc.io/static/com.google.code.gson/gson/2.10.1/com.google.gson/com/google/gson/JsonParser.html
