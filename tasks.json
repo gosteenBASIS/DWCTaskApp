@@ -46,8 +46,8 @@
   },
   {
     "uuid": "1b4d0790-8f98-4a52-a1aa-20a38397737d",
-    "title": "Changed title",
-    "description": "description",
+    "title": "Add more sample tasks",
+    "description": "Create more sample tasks with actual descriptions, so we can see how larger tasks look in screenshots.",
     "complete": "0",
     "priority": "2",
     "duedate": "-1",
@@ -64,16 +64,16 @@
   },
   {
     "uuid": "2ef531da-5c60-4548-abbe-051643cfea4c",
-    "title": "Task 40",
+    "title": "Take screenshot of TaskApp with sample tasks",
     "description": "",
     "complete": "0",
     "priority": "2",
-    "duedate": "2460307",
+    "duedate": "2460437",
     "created": "2023-12-28T23:01:17.613473Z"
   },
   {
     "uuid": "319d68fc-f891-4060-85da-bfcd249f2305",
-    "title": "Reorder tasks through click and drag",
+    "title": "Create different views (list, card, etc.)",
     "description": "",
     "complete": "0",
     "priority": "2",
@@ -163,9 +163,9 @@
   },
   {
     "uuid": "61294711-ce9d-4a8e-986d-5ea94e817bec",
-    "title": "Delete button on TaskProperties",
-    "description": "There should be a delete button on the TaskProperties Window.",
-    "complete": "0",
+    "title": "Add a delete button on TaskProperties",
+    "description": "There should be a delete button on the TaskProperties Window.\n",
+    "complete": "1",
     "priority": "1",
     "duedate": "2460307",
     "created": "2023-12-28T23:01:17.612473300Z"
@@ -361,11 +361,11 @@
   },
   {
     "uuid": "e145473e-c3a1-45da-99c5-618a28294653",
-    "title": "Task 6",
+    "title": "Create draft powerpoint slides for TC Session 1",
     "description": "",
     "complete": "0",
     "priority": "1",
-    "duedate": "2460307",
+    "duedate": "2460301",
     "created": "2023-12-28T23:01:17.609474600Z"
   },
   {
