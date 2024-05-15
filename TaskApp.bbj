@@ -278,6 +278,7 @@ class public TaskApp
             #setCssProperty("--app-font-task", str(#vectFontFamilies!.getItem(0)))
         endif
 
+        REM Add Control to switch layout from list view to card view
         #switchLayout! = #winNavBar!.addRadioButton("Layout Type")
         #switchLayout!.addClass("switchLayout")
         #switchLayout!.setAttribute("switch", "")
@@ -305,21 +306,6 @@ class public TaskApp
 
         #addTaskList("default")
 
-        REM TASK CARD VIEW: buttons
-REM         #winViews! = #winTitle!.addChildWindow("Title", $00108800$, #sysgui!.getAvailableContext())
-REM         #winViews!.addClass("winViews")
-
-REM         #btnIncompleteView! = #winViews!.addButton("Incomplete")
-REM         #btnIncompleteView!.addClass("btnView")
-REM         #btnIncompleteView!.addClass("view-btn-selected")
-REM         #btnPriorityView! = #winViews!.addButton("Priority Level")
-REM         #btnPriorityView!.addClass("btnView")
-REM         #btnDueView! = #winViews!.addButton("Due Date")
-REM         #btnDueView!.addClass("btnView")
-REM
-REM         #btnIncompleteView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onIncompleteView")
-REM         #btnPriorityView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onPriorityView")
-REM         #btnDueView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onDueView")
 
         REM Create the FAB (floating action button) and the toolbar buttons
         #btnAddTaskFAB! = #winMain!.addButton("<html><dwc-icon pool='tabler' name='plus'></dwc-icon>")
@@ -331,7 +317,7 @@ REM         #btnDueView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onDueVi
         #displayTasks()
         #winMain!.setVisible(1)
     methodend
-    
+
     REM /**
     REM  * Creates the winTitle window with the date and day labels.
     REM  * @return The BBjChildWindow that holds the title elements. 
@@ -343,30 +329,30 @@ REM         #btnDueView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onDueVi
         #labelDay!.addClass("labelDay")
         #labelDate! = winTitle!.addStaticText(date(0:"%Dl, %Ml %D"), $4000$)
         #labelDate!.addClass("labelDate")
-        
+
         methodret winTitle!
     methodend
-    
+
     REM /**
     REM  * Creates the toolbar window "winToolBar" with various buttons.
-    REM  * @return The toolbar window, as a BBjChildWindow.
+    REM  * @return BBjChildWindow The toolbar window, as a BBjChildWindow.
     REM  */
     method public BBjChildWindow createWinToolBar()
         winToolBar! = #winMain!.addChildWindow("ToolBar", $00108800$, #sysgui!.getAvailableContext())
         winToolBar!.addClass("winToolBar")
-        
+
         btnAddTask! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='plus'></dwc-icon>")
         btnAddTask!.addClass("toolbar_icon")
         btnAddTask!.setToolTipText("Add Task")
         btnAddTask!.setAttribute("expanse", "xs")
         btnAddTask!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onAddTask")
-                 
+
         btnShowCompletedTasks! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='checks'></dwc-icon>")
         btnShowCompletedTasks!.addClass("toolbar_icon icon-completed")
         btnShowCompletedTasks!.setToolTipText("Completed Tasks")
         btnShowCompletedTasks!.setAttribute("expanse", "xs")
         btnShowCompletedTasks!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onShowCompletedTasks")
-                
+
         btnSettings! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='settings'></dwc-icon>")
         btnSettings!.addClass("toolbar_icon")
         btnSettings!.setToolTipText("Settings")
@@ -390,7 +376,7 @@ REM         #btnDueView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onDueVi
         btnReload!.setToolTipText("Reload")
         btnReload!.setAttribute("expanse", "xs")
         btnReload!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onReload")
-                
+
         methodret winToolBar!
     methodend
 
@@ -416,7 +402,6 @@ REM         #btnDueView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onDueVi
 
             cardView! = #addTaskCardView(task!)
             if (task!.getComplete()) then
-REM                 view!.setVisible(0)
                 view!.setVisible(1)
             endif
         wend
@@ -446,7 +431,6 @@ REM                 view!.setVisible(0)
             priority! = task!.getPriority()
 
             dueDate! = task!.getDueDate()
-REM             created! = task!.getCreated()
 
             if (dueDate! > -1) then
                 taskDate! = date(dueDate!:"%Yl-%Mz-%Dz")
@@ -473,6 +457,9 @@ REM             created! = task!.getCreated()
 
     REM /**
     REM  * Adds a TaskCardView for the given Task, and returns the TaskCardView
+    REM  * 
+    REM  * @param Task task!        Task that will be made into a TaskCardView
+    REM  * @return TaskCardView     A TaskCardView containing information from the task
     REM  */
     method public TaskCardView addTaskCardView(Task task!)
         if (task!.getComplete()) then
@@ -488,10 +475,12 @@ REM             created! = task!.getCreated()
 
     REM /**
     REM  * Add a Task List Window
+    REM  * 
+    REM  * @param BBjString name!   The name of the task list
+    REM  * @BBjChildWindow          The task list window with the given name 
     REM  */
     method public BBjChildWindow addTaskList(BBjString name!)
         taskList! = #winTasks!.addChildWindow(name!, $00108800$, #sysgui!.getAvailableContext())
-        REM Probably remove winTasks, just use taskList
         taskList!.addClass("taskList fadeIn")
         #vectTaskLists!.addItem(taskList!)
         methodret taskList!
@@ -499,6 +488,9 @@ REM             created! = task!.getCreated()
 
     REM /**
     REM  * Adds a TaskListView for the given Task, and returns the TaskListView
+    REM  * 
+    REM  * @param Task t!       Task that will be used to create the TaskListView
+    REM  * @return TaskListView The view control for the given task
     REM  */
     method public TaskListView addTaskListView(Task t!)
         index = 0
@@ -595,6 +587,9 @@ REM             created! = task!.getCreated()
 
     REM /**
     REM  * Returns the Task with the given UUID from the TreeMap of tasks.
+    REM  * 
+    REM  * @param BBjString uuid!   The UUID of the task to be retrieved.
+    REM  * @return Task             The task from the TreeMap of tasks with the given UUID
     REM  */
     method public Task getTask(BBjString uuid!)
         methodret cast(Task, #tasks!.get(uuid!))
@@ -602,6 +597,8 @@ REM             created! = task!.getCreated()
 
     REM /**
     REM  * Toggles the layout type for the tasks, alternating betweeen a list (default) and card layout
+    REM  * 
+    REM  * @param BBjCheckChangeEvent event!    The BBjCheckChangeEvent object that called this method
     REM  */
     method public void OnSwitchChangeLayout(BBjCheckChangeEvent event!)
     REM toggles visibility for both view windows
@@ -675,7 +672,7 @@ REM             created! = task!.getCreated()
     REM /**
     REM  * Removes a Task from the tasklist by specifying the tasks's ID
     REM  *
-    REM  * @param id        The task's unique ID
+    REM  * @param BBjString uuid!        The task's unique ID
     REM  */
     method public void removeTask(BBjString uuid!)
         #tasks!.remove(uuid!)
@@ -683,7 +680,7 @@ REM             created! = task!.getCreated()
     methodend
 
     REM /**
-    REM  * Removes a Task from the tasklist by specifying the tasks object
+    REM  * Removes a Task from the task list by specifying the tasks object
     REM  *
     REM  * @param task!     The Task object
     REM  */
@@ -710,7 +707,7 @@ REM             created! = task!.getCreated()
     REM  * The code creates a BBjBuiUrlCloseAction object to load the app's URL.  That way, the app can
     REM  * do a RELEASE which causes the same app to be loaded and executed again.
     REM  *
-    REM  * @param e!        The BBjButtonPushEvent that causes this method to be executed
+    REM  * @param BBjButtonPushEvent e! The BBjButtonPushEvent that causes this method to be executed
     REM  */
     method public void onReload(BBjButtonPushEvent e!)
         action! = #webManager!.urlAction(#webManager!.getUrl())
@@ -723,7 +720,7 @@ REM             created! = task!.getCreated()
     REM  *  - creating a new Task object
     REM  *  - displaying the Task's property sheet to the user for customization
     REM  *
-    REM  * @param e!        The BBjButtonPushEvent that causes this method to be executed
+    REM  * @param BBjButtonPushEvent e! The BBjButtonPushEvent that causes this method to be executed
     REM  */
     method public void onAddTask(BBjButtonPushEvent e!)
         REM create a new task
@@ -743,135 +740,18 @@ REM             created! = task!.getCreated()
     REM  * - Toggles all related classes
     REM  * - Triggered by #btnCompleteView!
     REM  *
-    REM  * @param e!        The BBjButtonPushEvent that causes this method to be executed
+    REM  * @param BBjButtonPushEvent e! The BBjButtonPushEvent that causes this method to be executed
     REM  */
     method public void onShowCompletedTasks(BBjButtonPushEvent e!)
         btnShowCompletedTasks! = e!.getControl()
         btnShowCompletedTasks!.toggleClass("icon-completed-selected")
         if (#taskView! = "incomplete") then
             #taskView! = "complete"
-REM             #winTaskCardIncomplete!.setVisible(0)
-REM             #btnIncompleteView!.removeClass("view-btn-selected")
-REM             #winTaskCardPriority!.setVisible(0)
-REM             #btnPriorityView!.removeClass("view-btn-selected")
-REM             #winTaskCardDueDate!.setVisible(0)
-REM             #btnDueView!.removeClass("view-btn-selected")
-REM             #winTaskCardComplete!.setVisible(1)
-REM             #labelDay!.setText("Completed Tasks")
-REM             #btnIncompleteView!.removeClass("view-btn-selected")
         else
             #taskView! = "incomplete"
-REM             #winTaskCardIncomplete!.setVisible(1)
             #winTaskCardComplete!.setVisible(0)
-REM             #labelDay!.setText("Today")
-REM             #btnIncompleteView!.addClass("view-btn-selected")
         endif
     methodend
-
-REM /**
-    REM  * - Toggles visibility of #winTaskCardIncomplete which contains all incomplete task child windows
-    REM  * - Toggles all related classes
-    REM  * - Triggered by #btnIncompleteView!
-    REM  *
-    REM  * @param e!        The BBjButtonPushEvent that causes this method to be executed
-    REM  */
-REM     method public void onIncompleteView(BBjButtonPushEvent e!)
-REM         winIncompleteControls! = #winTaskCardIncomplete!.getAllControls()
-REM
-REM         if (#winTaskCardIncomplete!.isVisible()) then
-REM             #winTaskCardIncomplete!.setVisible(0)
-REM             #btnIncompleteView!.removeClass("view-btn-selected")
-REM         else
-REM             #displayType!= 2
-REM             #winTaskCardComplete!.setVisible(0)
-REM             #winTaskCardPriority!.setVisible(0)
-REM             #winTaskCardDueDate!.setVisible(0)
-REM
-REM             if (winIncompleteControls!.size() = 0) then
-REM                 #displayTasks()
-REM             else
-REM                 #winTaskCardIncomplete!.setVisible(1)
-REM             endif
-REM
-REM             #taskView! = "incomplete"
-REM             #labelDay!.setText("Today")
-REM             #btnIncompleteView!.addClass("view-btn-selected")
-REM             #btnShowCompletedTasks!.removeClass("icon-completed-selected")
-REM             #btnPriorityView!.removeClass("view-btn-selected")
-REM             #btnDueView!.removeClass("view-btn-selected")
-REM         endif
-REM     methodend
-
-    REM /**
-    REM  * - Toggles visibility of #winTaskCardPriority! which contains all incomplete task child windows organized by Priority
-    REM  * - Toggles all related classes
-    REM  * - Triggered by #btnPriorityView!
-    REM  *
-    REM  * @param e!        The BBjButtonPushEvent that causes this method to be executed
-    REM  */
-REM     method public void onPriorityView(BBjButtonPushEvent e!)
-REM         winPriorityControls! = #winTaskCardPriority!.getAllControls()
-REM
-REM          if (#winTaskCardPriority!.isVisible()) then
-REM             #winTaskCardPriority!.setVisible(0)
-REM             #btnPriorityView!.removeClass("view-btn-selected")
-REM         else
-REM             #displayType! = 1
-REM             #winTaskCardComplete!.setVisible(0)
-REM             #winTaskCardIncomplete!.setVisible(0)
-REM             #winTaskCardDueDate!.setVisible(0)
-REM
-REM             if (winPriorityControls!.size() = 0) then
-REM                 #displayTasks()
-REM             else
-REM                 #winTaskCardPriority!.setVisible(1)
-REM             endif
-REM
-REM             #winTaskCardPriority!.setVisible(1)
-REM             #taskView! = "incomplete"
-REM             #labelDay!.setText("Today")
-REM             #btnIncompleteView!.removeClass("view-btn-selected")
-REM             #btnShowCompletedTasks!.removeClass("icon-completed-selected")
-REM             #btnDueView!.removeClass("view-btn-selected")
-REM             #btnPriorityView!.addClass("view-btn-selected")
-REM         endif
-REM     methodend
-
-    REM /**
-    REM  * - Toggles visibility of #winTaskCardDueDate! which contains all incomplete task child windows organized by Due Date
-    REM  * - Toggles all related classes
-    REM  * - Triggered by #btnDueView!
-    REM  *
-    REM  * @param e!        The BBjButtonPushEvent that causes this method to be executed
-    REM  */
-REM     method public void onDueView(BBjButtonPushEvent e!)
-REM         winDueDateControls! = #winTaskCardDueDate!.getAllControls()
-REM
-REM         if (#winTaskCardDueDate!.isVisible()) then
-REM             #winTaskCardDueDate!.setVisible(0)
-REM             #btnDueView!.removeClass("view-btn-selected")
-REM         else
-REM             #displayType! = 0
-REM             #winTaskCardComplete!.setVisible(0)
-REM             #winTaskCardIncomplete!.setVisible(0)
-REM             #winTaskCardPriority!.setVisible(0)
-REM
-REM             if (winDueDateControls!.size() = 0) then
-REM                 #displayTasks()
-REM             else
-REM                 #winTaskCardDueDate!.setVisible(1)
-REM             endif
-REM
-REM             #winTaskCardDueDate!.setVisible(1)
-REM             #taskView! = "incomplete"
-REM             #labelDay!.setText("Today")
-REM             #btnIncompleteView!.removeClass("view-btn-selected")
-REM             #btnShowCompletedTasks!.removeClass("icon-completed-selected")
-REM             #btnPriorityView!.removeClass("view-btn-selected")
-REM             #btnDueView!.addClass("view-btn-selected")
-REM         endif
-REM     methodend
-
 
     REM /**
     REM  * Callback that's executed when the user selects a custom font family.
@@ -880,7 +760,7 @@ REM     methodend
     REM  * vector.  It then sets the CSS custom property for the DWC's
     REM  * sans-serif font family to the chosen font.
     REM  *
-    REM  * BBjListChangeEvent e!    The BBjListButton's ON_LIST_CHANGE event
+    REM  * @param BBjListChangeEvent e!    The BBjListButton's ON_LIST_CHANGE event
     REM  */
     method public void onListChangeFontFamilies(BBjListChangeEvent e!)
         declare auto BBjString fontFamily!
@@ -890,11 +770,6 @@ REM     methodend
 
         REM Since the item has HTML markup to style the family namne, remove all the HTML tags
         fontFamily! = fontFamilyHtml!.replaceAll("<[^>]*>", "")
-
-        REM Alternatively, since the backing vector of font families is a global field, we could also
-        REM get the selected font family by retrieving the item from the vector.  In this scenario,
-        REM we can use the event's getSelectedIndex() method to specify the item's index in the vector.
-        REM fontFamily! = str(#vectFontFamilies!.getItem(e!.getSelectedIndex()))
 
         REM Now set the font for the tasks by setting the CSS custom property that we defined for that purpose
         #setCssProperty("--app-font-family-task", fontFamily!)
@@ -910,6 +785,9 @@ REM     methodend
     REM  * It ensures that the CSS property is properly formatted, then builds a CSS
     REM  * string from the iformation and adds it to the DOM, thus overriding any
     REM  * previous setting
+    REM  *
+    REM  * @param BBjString property!   The property name to be set
+    REM  * @param BBjString value!      The value to set the property to
     REM  */
     method public void setCssProperty(BBjString property!, BBjString value!)
         REM Sanitize the property by ensuring that it starts with '--' and changing all spaces to dashes
@@ -945,12 +823,12 @@ REM     methodend
         methodret array!
     methodend
 
+    REM /**
+    REM  * Callback method for the export button. Exports tasks to a task.json file.
+    REM  * 
+    REM  * @param BBjButtonPushEvent e! The BBjButtonPushEvent that called this method
+    REM  */
     method public void onExport(BBjButtonPushEvent e!)
-        REM todo: check if e! is null
-        REM save to default location if null
-        REM open save dialog if it's the export button
-
-        REM todo: notify successful export
         json! = #getTasksAsJsonArray()
         gson! = new GsonBuilder().setPrettyPrinting().create()
         chan = unt
@@ -958,9 +836,13 @@ REM     methodend
         open(chan, isz=-1, mode="O_TRUNC,O_CREATE") f$
             write record(chan) gson!.toJson(json!).toString()
         close(chan)
-        REM #consoleLog("Exported " + str(json!.size()) +  " tasks.")
     methodend
 
+    REM /**
+    REM  * Callback for the Import tasks button.  Imports tasks from the tasks.json file in the TaskApp app directory.
+    REM  * 
+    REM  * @param BBjButtonPushEvent e!     BBjButtonPushEvent that invoked this method.
+    REM  */
     method public void onImport(BBjButtonPushEvent e!)
         chan = unt
         f$ = #appPath! + "tasks.json"
@@ -968,16 +850,12 @@ REM     methodend
             read record(chan, siz=-1000000) json$
         close(chan)
         parser! = new JsonParser()
-REM         parser!.setLenient(BBjAPI().TRUE)
         json! = parser!.parseString(json$)
 
         gson! = new GsonBuilder().setPrettyPrinting().create()
-        REM #consoleLog(json!.toString())
         array! = gson!.fromJson(json!, JsonArray.class)
         it! = array!.iterator()
-        REM todo: clear treemap after checking if there are any tasks to import
-        REM todo: Error handling: what if the file doesn't exist? What if tasks aren't valid?
-        REM we could return something; number of imported tasks or something
+
         while(it!.hasNext())
             jsonTask! = it!.next()
             t! = new Task(jsonTask!)
