@@ -22,7 +22,6 @@ class public TaskProperties
     field public BBjListButton     listPriority!
     field public BBjInputD         dateDue!
 
-REM     field public BBjChildWindow    winButtons!
     field public BBjButton         buttonDelete!
     field public BBjButton         buttonCancel!
     field public BBjButton         buttonSave!
@@ -30,11 +29,14 @@ REM     field public BBjChildWindow    winButtons!
     field public BBjNumber         dataPassed! = 0 
 
     field public Task              task!
-
+    
+    REM Constructor
+    REM ========================================
     method public TaskProperties()
         #task! = null()
         #sysgui! = BBjAPI().openSysGui("X0")
 
+        REM Create task properties window
         #sysgui! = BBjAPI().getSysGui()
         #winTaskProperties! = #sysgui!.addWindow(#sysgui!.getAvailableContext(), "winTask", $011F0000$)
         #winTaskProperties!.addClass("winTaskProperties")
@@ -64,12 +66,6 @@ REM     field public BBjChildWindow    winButtons!
         #dateDue!.setAttribute("visible-calendar-icon","true")
         #dateDue!.setAttribute("show-weeks","true")
 
-        REM Long Year
-REM         short_year$ = STBL("!COMPAT!", "SHORT_YEAR=TRUE")
-REM         DateMask$=stbl("!DATE"),DateMask=pos($00$=DateMask$),DateMask$=DateMask$(1,DateMask-1)
-REM         #dateDue!.setLocale("en-US")
-REM         #dateDue!.setMask(DateMask$)
-REM         a=msgbox("Date Mask: " + DateMask$ + $0a$ + "!COMPAT for SHORT_YEAR: " + STBL("!COMPAT"))
         #buttonDelete! = #winTaskProperties!.addButton("Delete")
         #buttonDelete!.setAttribute("theme","danger")
         #buttonCancel! = #winTaskProperties!.addButton(2, "&Cancel")
@@ -85,6 +81,8 @@ REM         a=msgbox("Date Mask: " + DateMask$ + $0a$ + "!COMPAT for SHORT_YEAR:
     REM /**
     REM  * Given a task object, load its properties into the Task Properties window,
     REM  * and make the window visible.
+    REM  * 
+    REM  * @param Task t!   The task to dispaly in the Task Properties window.
     REM  */
     method public void loadTask(Task t!)
         #task! = t!
@@ -102,21 +100,10 @@ REM         a=msgbox("Date Mask: " + DateMask$ + $0a$ + "!COMPAT for SHORT_YEAR:
         #winTaskProperties!.setVisible(1)
     methodend
 
-    REM /** 
-    REM  * Receives vector from TaskApp onTaskClick method and sets vector as userData
-    REM  * on the cancel and save buttons
-    REM  * 
-    REM  * @param BBjVector that contains lock icon and task window
-    REM  */
-        REM TASK CARD VIEW: passData method
-REM     method public void passData(BBjVector dataVector!)
-REM         #buttonCancel!.setUserData(dataVector!)
-REM         #buttonSave!.setUserData(dataVector!)
-REM         #dataPassed! = 1
-REM     methodend
-
     REM /**
     REM  * Save the information from the current fields into the Task object in the #task! variable
+    REM  * 
+    REM  * @param BBjFormValidationEvent e!     The BBjFormValidationEvent that called this method
     REM  */
     method public void onSave(BBjFormValidationEvent e!)
         if (#task! = null()) then methodret
@@ -155,43 +142,20 @@ REM     methodend
         #task!.setDueDate(date!)
         #task!.setPriority(e!.getSelectedIndex(#listPriority!)+1)
         #task!.setTitle(#editTitle!.getText())
-        
-        REM TASK CARD VIEW: sets completed task back to lock after saving
-        REM change lock icon back to close and update classes on task window to lock task
-REM         if (#dataPassed!) then
-REM             dataVector! = e!.getControl().getUserData()
-REM             win! = dataVector!.getItem(0)
-REM             btnLock! = dataVector!.getItem(1)
-REM             btnLock!.setText(#lock!)
-REM             btnLock!.removeClass("btn-lock-open")
-REM             btnLock!.addClass("btn-lock")
-REM             win!.removeClass("task")
-REM             win!.addClass("task-complete")
-REM         endif
 
         #winTaskProperties!.setVisible(0)
         BBjAPI().postCustomEvent("TASK_UPDATE",#task!)
         e!.accept(1)
-        
-        REM TASK CARD VIEW: reset data passed back to 0
-REM         #dataPassed! = 0
+
     methodend
 
+    REM /**
+    REM  * Callback method for cancel button.  Sets data to 0 and closes the window.
+    REM  * 
+    REM  * @param BBjButtonPushEvent e! The BBjButtonPushEvent that called this method.
+    REM  */
     method public void onCancel(BBjButtonPushEvent e!)   
-        
-        REM TASK CARD VIEW: sets completed task back to lock after canceling
-        REM change lock icon back to close and update classes on task window to lock task
-REM         if (#dataPassed!) then
-REM             dataVector! = e!.getControl().getUserData()
-REM             win! = dataVector!.getItem(0)
-REM             btnLock! = dataVector!.getItem(1)
-REM             btnLock!.setText(#lock!)
-REM             btnLock!.removeClass("btn-lock-open")
-REM             btnLock!.addClass("btn-lock")
-REM             win!.removeClass("task")
-REM             win!.addClass("task-complete")
-REM         endif
-        
+
         #winTaskProperties!.setVisible(0)
         REM Clear fields, set task to null?
         
@@ -202,6 +166,8 @@ REM         endif
     REM /**
     REM  * Activated by the Delete button.
     REM  * Sets the Deleted flag on the task, posts a TASK_UPDATE event, and hides the TaskProperties window.
+    REM  * 
+    REM  * @param BBjButtonPushEvent event!     The BBjButtonPushEvent that called this method
     REM  */
     method public void onDelete(BBjButtonPushEvent event!)
         #task!.setDeleted(1)
@@ -220,5 +186,6 @@ REM         endif
 
 classend
 
+REM USE Statements
 use ::Task.bbj::Task
 use java.time.LocalDate

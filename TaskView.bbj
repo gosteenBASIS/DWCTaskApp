@@ -5,6 +5,9 @@ REM  *C:\Users\gosteen\eclipse\workspaces\bbj-workspace\TaskApp\TaskView.bbj
 REM  */
 REM package TaskApp
 
+REM /**
+REM  *  The view controller for tasks that are displayed by the Task App.  Serves as the basis for TaskListView and TaskCardView
+REM  */
 class public TaskView
     field public    Task            task!
     field public    BBjChildWindow  win!
@@ -17,7 +20,14 @@ class public TaskView
     field public    BBjStaticText   priorityFlag!
     field public    BBjString   flagIcon! = "<html><dwc-icon pool='tabler' name='flag-2-filled'></dwc-icon>"
  
-
+    REM /**
+    REM  * Constructor for the TaskView object
+    REM  * 
+    REM  * @param BBjWindow parent!     The parent BBjWindow that this TaskView will be added to
+    REM  * @param Task t!               The Task object containing the task information that will be displayed
+    REM  * @return TaskView             The newly created TaskView
+    REM  * 
+    REM  */
     method public TaskView(BBjWindow parent!, Task t!)
         #sysgui! = BBjAPI().getSysGui()
         #task! = t!
@@ -85,6 +95,12 @@ class public TaskView
         #win!.removeClass("status-complete")
     methodend
 
+    REM /**
+    REM  * Sets the label for when the taks is due.  If the due date of the task is ahead of the current date,
+    REM  * the label will be set to the current date. If the due date of the task is equal to the current date,
+    REM  * the label will be set to "Due Today!"  If the due date of the task has already passed, the label will be set
+    REM  * to "Past Due!"
+    REM  */
     method public void setDueNotice()
         #due!.removeClass("dueToday pastDue")
         due! = ""
@@ -106,8 +122,7 @@ class public TaskView
     methodend
 
     REM /**
-    REM  * - Adds a priority flag icon which represents the task's priority level
-    REM  * - Icon is set to BBjStaticText #priorityFlag!
+    REM  * Adds a priority flag icon which represents the task's priority level.
     REM  */
     method public void setPriorityFlag()
         flagText! = "Priority " + STR(#task!.getPriority())
@@ -117,9 +132,8 @@ class public TaskView
     methodend
 
     REM /**
-    REM  * - Creates a BBjPopupMenu that contains flag icons representing every priority level except for
-    REM  * the task's priority level
-    REM  * - Adds a call back which triggers the #changePriority() method when a new priority flag is selected
+    REM  * Creates a BBjPopupMenu that contains flag icons representing every priority level except for
+    REM  * the task's priority level.
     REM  */
     method public void createPopupMenu()
         #flagPopupMenu! = #sysgui!.addPopupMenu()
@@ -141,7 +155,7 @@ class public TaskView
     methodend
 
     REM /**
-    REM  * - Changes task priority level to priority level selected from the #flagPopupMenu!
+    REM  * -Changes task priority level to priority level selected from the #flagPopupMenu!
     REM  *
     REM  * @param e!      The BBjPopupSelectEvent that causes this method to be executed
     REM  */
@@ -156,5 +170,6 @@ class public TaskView
 
 classend
 
+REM BBj USE Statements
 use ::Task.bbj::Task
 use ::Utils.bbj::Utils
