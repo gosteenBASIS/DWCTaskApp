@@ -1,13 +1,19 @@
 REM /**
 REM  * TaskListView.bbj
 REM  * @author gosteen
-REM  *C:\Users\gosteen\eclipse\workspaces\dwc-workspace\TaskApp\TaskListView.bbj
+REM  * 
 REM  * TaskListView represents the childwindow of a task in a list
 REM  */
 
 class public TaskListView extends TaskView
     field public    BBjCheckBox     checkbox!
 
+    REM /**
+    REM  * Constructor for the TaskListView
+    REM  *
+    REM  * @param BBjWindow parent! The parent window which contains all task child windows of a given view
+    REM  * @param Task t!           The Task that is to be added to a given view
+    REM  */
     method public TaskListView(BBjWindow parent!, Task t!)
         #super!(parent!,t!)
         #win!.addClass("winListView")
