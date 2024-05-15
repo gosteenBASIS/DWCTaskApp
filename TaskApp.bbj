@@ -41,8 +41,6 @@ class public TaskApp
     field protected BBjChildWindow      winTaskCardPriority!
     field protected BBjChildWindow      winTaskCardDueDate!
     field protected BBjChildWindow      winTasks!
-    field protected BBjStaticText       labelDay!
-    field protected BBjStaticText       labelDate!
     field protected BBjVector           vectTaskLists! = BBjAPI().makeVector()
 
     REM NavBar and ToolBar controls
@@ -286,8 +284,7 @@ class public TaskApp
 
         #winToolBar! = #createWinToolBar()
         #winTitle! = #createWinTitle()
-
-
+        
         REM TASK LIST VIEW: main window
         #winTasks! = #winMain!.addChildWindow("Tasks", $00108800$, #sysgui!.getAvailableContext())
         #winTasks!.addClass("winTasks listLayout")
@@ -339,11 +336,13 @@ REM         #btnDueView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onDueVi
     method public BBjChildWindow createWinTitle()
         winTitle! = #winMain!.addChildWindow("Title", $00108800$, #sysgui!.getAvailableContext())
         winTitle!.addClass("winTitle")
-        #labelDay! = winTitle!.addStaticText("Today", $4000$)
-        #labelDay!.addClass("labelDay")
-        #labelDate! = winTitle!.addStaticText(date(0:"%Dl, %Ml %D"), $4000$)
-        #labelDate!.addClass("labelDate")
-        
+
+        labelDay! = winTitle!.addStaticText("Today", $4000$)
+        labelDay!.addClass("labelDay")
+        labelDay!.setName("labelDay")
+        labelDate! = winTitle!.addStaticText(date(0:"%Dl, %Ml %D"), $4000$)
+        labelDate!.addClass("labelDate")
+        labelDate!.setName("labelDate")
         methodret winTitle!
     methodend
     
@@ -405,7 +404,7 @@ REM         #btnDueView!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onDueVi
         REM it! = #tasks!.values().iterator()
 
         REM New code that gets a sorted TreeMap of the tasks
-        #labelDate!.setText("<html>" + date(0:"%Dl, %Ml %D") + $0A$ + "<span style='font-size:50%;'>Tasks Sorted by Priority")
+        #winTitle!.getControl("labelDate").setText("<html>" + date(0:"%Dl, %Ml %D") + $0A$ + "<span style='font-size:50%;'>Tasks Sorted by Priority")
         orderedTasks! = #getSortedTasks("priority")
         it! = orderedTasks!.values().iterator()
 
