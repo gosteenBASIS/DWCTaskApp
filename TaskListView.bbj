@@ -44,6 +44,7 @@ class public TaskListView extends TaskView
     methodend
 classend
 
+REM BBj USE Statements
 use ::Task.bbj::Task
 use ::Utils.bbj::Utils
 use ::TaskView.bbj::TaskView

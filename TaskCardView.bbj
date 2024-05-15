@@ -15,16 +15,15 @@ class public TaskCardView extends TaskView
     field protected BBjStaticText   status!
 
     REM /**
-    REM  * Creates a task card view for every task
+    REM  * Constructor for the TaskCardView
     REM  *
-    REM  * @param parent!, t!           parent! is the parent window which contains all task child windows of a given view, t! is the Task that is to be added to a given view
+    REM  * @param BBjWindow parent! The parent window which contains all task child windows of a given view
+    REM  * @param Task t!           The Task that is to be added to a given view
     REM  */
     method public TaskCardView(BBjWindow parent!, Task t!)
         #super!(parent!,t!)
         #win!.addClass("winCardView")
         #title!.addClass("textTitle")
-
-REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()))
 
         #status! = #win!.addStaticText("")
         #status!.addClass("textStatus")
@@ -56,7 +55,7 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
     methodend
 
     REM /**
-    REM  * - Updates task data on refresh
+    REM  * Updates task data on refresh
     REM  */
     method public void refresh()
         #super!.refresh()
@@ -141,9 +140,7 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
     methodend
 
     REM /**
-    REM  * - Toggles the completion of a task
-    REM  * - Toggles the BBjButton btnTaskCompletion! text between "Mark as Complete" & "Mark as Incomplete"
-    REM  * - toggles associated classes
+    REM  * Callback event for the task completion check box.  Sets the associated task to complete.
     REM  *
     REM  * @param e!      The BBjButtonPushEvent that causes this method to be executed
     REM  */
@@ -167,6 +164,7 @@ REM         #win!.addClass("status-" + #task!.getStatusString(#task!.getStatus()
     methodend
 classend
 
+REM BBj USE Statements
 use ::Task.bbj::Task
 use ::Utils.bbj::Utils
 use ::TaskView.bbj::TaskView
