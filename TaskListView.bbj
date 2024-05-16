@@ -36,7 +36,7 @@ class public TaskListView extends TaskView
     REM /**
     REM  * Method to run when a task's checkbox is changed
     REM  *
-    REM  * @param e!    A BBjCheckChangeEvent
+    REM  * @param BBjCheckChangeEvent e!    The BBjCheckChangeEvent that invoked this method
     REM  */
     method public void onTaskCheck(BBjCheckChangeEvent e!)
         #clearStyles()

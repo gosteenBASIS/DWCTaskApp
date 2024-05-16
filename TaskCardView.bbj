@@ -121,7 +121,7 @@ class public TaskCardView extends TaskView
     REM  * - Icon is set to BBjStaticText #btnLock!
     REM  * - Toggles associated classes
     REM  *
-    REM  * @param e!      The BBjButtonPushEvent that causes this method to be executed
+    REM  * @param BBjButtonPushEvent e!     The BBjButtonPushEvent that causes this method to be executed
     REM  */
     method public void setLock(BBjButtonPushEvent e!)
         if (#btnLock!.getText() = #lock!) then
@@ -142,7 +142,7 @@ class public TaskCardView extends TaskView
     REM /**
     REM  * Callback event for the task completion check box.  Sets the associated task to complete.
     REM  *
-    REM  * @param e!      The BBjButtonPushEvent that causes this method to be executed
+    REM  * @param BBjButtonPushEvent e!     The BBjButtonPushEvent that causes this method to be executed
     REM  */
     method public void setComplete(BBjButtonPushEvent e!)
          if (#task!.getComplete()) then
@@ -157,7 +157,7 @@ class public TaskCardView extends TaskView
     REM /**
     REM  * Triggers message box which prompts user for confirmation before deleting a task
     REM  *
-    REM  * @param e!      The BBjButtonPushEvent that causes this method to be executed
+    REM  * @param BBjButtonPushEvent e!     The BBjButtonPushEvent that causes this method to be executed
     REM  */
     method public void onDelete(BBjButtonPushEvent e!)
         i = msgbox("This won't do anything yet", BBjSysGui.MSGBOX_BUTTONS_YES_NO + BBjSysGui.MSGBOX_ICON_EXCLAMATION, "Delete Task")

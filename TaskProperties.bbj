@@ -14,6 +14,9 @@ taskProperties!.loadTask(task!)
 process_events
 end
 
+REM /**
+REM  * Object that contains and controls the properties window that opens up when editing a Task.
+REM  */
 class public TaskProperties
     field public BBjSysGui         sysgui!
     field public BBjTopLevelWindow winTaskProperties!
@@ -178,7 +181,7 @@ class public TaskProperties
     REM /**
     REM  * Sets the visibility on the BBjChildWindow for this class.
     REM  *
-    REM  * @param visible! A number representing the visibility to set. 0 = invisible.
+    REM  * @param BBjNumber visible!    A number representing the visibility to set. 0 = invisible.
     REM  */
     method public void setVisible(BBjNumber visible!)
         #winTaskProperties!.setVisible(visible!)
