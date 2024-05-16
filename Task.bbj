@@ -76,7 +76,7 @@ class public Task
     REM /**
     REM  * A Task item's constructor that only takes a title parameter. All other parameters will be set to their default values.
     REM  *
-    REM  * @param title!            The task's title string
+    REM  * @param BBjString title!      The task's title string
     REM  */
     method public Task(BBjString title!)
         #init()
@@ -93,7 +93,7 @@ class public Task
     REM /**
     REM  * A Task item's constructor that takes a JsonObject instead of individual parameters
     REM  *
-    REM  * @param json!            The JSON representation of the Task object
+    REM  * @param JsonObject json!  The JSON representation of the Task object
     REM  */
     method public Task(JsonObject json!)
         #init()
@@ -114,7 +114,7 @@ class public Task
     REM /**
     REM  * Create a clone of a task
     REM  *
-    REM  * @param task!        The task to clone.
+    REM  * @param Task task!    The task to clone.
     REM  */
     method public Task(Task task!)
         #init()
@@ -135,15 +135,14 @@ class public Task
         #Title! = ""
         #Description! = ""
         #Uuid! = java.util.UUID.randomUUID().toString()
-        #Priority! = 6
-        #Tags! = BBjAPI().makeVector()
-        #Complete! = 0
-        #DueDate! = -1
+        #Priority! = 6BBjListClickEvent
         #Created! = date(jul(date(0)), tim, "%Yz-%Mz-%DzT%hz:%mz")
     methodend
 
     REM /**
     REM  * Copy all editable info into this task from source; excluding Uuid and Created timestamp
+    REM  * 
+    REM  * @param Task source!  The source Task to copy into this Task object
     REM  */
     method public void copyInfo(Task source!)
         #Title! = source!.getTitle()
@@ -175,7 +174,7 @@ class public Task
 
     REM /**
     REM  * Gets the uuid of the Task as a BBjString
-    REM  * @return The Task's uuid
+    REM  * @return BBjString    The Task's uuid
     REM  */
     method public BBjString getUuid()
         methodret #Uuid!
@@ -184,8 +183,7 @@ class public Task
     REM Misc utility methods
     REM ========================================
     REM /**
-    REM  * Gets the uuid of the Task as a BBjString
-    REM  * @return The Task's uuid
+    REM  * Prints the details of this Task object
     REM  */
     method public void printDetails()
         ? "Title: ", #Title!
@@ -207,7 +205,7 @@ class public Task
 
     REM /**
     REM  * Returns the Task object as a JSON object that may be serialized
-    REM  * @return      A JsonObject version of the Task
+    REM  * @return JsonObject   A JsonObject version of the Task
     REM  */
     method public JsonObject getAsJsonObject()
         declare JsonObject json!
@@ -226,7 +224,7 @@ class public Task
 
     REM /**
     REM  * Returns the Task object as a stringified JSON object that may be serialized
-    REM  * @return      A stringified JsonObject version of the Task
+    REM  * @return BBjString    A stringified JsonObject version of the Task
     REM  */
     method public BBjString getAsString()
         methodret #getAsJsonObject().toString()
@@ -234,7 +232,7 @@ class public Task
 
     REM /**
     REM  * Returns the Task object as a nicely-formatted stringified JSON object that may be serialized
-    REM  * @return      A stringified JsonObject version of the Task
+    REM  * @return BBjString    A stringified JsonObject version of the Task
     REM  */
     method public BBjString getAsFormattedString()
         declare auto TreeMap map!

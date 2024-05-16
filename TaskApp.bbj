@@ -317,7 +317,7 @@ class public TaskApp
 
     REM /**
     REM  * Creates the winTitle window with the date and day labels.
-    REM  * @return The BBjChildWindow that holds the title elements. 
+    REM  * @return BBjChildWindow   The BBjChildWindow that holds the title elements. 
     REM  */
     method public BBjChildWindow createWinTitle()
         winTitle! = #winMain!.addChildWindow("Title", $00108800$, #sysgui!.getAvailableContext())
@@ -335,7 +335,7 @@ class public TaskApp
 
     REM /**
     REM  * Creates the toolbar window "winToolBar" with various buttons.
-    REM  * @return BBjChildWindow The toolbar window, as a BBjChildWindow.
+    REM  * @return BBjChildWindow   The toolbar window, as a BBjChildWindow.
     REM  */
     method public BBjChildWindow createWinToolBar()
         winToolBar! = #winMain!.addChildWindow("ToolBar", $00108800$, #sysgui!.getAvailableContext())
@@ -477,7 +477,7 @@ class public TaskApp
     REM  * Add a Task List Window
     REM  * 
     REM  * @param BBjString name!   The name of the task list
-    REM  * @BBjChildWindow          The task list window with the given name 
+    REM  * @return BBjChildWindow   The task list window with the given name 
     REM  */
     method public BBjChildWindow addTaskList(BBjString name!)
         taskList! = #winTasks!.addChildWindow(name!, $00108800$, #sysgui!.getAvailableContext())
@@ -557,7 +557,7 @@ class public TaskApp
     REM /**
     REM  * Creates sample tasks to use for a demo
     REM  *
-    REM  * @param numTasks! The number of sample tasks to create
+    REM  * @param BBjNumber numTasks! The number of sample tasks to create
     REM  */
     method public void createSampleTasks(BBjNumber numTasks!)
         declare auto BBjString  taskName!
@@ -578,7 +578,7 @@ class public TaskApp
     REM /**
     REM  * Adds a Task to the tasklist (the app's collection of Task objects)
     REM  *
-    REM  * @param task!     The Task object
+    REM  * @param Task task!    The Task object
     REM  */
     method public void addTask(Task task!)
         uuid! = task!.getUuid()
@@ -611,7 +611,7 @@ class public TaskApp
     REM  * Activated by custom event TASK_UPDATE
     REM  * This method handles any UI or data updates that may be necessary when a Task is modified.
     REM  *
-    REM  * @param event!    A BBjCustomEvent that has a Task Object as a payload.
+    REM  * @param BBjCustomEvent event! A BBjCustomEvent that has a Task Object as a payload.
     REM  */
     method public void onTaskUpdate(BBjCustomEvent event!)
         declare auto TaskListView view!
@@ -682,7 +682,7 @@ class public TaskApp
     REM /**
     REM  * Removes a Task from the task list by specifying the tasks object
     REM  *
-    REM  * @param task!     The Task object
+    REM  * @param Task task!    The Task object
     REM  */
     method public void removeTask(Task task!)
         #tasks!.remove(task!.getUuid())
@@ -692,7 +692,7 @@ class public TaskApp
     REM /**
     REM  * Displays the app's settings window
     REM  *
-    REM  * @param e!        The BBjButtonPushEvent that causes this method to be executed
+    REM  * @param BBjButtonPushEvent e! The BBjButtonPushEvent that causes this method to be executed
     REM  */
     method public void onShowSettings(BBjButtonPushEvent e!)
         if (#settings! = null()) then
@@ -882,8 +882,8 @@ class public TaskApp
     REM  * client's computer (GUI) or browser (BUI).  You only need to provide the unique key value when getting
     REM  * the saved cookies, greatly simplifying the reading/writing of user properties
     REM  *
-    REM  * @param p_cookieKey$          A BBjString with the unique identifier for the saved cookie, such as the application's name
-    REM  * @param p_cookieHashMap!      A HashMap filled with key/value pairs to be stored where the key is the field name and the value is the string value for that field
+    REM  * @param BBjString p_cookieKey$    A BBjString with the unique identifier for the saved cookie, such as the application's name
+    REM  * @param HashMap p_cookieHashMap!  A HashMap filled with key/value pairs to be stored where the key is the field name and the value is the string value for that field
     REM  *
     REM  * @see <a href='https://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html' target='_blank'>HashMap</a> for more information on the Java HashMap object
     REM  */
@@ -924,9 +924,9 @@ class public TaskApp
     REM  * calling these methods.  The getCookies() method will return a Hashmap filled with key/value pairs if
     REM  * the cookie exists.  If it does not exist, it will return <code>null()</code>.
     REM  *
-    REM  * @param p_cookieKey$          A BBjString with the unique identifier for the saved cookie, such as the application's name
+    REM  * @param BBjString p_cookieKey$    A BBjString with the unique identifier for the saved cookie, such as the application's name
     REM  *
-    REM  * @return                      A HashMap filled with key/value pairs, basically a clone of the HahMap provided to the setCookies() method.  If the cookie doesn't exist on the client's machine or browser, the method retuns null().
+    REM  * @return HashMap                  A HashMap filled with key/value pairs, basically a clone of the HahMap provided to the setCookies() method.  If the cookie doesn't exist on the client's machine or browser, the method retuns null().
     REM  */
     method public static HashMap getCookies(BBjString p_cookieKey$)
         declare HashMap             hashCookies!
