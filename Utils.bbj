@@ -206,7 +206,7 @@ class public Utils
             if !(Character.isLetterOrDigit(char!)) then
                 nextTitleCase = 1
             else
-                if (nextTitleCase) thenTODO: make docs for these
+                if (nextTitleCase) then
                     char! = Character.toTitleCase(char!)
                     nextTitleCase = 0
                 endif
@@ -243,4 +243,4 @@ REM Java USE Statements
 use java.util.HashMap
 use java.net.URLEncoder
 use java.net.URLDecoder
-use java.time.LocalDate REM https://docs.oracle.com/javase/8/docs/api/java/time/LocalDate.html
+use java.time.LocalDate; REM https://docs.oracle.com/javase/8/docs/api/java/time/LocalDate.html

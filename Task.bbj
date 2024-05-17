@@ -135,7 +135,10 @@ class public Task
         #Title! = ""
         #Description! = ""
         #Uuid! = java.util.UUID.randomUUID().toString()
-        #Priority! = 6BBjListClickEvent
+        #Priority! = 6
+        #Tags! = BBjAPI().makeVector()
+        #Complete! = 0
+        #DueDate! = -1
         #Created! = date(jul(date(0)), tim, "%Yz-%Mz-%DzT%hz:%mz")
     methodend
 
