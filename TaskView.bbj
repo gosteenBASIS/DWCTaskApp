@@ -139,7 +139,7 @@ class public TaskView
         #flagPopupMenu! = #sysgui!.addPopupMenu()
         
          
-        for i = Task.PRIORITY_MAX() to Task.PRIORITY_MIN()             
+        for i = Task.PRIORITY_LOW() to Task.PRIORITY_HIGH()             
             flagItem! = #flagPopupMenu!.addMenuItem(-i, #flagIcon!)
             if (#task!.getPriority() = i) then flagItem!.setVisible(0)
             

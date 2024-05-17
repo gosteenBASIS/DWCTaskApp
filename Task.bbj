@@ -61,13 +61,13 @@ class public Task
         methodret "deferred"
     methodend
 
-    REM /** A constant value that represents the minimum allowed priority value */
-    method public static BBjNumber PRIORITY_MIN()
+    REM /** A constant value that represents the highest allowed priority */
+    method public static BBjNumber PRIORITY_HIGH()
         methodret 6
     methodend
 
-    REM /** A constant value that represents the maximum allowed priority value */
-    method public static BBjNumber PRIORITY_MAX()
+    REM /** A constant value that represents the lowest allowed priority */
+    method public static BBjNumber PRIORITY_LOW()
         methodret 1
     methodend
 
@@ -103,8 +103,8 @@ class public Task
         #Description! = json!.get("description",err=*NEXT).getAsString()
         #Uuid! = json!.get("uuid").getAsString()
         #Priority! = json!.get("priority",err=*NEXT).getAsInt()
-        if (#Priority! < #PRIORITY_MAX() or #Priority! > #PRIORITY_MIN()) then
-            #Priority! = #PRIORITY_MIN()
+        if (#Priority! < #PRIORITY_LOW() or #Priority! > #PRIORITY_HIGH()) then
+            #Priority! = #PRIORITY_HIGH()
         endif
         #DueDate! = json!.get("duedate",err=*NEXT).getAsInt()
         #Created! = json!.get("created",err=*NEXT).getAsString()
@@ -163,11 +163,11 @@ class public Task
     REM  * @param BBjNumber priority!  The task's priority
     REM  */
     method public void setPriority(BBjNumber priority!)
-        if priority! < #PRIORITY_MAX() then
-            priority! = #PRIORITY_MAX()
+        if priority! < #PRIORITY_LOW() then
+            priority! = #PRIORITY_LOW()
         endif
-        if priority! > #PRIORITY_MIN() then
-            priority! = #PRIORITY_MIN()
+        if priority! > #PRIORITY_HIGH() then
+            priority! = #PRIORITY_HIGH()
         endif
         #Priority! = priority!
     methodend
