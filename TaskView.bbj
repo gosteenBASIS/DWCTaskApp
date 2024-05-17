@@ -18,7 +18,7 @@ class public TaskView
     field public    BBjStaticText   description!
     field public    BBjStaticText   due!
     field public    BBjStaticText   priorityFlag!
-    field public    BBjString   flagIcon! = "<html><dwc-icon pool='tabler' name='flag-2-filled'></dwc-icon>"
+    field public    BBjString       flagIcon! = "<html><dwc-icon pool='tabler' name='flag-2-filled'></dwc-icon>"
  
     REM /**
     REM  * Constructor for the TaskView object

@@ -46,7 +46,6 @@ class public TaskListView extends TaskView
             #task!.setComplete(1)
         endif
         BBjAPI().postCustomEvent("TASK_UPDATE",#task!)
-        Utils.consoleLog("just posted task update custom event")
     methodend
 classend
 

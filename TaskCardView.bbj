@@ -75,7 +75,6 @@ class public TaskCardView extends TaskView
             #btnLock!.removeClass("btnLock")
             #btnLock!.addClass("btnLockOpen")
             #btnLock!.setText(#lockOpen!)
-            #win!.removeClass("complete")
             if (#priorityFlag! <> null()) then #priorityFlag!.removeClass("priority-transparent")
         endif
 
