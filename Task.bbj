@@ -63,12 +63,14 @@ class public Task
 
     REM /** A constant value that represents the highest allowed priority */
     method public static BBjNumber PRIORITY_HIGH()
-        methodret 6
+REM         methodret 6
+        methodret 1
     methodend
 
     REM /** A constant value that represents the lowest allowed priority */
     method public static BBjNumber PRIORITY_LOW()
-        methodret 1
+REM         methodret 1
+        methodret 6
     methodend
 
     REM Constructors
@@ -103,9 +105,14 @@ class public Task
         #Description! = json!.get("description",err=*NEXT).getAsString()
         #Uuid! = json!.get("uuid").getAsString()
         #Priority! = json!.get("priority",err=*NEXT).getAsInt()
-        if (#Priority! < #PRIORITY_LOW() or #Priority! > #PRIORITY_HIGH()) then
-            #Priority! = #PRIORITY_HIGH()
+REM         if (#Priority! < #PRIORITY_LOW() or #Priority! > #PRIORITY_HIGH()) then
+REM             #Priority! = #PRIORITY_HIGH()
+REM         endif
+
+        if (#Priority! < #PRIORITY_HIGH() or #Priority! > #PRIORITY_LOW()) then
+            #Priority! = #PRIORITY_LOW()
         endif
+
         #DueDate! = json!.get("duedate",err=*NEXT).getAsInt()
         #Created! = json!.get("created",err=*NEXT).getAsString()
         if (json!.has("complete")) then #Complete! = json!.get("complete",err=*NEXT).getAsInt()
@@ -163,12 +170,22 @@ class public Task
     REM  * @param BBjNumber priority!  The task's priority
     REM  */
     method public void setPriority(BBjNumber priority!)
-        if priority! < #PRIORITY_LOW() then
-            priority! = #PRIORITY_LOW()
-        endif
-        if priority! > #PRIORITY_HIGH() then
+REM         if priority! < #PRIORITY_LOW() then
+REM             priority! = #PRIORITY_LOW()
+REM         endif
+
+        if priority! < #PRIORITY_HIGH() then
             priority! = #PRIORITY_HIGH()
         endif
+
+REM         if priority! > #PRIORITY_HIGH() then
+REM             priority! = #PRIORITY_HIGH()
+REM         endif
+
+        if priority! > #PRIORITY_LOW() then
+            priority! = #PRIORITY_LOW()
+        endif
+        
         #Priority! = priority!
     methodend
 
