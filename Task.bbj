@@ -63,13 +63,11 @@ class public Task
 
     REM /** A constant value that represents the highest allowed priority */
     method public static BBjNumber PRIORITY_HIGH()
-REM         methodret 6
-        methodret 1
+           methodret 1
     methodend
 
     REM /** A constant value that represents the lowest allowed priority */
     method public static BBjNumber PRIORITY_LOW()
-REM         methodret 1
         methodret 6
     methodend
 
@@ -105,9 +103,6 @@ REM         methodret 1
         #Description! = json!.get("description",err=*NEXT).getAsString()
         #Uuid! = json!.get("uuid").getAsString()
         #Priority! = json!.get("priority",err=*NEXT).getAsInt()
-REM         if (#Priority! < #PRIORITY_LOW() or #Priority! > #PRIORITY_HIGH()) then
-REM             #Priority! = #PRIORITY_HIGH()
-REM         endif
 
         if (#Priority! < #PRIORITY_HIGH() or #Priority! > #PRIORITY_LOW()) then
             #Priority! = #PRIORITY_LOW()
@@ -170,17 +165,9 @@ REM         endif
     REM  * @param BBjNumber priority!  The task's priority
     REM  */
     method public void setPriority(BBjNumber priority!)
-REM         if priority! < #PRIORITY_LOW() then
-REM             priority! = #PRIORITY_LOW()
-REM         endif
-
         if priority! < #PRIORITY_HIGH() then
             priority! = #PRIORITY_HIGH()
         endif
-
-REM         if priority! > #PRIORITY_HIGH() then
-REM             priority! = #PRIORITY_HIGH()
-REM         endif
 
         if priority! > #PRIORITY_LOW() then
             priority! = #PRIORITY_LOW()
