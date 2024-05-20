@@ -101,23 +101,24 @@
 }
 
 /* Trash can icon styling on Completed-task-list-view */
-.btnDeleteTask {
+.btnDelete {
 	justify-self: right;
 	grid-row: 5;
 	margin-right: -10px;
+	--dwc-button-background: none;
+	--dwc-button-border-color: transparent;
+	--dwc-button-hover-background: none;
+	--dwc-button-selected-background: none;
 }
 
-.btnDeleteTask::part(control), .card-btn-delete-task::part(control):before {
+.btnDelete::part(control), .card-btn-delete-task::part(control):before {
 	font-size: 15px;
-	background-color: transparent;
 	justify-self: right;
-	color: var(--dwc-color-black);
-	opacity: .4;
-	width: fit-content;
-	border: transparent;
+ 	opacity: .6;
+ 	width: fit-content;
 }
 
-.btnDeleteTask::part(control):hover {
+.btnDelete::part(control):hover {
 	opacity: 1;
 }
 
