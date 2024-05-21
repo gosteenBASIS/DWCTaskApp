@@ -75,7 +75,8 @@ class public TaskApp
     REM  * @see <a href='https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/TreeMap.html' target='_blank'>TreeMap</a> documentation
     REM  */
     field protected TreeMap tasks!
-    field protected TreeMap taskViews!
+    field protected TreeMap taskListViews!
+    field protected TreeMap taskCardViews!
     field protected TreeMap taskPriorityViews!
     field protected TreeMap taskDueDateViews!
 
@@ -142,6 +143,15 @@ class public TaskApp
         attrib! = "rel=icon,type=image/svg,id=dwc_taskapp_icon"
         #webManager!.injectLinkUrl(url!, 1, attrib!, err=*NEXT)
 
+        rem Set the title of the app
+        #webManager!.setTitle("TaskApp")
+
+        rem Set the homescreen icon for smartphones and tablets
+        url! = "https://public.basis.cloud/images/DWCTaskApp.png"
+        #webManager!.injectLinkUrl(url!, 1, "rel=SHORTCUT ICON,type=image/png")
+        #webManager!.injectLinkUrl(url!, 1, "rel=apple-touch-icon,type=image/png")
+        #webManager!.injectLinkUrl(url!, 1, "rel=icon,type=image/png")
+
         REM Inject links for a number of custom Google fonts
         fontFamily! = "?family=Asap&family=Bebas+Neue&family=Fira+Sans&family=Fredoka:wght@300..700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Marcellus+SC&family=Marko+One&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Oswald:wght@200..700&family=Rambla:ital,wght@0,400;0,700;1,400;1,700&family=Signika:wght@300;400&family=Teko:wght@300..700&family=Ubuntu&family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Work+Sans"
         fontFamily! = fontFamily! + "&family=K2D:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800"
@@ -160,7 +170,8 @@ class public TaskApp
 
         REM Create the collection for the tasks
         #tasks! = new TreeMap()
-        #taskViews! = new TreeMap()
+        #taskListViews! = new TreeMap()
+        #taskCardViews! = new TreeMap()
         #taskPriorityViews! = new TreeMap()
         #taskDueDateViews! = new TreeMap()
 
@@ -285,7 +296,7 @@ class public TaskApp
 
         #winToolBar! = #createWinToolBar()
         #winTitle! = #createWinTitle()
-        
+
         REM TASK LIST VIEW: main window
         #winTasks! = #winMain!.addChildWindow("Tasks", $00108800$, #sysgui!.getAvailableContext())
         #winTasks!.addClass("winTasks listLayout")
@@ -317,7 +328,7 @@ class public TaskApp
 
     REM /**
     REM  * Creates the winTitle window with the date and day labels.
-    REM  * @return BBjChildWindow   The BBjChildWindow that holds the title elements. 
+    REM  * @return BBjChildWindow   The BBjChildWindow that holds the title elements.
     REM  */
     method public BBjChildWindow createWinTitle()
         winTitle! = #winMain!.addChildWindow("Title", $00108800$, #sysgui!.getAvailableContext())
@@ -391,7 +402,7 @@ class public TaskApp
         REM it! = #tasks!.values().iterator()
 
         REM New code that gets a sorted TreeMap of the tasks
-        #winTitle!.getControl("labelDate").setText("<html>" + date(0:"%Dl, %Ml %D") + $0A$ + "<span style='font-size:50%;'>Tasks Sorted by Priority")
+        #winTitle!.getControl("labelDate").setText("<html>" + date(0:"%Dl, %Ml %D") + $0A$ + "<span class='labelSortingIndicator'>Tasks Sorted by Priority")
         orderedTasks! = #getSortedTasks("priority")
         it! = orderedTasks!.values().iterator()
 
@@ -457,7 +468,7 @@ class public TaskApp
 
     REM /**
     REM  * Adds a TaskCardView for the given Task, and returns the TaskCardView
-    REM  * 
+    REM  *
     REM  * @param Task task!        Task that will be made into a TaskCardView
     REM  * @return TaskCardView     A TaskCardView containing information from the task
     REM  */
@@ -468,16 +479,16 @@ class public TaskApp
             view! = new TaskCardView(#winTaskCard!, task!)
         endif
         #winTaskCardComplete!.setVisible(0)
-        #taskViews!.put(task!.getUuid(), view!)
+        #taskCardViews!.put(task!.getUuid(), view!)
         view!.getwin().setCallback(BBjControl.ON_CLICK, #this!, "onTaskClick")
         methodret view!
     methodend
 
     REM /**
     REM  * Add a Task List Window
-    REM  * 
+    REM  *
     REM  * @param BBjString name!   The name of the task list
-    REM  * @return BBjChildWindow   The task list window with the given name 
+    REM  * @return BBjChildWindow   The task list window with the given name
     REM  */
     method public BBjChildWindow addTaskList(BBjString name!)
         taskList! = #winTasks!.addChildWindow(name!, $00108800$, #sysgui!.getAvailableContext())
@@ -488,16 +499,16 @@ class public TaskApp
 
     REM /**
     REM  * Adds a TaskListView for the given Task, and returns the TaskListView
-    REM  * 
+    REM  *
     REM  * @param Task t!       Task that will be used to create the TaskListView
     REM  * @return TaskListView The view control for the given task
     REM  */
-    method public TaskListView addTaskListView(Task t!)
+    method public TaskListView addTaskListView(Task task!)
         index = 0
         taskList! = #vectTaskLists!.getItem(index)
-        view! = new TaskListView(taskList!, t!)
+        view! = new TaskListView(taskList!, task!)
 
-        #taskViews!.put(t!.getUuid(), view!)
+        #taskListViews!.put(task!.getUuid(), view!)
         view!.getwin().setCallback(BBjControl.ON_CLICK, #this!, "onTaskClick")
         methodret view!
     methodend
@@ -587,7 +598,7 @@ class public TaskApp
 
     REM /**
     REM  * Returns the Task with the given UUID from the TreeMap of tasks.
-    REM  * 
+    REM  *
     REM  * @param BBjString uuid!   The UUID of the task to be retrieved.
     REM  * @return Task             The task from the TreeMap of tasks with the given UUID
     REM  */
@@ -597,7 +608,7 @@ class public TaskApp
 
     REM /**
     REM  * Toggles the layout type for the tasks, alternating betweeen a list (default) and card layout
-    REM  * 
+    REM  *
     REM  * @param BBjCheckChangeEvent event!    The BBjCheckChangeEvent object that called this method
     REM  */
     method public void OnSwitchChangeLayout(BBjCheckChangeEvent event!)
@@ -618,20 +629,22 @@ class public TaskApp
         declare auto Task t!
         task! = event!.getObject()
         uuid! = task!.getUuid()
-        
-        Utils.consoleLog("IN ON task update")
+
+        Utils.consoleLog("In TaskApp::onTaskUpdate for task with title '" + task!.getTitle() + "'")
         REM If the UUID is not present in #tasks!, this is a new Task to be added.
         if (#tasks!.containsKey(uuid!) = 0) then
             #addTask(task!)
             #addTaskListView(task!)
-        endif
-
-        view! = #taskViews!.get(uuid!)
-        if (view! <> null()) then
-            view!.refresh()
-            Utils.consoleLog("refreshed view")
+            #addTaskCardView(task!)
         else
-            Utils.consoleLog("did not refresh view")
+            listView! = #taskListViews!.get(uuid!)
+            cardView! = #taskCardViews!.get(uuid!)
+            viewPriority! = #taskPriorityViews!.get(uuid!)
+            viewDueDate! = #taskDueDateViews!.get(uuid!)
+            if (listView! <> null()) then listView!.refresh()
+            if (cardView! <> null()) then cardView!.refresh()
+            if (viewPriority! <> null()) then viewPriority!.refresh()
+            if (viewDueDate! <> null()) then viewDueDate!.refresh()
         endif
 
         if (task!.getDeleted()) then
@@ -639,33 +652,6 @@ class public TaskApp
         endif
 
         REM Automatically export every time a task is updated
-        #onExport(null())
-
-        REM TASK CARD VIEW: onTaskUpdate method
-        declare auto TaskCardView view!
-        declare auto Task t!
-        task! = event!.getObject()
-        uuid! = task!.getUuid()
-        REM check if dirty
-        REM check if task is in list
-        if (#tasks!.containsKey(uuid!) = 0) then
-            #addTask(task!)
-            #addTaskCardView(task!)
-        else
-            view! = #taskViews!.get(uuid!)
-            viewPriority! = #taskPriorityViews!.get(uuid!)
-            viewDueDate! = #taskDueDateViews!.get(uuid!)
-            if (view! <> null()) then
-                view!.refresh()
-            endif
-            if (viewPriority! <> null()) then
-                viewPriority!.refresh()
-            endif
-            if (viewDueDate! <> null()) then
-                viewDueDate!.refresh()
-            endif
-        endif
-        REM Automatically export every time you save
         #onExport(null())
     methodend
 
@@ -676,7 +662,8 @@ class public TaskApp
     REM  */
     method public void removeTask(BBjString uuid!)
         #tasks!.remove(uuid!)
-        #taskViews!.remove(uuid!)
+        #taskListViews!.remove(uuid!)
+        #taskCardViews!.remove(uuid!)
     methodend
 
     REM /**
@@ -685,8 +672,7 @@ class public TaskApp
     REM  * @param Task task!    The Task object
     REM  */
     method public void removeTask(Task task!)
-        #tasks!.remove(task!.getUuid())
-        #taskViews!.remove(task!.getUuid())
+        #removeTask(task!.getUuid())
     methodend
 
     REM /**
@@ -825,7 +811,7 @@ class public TaskApp
 
     REM /**
     REM  * Callback method for the export button. Exports tasks to a task.json file.
-    REM  * 
+    REM  *
     REM  * @param BBjButtonPushEvent e! The BBjButtonPushEvent that called this method
     REM  */
     method public void onExport(BBjButtonPushEvent e!)
@@ -840,7 +826,7 @@ class public TaskApp
 
     REM /**
     REM  * Callback for the Import tasks button.  Imports tasks from the tasks.json file in the TaskApp app directory.
-    REM  * 
+    REM  *
     REM  * @param BBjButtonPushEvent e!     BBjButtonPushEvent that invoked this method.
     REM  */
     method public void onImport(BBjButtonPushEvent e!)
@@ -861,6 +847,7 @@ class public TaskApp
             t! = new Task(jsonTask!)
             #addTask(t!)
         wend
+        Utils.consoleLog("Loaded " + str(#tasks!.size()) + " tasks")
     methodend
 
 
