@@ -55,7 +55,6 @@ class public TaskProperties
 
         #listPriority! = #winTaskProperties!.addListButton("")
         #listPriority!.setAttribute("label", "Priority")
-REM         for i = Task.PRIORITY_LOW() to Task.PRIORITY_HIGH()
         for i = Task.PRIORITY_HIGH() to Task.PRIORITY_LOW()
             if (i = 6) then
                 #listPriority!.addItem("No Priority")

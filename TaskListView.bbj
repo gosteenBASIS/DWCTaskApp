@@ -1,7 +1,7 @@
 REM /**
 REM  * TaskListView.bbj
 REM  * @author gosteen
-REM  * 
+REM  *
 REM  * TaskListView represents the childwindow of a task in a list
 REM  */
 

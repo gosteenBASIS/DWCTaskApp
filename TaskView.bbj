@@ -137,9 +137,7 @@ class public TaskView
     REM  */
     method public void createPopupMenu()
         #flagPopupMenu! = #sysgui!.addPopupMenu()
-        
-         
-REM         for i = Task.PRIORITY_LOW() to Task.PRIORITY_HIGH()    
+          
         for i = Task.PRIORITY_HIGH() to Task.PRIORITY_LOW()         
             flagItem! = #flagPopupMenu!.addMenuItem(-i, #flagIcon!)
             if (#task!.getPriority() = i) then flagItem!.setVisible(0)
@@ -162,8 +160,6 @@ REM         for i = Task.PRIORITY_LOW() to Task.PRIORITY_HIGH()
     REM  */
     method public void changePriority(BBjPopupSelectEvent e!)
         newPriority! = ABS(e!.getMenuItem().getID())
-
-        if (newPriority! = 6) then newPriority! = 0
 
         #task!.setPriority(newPriority!)
         BBjAPI().postCustomEvent("TASK_UPDATE", #task!)
