@@ -248,6 +248,7 @@ dwc-checkbox.hydrated {
      max-height: 90dvh;
      overflow: auto;
      max-width: max(300px, 40dvw);
+     display: table;
 }
 
 .winTaskProperties .BBjPanel {
