@@ -4,6 +4,7 @@ REM  * @author gosteen
 REM  *
 REM  * TaskListView represents the childwindow of a task in a list
 REM  */
+REM Package TaskApp
 
 class public TaskListView extends TaskView
     field public    BBjCheckBox     checkbox!

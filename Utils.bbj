@@ -1,6 +1,8 @@
 REM /**
 REM  * <code>Utils</code> is a BBj custom data class that is used to provide helpful utility methods to the DWC TaskApp
 REM */
+REM Package TaskApp
+
 class public Utils
 
     REM /**

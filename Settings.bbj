@@ -1,6 +1,8 @@
 REM /**
 REM  * This class is responsible for managing the user's preferences and app settings for the TaskApp
 REM  */
+REM Package TaskApp
+
 class public Settings
 
     field protected BBjTopLevelWindow   winSettings!

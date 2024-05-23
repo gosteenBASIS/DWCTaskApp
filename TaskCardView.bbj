@@ -4,6 +4,7 @@ REM  * @author gosteen, ndecker, bhighhill
 REM  * 
 REM  * TaskCardView represents the childwindow of a task view
 REM  */
+REM package TaskApp
 
 class public TaskCardView extends TaskView
     field protected BBjButton       btnDeleteTask!
