@@ -33,8 +33,6 @@ class public TaskCardView extends TaskView
 
         if (#task!.getComplete() = 0) then
             #btnLock!.setVisible(0)
-            #createPopupMenu()
-            #priorityFlag!.setPopupMenu(#flagPopupMenu!)
             #setPriorityFlag()
         else
             #win!.setUserData(#btnLock!)
