@@ -303,6 +303,10 @@ class public TaskApp
         
         segmentChangeView! = winTitle!.addWebComponent("ion-segment")
         segmentChangeView!.setAttribute("value","list")
+        segmentChangeView!.setAttribute("mode","md")
+        
+        eventOptions! = segmentChangeView!.newEventOptions()
+        eventOptions!.addItem("value","event.target.value")
 
         segmentCardView! = winTitle!.addWebComponent("ion-segment-button")
         segmentCardView!.setAttribute("value","card")
@@ -315,7 +319,7 @@ class public TaskApp
         segmentChangeView!.setSlot(segmentListView!)
         segmentChangeView!.setSlot(segmentCardView!)
         
-        segmentChangeView!.setCallback("ionChange", #this!, "OnChangeLayout")
+        segmentChangeView!.setCallback("ionChange", #this!, "OnChangeLayout", eventOptions!)
 
         methodret winTitle!
     methodend
@@ -615,8 +619,9 @@ class public TaskApp
     REM  */
     method public void OnChangeLayout(BBjWebEvent event!)
     REM toggles visibility for both view windows
-        #winTasks!.setVisible(!#winTasks!.isVisible())
-        #winTaskCardView!.setVisible(!#winTaskCardView!.isVisible())
+        cardView = (event!.getEventMap().get("value") = "card")
+        #winTaskCardView!.setVisible(cardView)
+        #winTasks!.setVisible(!cardView)
         methodret
     methodend
 

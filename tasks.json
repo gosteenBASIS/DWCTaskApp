@@ -165,7 +165,7 @@
     "uuid": "61294711-ce9d-4a8e-986d-5ea94e817bec",
     "title": "Add a delete button on TaskProperties",
     "description": "There should be a delete button on the TaskProperties Window.\n",
-    "complete": "1",
+    "complete": "0",
     "priority": "1",
     "duedate": "2460307",
     "created": "2023-12-28T23:01:17.612473300Z"
