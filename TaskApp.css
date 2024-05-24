@@ -18,6 +18,9 @@
     --app-font-weight-task: var(--dwc-font-weight-semibold);
     --app-font-size-task: var(--dwc-font-size-m);
     --app-font-spacing-task: normal;
+    --ion-color-primary: var(--app-color-primary);
+    --ion-text-color: var(--dwc-color-black);
+    --ion-text-color-rgb: var(--dwc-color-black);
 }
 
 /* Override the DWC's default CSS custom properties */
@@ -138,7 +141,7 @@ dwc-checkbox.hydrated {
     height: 100%;
     grid-template-areas: 'winToolBar' 'winTitle' 'winTasks';
     grid-template-columns: 1fr;
-    grid-template-rows: 3em 5em 1fr;
+    grid-template-rows: 3em 10em 1fr;
 }
 
 .winToolBar, .winTitle, .winTasks {
@@ -416,3 +419,4 @@ dwc-checkbox.hydrated {
         transform: scale3d(1, 1, 1);
     }
 }
+

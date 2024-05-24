@@ -156,6 +156,13 @@ class public TaskApp
         #webManager!.injectLinkUrl("https://fonts.googleapis.com", 1, "rel=preconnect")
         #webManager!.injectLinkUrl("https://fonts.gstatic.com", 1, "crossorigin")
         #webManager!.injectLinkUrl("https://fonts.googleapis.com/css2?" + fontFamily!, 1, "rel=stylesheet,display=swap")
+        
+        REM Inject links for Ionic Web Components
+        url! = "https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"
+        #webManager!.injectScriptUrl(url!,1,"type=module")
+        
+        url! = "https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"
+        #webManager!.injectScriptUrl(url!,1,"type=module")
 
         REM Create a list of font families filled with Google fonts that the user will be able to choose from to style the tasks
         DATA "Marcellus SC", "Marko One", "Merriweather", "Oswald", "Rambla", "Signika", "Teko", "Ubuntu", "Ubuntu Mono", "Work Sans", "Asap", "K2D", "Bebas Neue", "Fira Sans", "Fredoka",  "Lato"
@@ -182,7 +189,6 @@ class public TaskApp
         #hashPrefs!.put("prefsTaskFontSpacing", #prefsTaskFontSpacing!)
         #hashPrefs!.put("prefsDefaultTaskPriority", #prefsDefaultTaskPriority!)
         #hashPrefs!.put("prefsVersion", #prefsVersion!)
-
 
         REM Read the user's preferences from a cookie, then apply all saved values to the HashMap of user preferences
         REM This means that the HashMap is initially filled with default values, but then the user's saved preferences replace the defaults
@@ -250,10 +256,6 @@ class public TaskApp
         
         #winToolBar! = #createWinToolBar()
         #winTitle! = #createWinTitle()
-        
-
-
-
 
         REM TASK LIST VIEW: main window
         #winTasks! = #winMain!.addChildWindow("Tasks", $00108800$, #sysgui!.getAvailableContext())
@@ -291,13 +293,29 @@ class public TaskApp
     method public BBjChildWindow createWinTitle()
         winTitle! = #winMain!.addChildWindow("Title", $00108800$, #sysgui!.getAvailableContext())
         winTitle!.addClass("winTitle")
-
+        
         labelDay! = winTitle!.addStaticText("Today", $4000$)
         labelDay!.addClass("labelDay")
         labelDay!.setName("labelDay")
         labelDate! = winTitle!.addStaticText(date(0:"%Dl, %Ml %D"), $4000$)
         labelDate!.addClass("labelDate")
         labelDate!.setName("labelDate")
+        
+        segmentChangeView! = winTitle!.addWebComponent("ion-segment")
+        segmentChangeView!.setAttribute("value","list")
+
+        segmentCardView! = winTitle!.addWebComponent("ion-segment-button")
+        segmentCardView!.setAttribute("value","card")
+        segmentCardView!.setHtml("Card View")
+        
+        segmentListView! = winTitle!.addWebComponent("ion-segment-button")
+        segmentListView!.setAttribute("value","list")
+        segmentListView!.setHtml("List View")
+        
+        segmentChangeView!.setSlot(segmentListView!)
+        segmentChangeView!.setSlot(segmentCardView!)
+        
+        segmentChangeView!.setCallback("ionChange", #this!, "OnChangeLayout")
 
         methodret winTitle!
     methodend
@@ -334,12 +352,6 @@ class public TaskApp
             lstFontFamily!.selectIndex(0)
             #setCssProperty("--app-font-task", str(#vectFontFamilies!.getItem(0)))
         endif
-        
-        switchLayout! = winToolBar!.addRadioButton("Layout Type")
-        switchLayout!.addClass("switchLayout")
-        switchLayout!.setAttribute("switch", "")
-        switchLayout!.setAttribute("expanse", "m")
-        switchLayout!.setCallback(BBjControl.ON_CHECK_CHANGE, #this!, "OnSwitchChangeLayout")
         
         btnAddTask! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='plus'></dwc-icon>")
         btnAddTask!.addClass("toolbar_icon")
@@ -598,12 +610,13 @@ class public TaskApp
         methodret cast(Task, #tasks!.get(uuid!))
     methodend
 
+    
     REM /**
     REM  * Toggles the layout type for the tasks, alternating betweeen a list (default) and card layout
     REM  *
-    REM  * @param BBjCheckChangeEvent event!    The BBjCheckChangeEvent object that called this method
+    REM  * @param BBjWebEvent event!    The BBjWebEvent object that triggered this method
     REM  */
-    method public void OnSwitchChangeLayout(BBjCheckChangeEvent event!)
+    method public void OnChangeLayout(BBjWebEvent event!)
     REM toggles visibility for both view windows
         #winTasks!.setVisible(!#winTasks!.isVisible())
         #winTaskCardView!.setVisible(!#winTaskCardView!.isVisible())
