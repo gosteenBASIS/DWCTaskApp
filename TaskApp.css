@@ -21,6 +21,7 @@
     --ion-color-primary: var(--app-color-primary);
     --ion-text-color: var(--dwc-color-body-text);
     --ion-text-color-rgb: var(--dwc-color-body-text);
+    --ion-font-family: var(--app-font-family);
 }
 
 /* Override the DWC's default CSS custom properties */
