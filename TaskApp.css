@@ -81,7 +81,7 @@ dwc-checkbox.hydrated {
     padding-left: 1px;
 }
 .fadeIn {
-    animation: fadeIn 1000ms ease-in-out 1 forwards;
+    animation: fadeIn 350ms ease-in-out 1 forwards;
 }
 .zoomIn {
     animation: zoomIn 400ms ease-in-out 1 forwards;
@@ -420,4 +420,3 @@ dwc-checkbox.hydrated {
         transform: scale3d(1, 1, 1);
     }
 }
-
