@@ -121,16 +121,12 @@ class public TaskApp
     method public TaskApp()
         REM Instatiate the WebManager and use it to inject the app's CSS
         #webManager! = BBjAPI().getWebManager()
-        css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(#appPath!+"TaskApp.css"))
-        #webManager!.injectStyle(css!, 0, "name=taskapp_css")
-        css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(#appPath!+"taskView.css"))
-        #webManager!.injectStyle(css!, 0, "name=taskapp_taskview_css")
-        css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(#appPath!+"taskListView.css"))
-        #webManager!.injectStyle(css!, 0, "name=taskapp_list_view_css")
-        css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(#appPath!+"taskCardView.css"))
-        #webManager!.injectStyle(css!, 0, "name=taskapp_card_view_css")
-        css! = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(#appPath!+"Settings.css"))
-        #webManager!.injectStyle(css!, 0, "name=taskapp_settings_css")
+        #injectCSSFile("TaskApp.css")
+        #injectCSSFile("taskView.css")
+        #injectCSSFile("taskListView.css")
+        #injectCSSFile("taskCardView.css")
+        #injectCSSFile("Settings.css")
+
         REM ' set legacy BBj className values when running in DWC.
         if info(3,6)="6" then
             bbjapi().getWebManager().setAttribute("dwc.class","true")
@@ -794,6 +790,21 @@ class public TaskApp
         #webManager!.injectStyle(css!, 0, "app_custom_css_property")
     methodend
 
+    REM /**
+    REM  * Injects the CSS file given from the fileName! into the webManager.
+    REM  * Depends on the definitions of #appPath! and #webManager!
+    REM  * Sets the name of the CSS file to taskapp_filename_css.
+    REM  * 
+    REM  * @param BBjString fileName!  The name of the CSS file  
+    REM  */
+    method public void injectCSSFile(BBjString fileName!)
+        chan = unt
+        open(chan) #appPath!+fileName!
+        read record(chan,siz=100000) css$
+        
+        #webManager!.injectStyle(css$, 0, "name=taskapp_"+fileName!.toLowerCase().replace(".","_"))
+    methodend
+    
     REM /**
     REM  * Returns the collection of Task objects in a JsonArray.  This is used to
     REM  * serialize the tasks so that they can be exported, shared with another app,
