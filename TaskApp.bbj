@@ -152,11 +152,11 @@ class public TaskApp
         #webManager!.injectLinkUrl("https://fonts.googleapis.com", 1, "rel=preconnect")
         #webManager!.injectLinkUrl("https://fonts.gstatic.com", 1, "crossorigin")
         #webManager!.injectLinkUrl("https://fonts.googleapis.com/css2?" + fontFamily!, 1, "rel=stylesheet,display=swap")
-        
+
         REM Inject links for Ionic Web Components
         url! = "https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"
         #webManager!.injectScriptUrl(url!,1,"type=module")
-        
+
         url! = "https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"
         #webManager!.injectScriptUrl(url!,1,"type=module")
 
@@ -249,7 +249,7 @@ class public TaskApp
         #winMain! = #sysgui!.addWindow("TaskApp", $011C1091$)
         #winMain!.addClass("winMain")
         #winMain!.setIcon(#appPath!+"images/DWCTaskApp.png")
-        
+
         #winToolBar! = #createWinToolBar()
         #winTitle! = #createWinTitle()
 
@@ -263,9 +263,9 @@ class public TaskApp
         #winTaskCardView!.setVisible(0)
 
         #winTaskCard! = #winTaskCardView!.addChildWindow("All Tasks", $00108800$, #sysgui!.getAvailableContext())
-        #winTaskCard!.addClass("winCardTasks")
+        #winTaskCard!.addClass("winCardTasks fadeIn")
         #winTaskCardComplete! = #winTaskCardView!.addChildWindow("Completed Tasks", $00108800$, #sysgui!.getAvailableContext())
-        #winTaskCardComplete!.addClass("winCardTasks")
+        #winTaskCardComplete!.addClass("winCardTasks fadeIn")
         #winTaskCardComplete!.setVisible(0)
 
         #addTaskList("default")
@@ -289,32 +289,32 @@ class public TaskApp
     method public BBjChildWindow createWinTitle()
         winTitle! = #winMain!.addChildWindow("Title", $00108800$, #sysgui!.getAvailableContext())
         winTitle!.addClass("winTitle")
-        
+
         labelDay! = winTitle!.addStaticText("Today", $4000$)
         labelDay!.addClass("labelDay")
         labelDay!.setName("labelDay")
         labelDate! = winTitle!.addStaticText(date(0:"%Dl, %Ml %D"), $4000$)
         labelDate!.addClass("labelDate")
         labelDate!.setName("labelDate")
-        
+
         segmentChangeView! = winTitle!.addWebComponent("ion-segment")
         segmentChangeView!.setAttribute("value","list")
         segmentChangeView!.setAttribute("mode","md")
-        
+
         eventOptions! = segmentChangeView!.newEventOptions()
         eventOptions!.addItem("value","event.target.value")
 
         segmentCardView! = winTitle!.addWebComponent("ion-segment-button")
         segmentCardView!.setAttribute("value","card")
         segmentCardView!.setHtml("Card View")
-        
+
         segmentListView! = winTitle!.addWebComponent("ion-segment-button")
         segmentListView!.setAttribute("value","list")
         segmentListView!.setHtml("List View")
-        
+
         segmentChangeView!.setSlot(segmentListView!)
         segmentChangeView!.setSlot(segmentCardView!)
-        
+
         segmentChangeView!.setCallback("ionChange", #this!, "OnChangeLayout", eventOptions!)
 
         methodret winTitle!
@@ -327,7 +327,7 @@ class public TaskApp
     method public BBjChildWindow createWinToolBar()
         winToolBar! = #winMain!.addChildWindow("ToolBar", $00108800$, #sysgui!.getAvailableContext())
         winToolBar!.addClass("winToolBar")
-                
+
         REM Create a linefeed-delimited list of font families from the vectory to populate the BBjListButton
         fontFamiliesList! = java.lang.String.join($0a$, java.util.Arrays.asList(#vectFontFamilies!))
         REM Modfify each entry in the list so that use uses HTML markup to style the font name to that font family
@@ -342,7 +342,7 @@ class public TaskApp
         lstFontFamily!.setAttribute("open-height", "100%")
         lstFontFamily!.addClass("nav_item nav_fonts")
         lstFontFamily!.setCallback(BBjControl.ON_LIST_CHANGE, #this!, "onListChangeFontFamilies")
-        
+
         REM Select the correct font family for the tasks in the BBjListButton
         if (#vectFontFamilies!.contains(#prefsTaskFontFamily!)) then
             REM Select the user's preferred font family in the list
@@ -352,7 +352,7 @@ class public TaskApp
             lstFontFamily!.selectIndex(0)
             #setCssProperty("--app-font-task", str(#vectFontFamilies!.getItem(0)))
         endif
-        
+
         btnAddTask! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='plus'></dwc-icon>")
         btnAddTask!.addClass("toolbar_icon")
         btnAddTask!.setToolTipText("Add Task")
@@ -607,7 +607,7 @@ class public TaskApp
         methodret cast(Task, #tasks!.get(uuid!))
     methodend
 
-    
+
     REM /**
     REM  * Toggles the layout type for the tasks, alternating betweeen a list (default) and card layout
     REM  *
@@ -794,17 +794,17 @@ class public TaskApp
     REM  * Injects the CSS file given from the fileName! into the webManager.
     REM  * Depends on the definitions of #appPath! and #webManager!
     REM  * Sets the name of the CSS file to taskapp_filename_css.
-    REM  * 
-    REM  * @param BBjString fileName!  The name of the CSS file  
+    REM  *
+    REM  * @param BBjString fileName!  The name of the CSS file
     REM  */
     method public void injectCSSFile(BBjString fileName!)
         chan = unt
-        open(chan) #appPath!+fileName!
-        read record(chan,siz=100000) css$
-        
+        open(chan,isz=-1) #appPath!+fileName!
+        read record(chan,siz=1000000) css$
+
         #webManager!.injectStyle(css$, 0, "name=taskapp_"+fileName!.toLowerCase().replace(".","_"))
     methodend
-    
+
     REM /**
     REM  * Returns the collection of Task objects in a JsonArray.  This is used to
     REM  * serialize the tasks so that they can be exported, shared with another app,
