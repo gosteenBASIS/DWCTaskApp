@@ -226,15 +226,7 @@ class public TaskApp
     REM  * Runs the TaskApp application
     REM  */
     method public void run()
-        if (new java.io.File(#appPath!+"tasks.json").exists()) then
-            #onImport(null(), err=*next)
-        else
-            #createSampleTasks(50)
-        endif
-
-        if (#tasks!.size() = 0)
-            #createSampleTasks(50)
-        endif
+        #onImport(null())
 
         REM Create the UI and display the tasks
         #sysgui! = BBjAPI().openSysGui("X0")
@@ -633,8 +625,7 @@ class public TaskApp
         task! = event!.getObject()
         uuid! = task!.getUuid()
 
-        Utils.consoleLog("In TaskApp::onTaskUpdate for task with title '" + task!.getTitle() + "'")
-        REM If the UUID is not present in #tasks!, this is a new Task to be added.
+        rem If the UUID is not present in #tasks!, this is a new Task to be added.
         if (#tasks!.containsKey(uuid!) = 0) then
             #addTask(task!)
             #addTaskListView(task!)
@@ -835,11 +826,18 @@ class public TaskApp
     method public void onExport(BBjButtonPushEvent e!)
         json! = #getTasksAsJsonArray()
         gson! = new GsonBuilder().setPrettyPrinting().create()
+
+        rem Write the tasks out to the client browser's storage
+        jsonString! = gson!.toJson(json!).toString()
+        BBjAPI().getThinClient().setUserProperty(BBjThinClient.USER_PROPERTIES_STORAGE, #appName!, jsonString!)
+
+        Utils.consoleLog("Exported " + str(#tasks!.size()) + " tasks to the client browser's storage")
         chan = unt
         f$ = #appPath! + "tasks.json"
         open(chan, isz=-1, mode="O_TRUNC,O_CREATE") f$
             write record(chan) gson!.toJson(json!).toString()
         close(chan)
+
     methodend
 
     REM /**
@@ -848,11 +846,19 @@ class public TaskApp
     REM  * @param BBjButtonPushEvent e!     BBjButtonPushEvent that invoked this method.
     REM  */
     method public void onImport(BBjButtonPushEvent e!)
-        chan = unt
-        f$ = #appPath! + "tasks.json"
-        open(chan, isz=-1) f$
-            read record(chan, siz=-1000000) json$
-        close(chan)
+        rem Read in the tasks from the client browser's storage
+        json$ = BBjAPI().getThinClient().getUserProperty(BBjThinClient.USER_PROPERTIES_STORAGE, #appName!, err=*NEXT)
+
+        rem If there weren't any tasks in user storage, attempt to load them from a file on the server
+        if (len(json$) = 0) then
+            chan = unt
+            f$ = #appPath! + "tasks.json"
+            open(chan, isz=-1, err=ERR_MISSING_TASKS_FILE) f$
+                read record(chan, siz=-1000000) json$
+            close(chan)
+            loadedTasksFromFile = 1
+        endif
+
         parser! = new JsonParser()
         json! = parser!.parseString(json$)
 
@@ -865,7 +871,20 @@ class public TaskApp
             t! = new Task(jsonTask!)
             #addTask(t!)
         wend
+
         Utils.consoleLog("Loaded " + str(#tasks!.size()) + " tasks")
+
+        rem If we loaded the tasks from the server file, then write them to browser storage
+        if (loadedTasksFromFile) then
+            #onExport(null())
+        endif
+        methodret
+
+        ERR_MISSING_TASKS_FILE:
+        rem If the tasks aren't present in browser storage or a server file, then we create sample tasks
+        #createSampleTasks(20)
+        Utils.consoleLog("created " + str(#tasks!.size()) + " sample tasks")
+        #onExport(null())
     methodend
 
 

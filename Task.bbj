@@ -137,7 +137,7 @@ class public Task
         #Title! = ""
         #Description! = ""
         #Uuid! = java.util.UUID.randomUUID().toString()
-        #Priority! = 6
+        #Priority! = Task.PRIORITY_LOW()
         #Tags! = BBjAPI().makeVector()
         #Complete! = 0
         #DueDate! = -1
@@ -146,7 +146,7 @@ class public Task
 
     REM /**
     REM  * Copy all editable info into this task from source; excluding Uuid and Created timestamp
-    REM  * 
+    REM  *
     REM  * @param Task source!  The source Task to copy into this Task object
     REM  */
     method public void copyInfo(Task source!)
@@ -172,7 +172,7 @@ class public Task
         if priority! > #PRIORITY_LOW() then
             priority! = #PRIORITY_LOW()
         endif
-        
+
         #Priority! = priority!
     methodend
 
