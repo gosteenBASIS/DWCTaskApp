@@ -12,7 +12,6 @@ class public TaskCardView extends TaskView
     field protected BBjButton       btnSetComplete!
     field protected BBjString       lock! = "<html><dwc-icon pool='tabler' name='lock' style='width: 30px; height: 30px'></dwc-icon>"
     field protected BBjString       lockOpen! = "<html><dwc-icon pool='tabler' name='lock-open' style='width: 30px; height: 30px'></dwc-icon>"
-    field protected BBjString       trashIcon! = "<html><dwc-icon pool='tabler' name='trash' style='width: 25px; height: 25px'></dwc-icon>"
     field protected BBjStaticText   status!
 
     REM /**
@@ -46,7 +45,8 @@ class public TaskCardView extends TaskView
         #btnSetComplete!.addClass("btnSetComplete")
         #btnSetComplete!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "setComplete")
 
-        #btnDeleteTask! = #win!.addButton(#trashIcon!)
+        trashIcon! = "<html><dwc-icon pool='tabler' name='trash' style='width: 25px; height: 25px'></dwc-icon>"
+        #btnDeleteTask! = #win!.addButton(trashIcon!)
         #btnDeleteTask!.addClass("btnDelete")
         #btnDeleteTask!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onDelete")
 
