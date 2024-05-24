@@ -8,7 +8,6 @@
     --app-color-b: 35%;
     --app-color-primary: hsl(var(--app-color-h), var(--app-color-s), var(--app-color-b));
     --app-color-window-bg: hsl(0, 0%, 95%);
-    --app-color-navbar-bg: hsl(var(--app-color-h), calc(var(--app-color-s) * 0.75), 95%);
     --app-color-text-normal-l: 20%;
     --app-color-text-light-l:  40%;
     --app-color-text-faint-l:  60%;
@@ -36,7 +35,6 @@
 /* Dark mode CSS custom properties                  */
 /* ================================================ */
 [data-app-theme="dark"], [data-app-theme="dark-pure"] {
-    --app-color-navbar-bg: hsl(var(--app-color-h), calc(var(--app-color-s) * 0.50), 15%);
     --app-color-text-normal-l: 90%;
     --app-color-text-light-l:  70%;
     --app-color-text-faint-l:  60%;
@@ -122,9 +120,6 @@ dwc-checkbox.hydrated {
 
 
 /* Layout                                    */
-/* https://vue-grid-generator.netlify.app/
-{"areas":[["winNavBar","winToolBar"],["winNavBar","winTitle"],["winNavBar","winTasks"]],"columns":["5em","1fr"],"rows":["3em","10em","1fr"],"gridWidth":"100%","gridHeight":"100%"}
-*/
 /* ================================================ */
 
 .BBjSimpleWindow {
@@ -141,8 +136,8 @@ dwc-checkbox.hydrated {
     display: grid;
     width: 100%;
     height: 100%;
-    grid-template-areas: 'winNavBar winToolBar' 'winNavBar winTitle' 'winNavBar winTasks';
-    grid-template-columns: 15em 1fr;
+    grid-template-areas: 'winToolBar' 'winTitle' 'winTasks';
+    grid-template-columns: 1fr;
     grid-template-rows: 3em 5em 1fr;
 }
 
@@ -151,18 +146,6 @@ dwc-checkbox.hydrated {
     width: 100%;
     padding-left: 5%;
     padding-right: 5%;
-}
-
-.winNavBar {
-    grid-area: winNavBar;
-    background-color: var(--app-color-navbar-bg);
-    display: flex;
-    flex-flow: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    width: 100%;
-    padding: var(--dwc-space);
-    gap: calc(var(--dwc-space) * 3);
 }
 
 .winToolBar {
@@ -208,35 +191,6 @@ dwc-checkbox.hydrated {
     max-width: 1000px;
     overflow-y: scroll;
 }
-
-
-/* NavBar Items (left-most window)                  */
-/* ================================================ */
-.nav_item {
-    width: 100%;
-}
-
-.nav_user_name {
-    height: 2em;
-    line-height: 2.5em;
-    text-indent: 2.75em;
-}
-
-.nav_user_name::before {
-    position: absolute;
-    top: var(--dwc-space);
-    left: var(--dwc-space);
-    width: 2.5em;
-    height: 2.5em;
-    background: var(--app-color-primary);
-    border-radius: 100%;
-    text-indent: initial;
-    text-align: center;
-    line-height: 2.5em;
-    color: var(--dwc-color-white);
-    font-weight: 700;
-}
-
 
 /* Task Property Sheet Styling */
 .BBjTopLevelWindow.BBjDialog {
@@ -291,9 +245,6 @@ dwc-checkbox.hydrated {
 }
 
 @media (max-width: 500px) {
-    .winNavBar {
-        display: none;
-    }
 
     .winMain .BBjPanel {
         grid-template-columns: 0 1fr;

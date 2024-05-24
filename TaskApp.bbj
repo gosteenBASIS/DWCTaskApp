@@ -30,7 +30,6 @@ class public TaskApp
     field protected TaskProperties      taskProperties!
     field protected Settings            settings!
     field protected TaskCardView        taskCardView! = new TaskCardView()
-    field protected BBjChildWindow      winNavBar!
     field protected BBjChildWindow      winToolBar!
     field protected BBjChildWindow      winTitle!
     field protected BBjChildWindow      winViews!
@@ -248,53 +247,13 @@ class public TaskApp
         #winMain! = #sysgui!.addWindow("TaskApp", $011C1091$)
         #winMain!.addClass("winMain")
         #winMain!.setIcon(#appPath!+"images/DWCTaskApp.png")
-
-        REM Create the child windows
-        #winNavBar! = #winMain!.addChildWindow("NavBar", $00108800$, #sysgui!.getAvailableContext())
-        #winNavBar!.addClass("winNavBar")
-
-        REM Determine the user's name and initials for the profile display in the NavBar
-        userName! = System.getProperty("com.basis.jetty.company_name")
-        if (userName! = null()) then userName! = "Guest User"
-        userInitials! = userName!.toUpperCase().substring(0,2)
-        lblUserName! = #winNavBar!.addStaticText(userName!)
-        lblUserName!.addClass("nav_item nav_user_name")
-        #webManager!.injectStyle(".nav_item.nav_user_name::before { content: '" + userInitials! + "';")
-
-        REM Create a linefeed-delimited list of font families from the vectory to populate the BBjListButton
-        fontFamiliesList! = java.lang.String.join($0a$, java.util.Arrays.asList(#vectFontFamilies!))
-        REM Modfify each entry in the list so that use uses HTML markup to style the font name to that font family
-        regExSearchFor! = "(?mi)^(.*)$"
-        regExReplaceWith! = "<html><span style='font-family:$1;font-weight:var(--app-font-weight-task);font-size:var(--app-font-size-task);letter-spacing:var(--app-font-spacing-task);'>$1</span>"
-        fontFamiliesList! = fontFamiliesList!.replaceAll(regExSearchFor!, regExReplaceWith!)
-
-        REM Add the font family listbutton, add some custom classes, and set the callback
-        #lstFontFamily! = #winNavBar!.addListButton(fontFamiliesList!)
-        #lstFontFamily!.setAttribute("button-height", "2.25em")
-        #lstFontFamily!.setAttribute("label", "Font Family")
-        #lstFontFamily!.setAttribute("open-height", "100%")
-        #lstFontFamily!.addClass("nav_item nav_fonts")
-        #lstFontFamily!.setCallback(BBjControl.ON_LIST_CHANGE, #this!, "onListChangeFontFamilies")
-
-        REM Select the correct font family for the tasks in the BBjListButton
-        if (#vectFontFamilies!.contains(#prefsTaskFontFamily!)) then
-            REM Select the user's preferred font family in the list
-            #lstFontFamily!.selectIndex(#vectFontFamilies!.indexOf(#prefsTaskFontFamily!))
-        else
-            REM Since the user's preferred font family for the tasks wasn't in the vector, we'll default to the first item in the list
-            #lstFontFamily!.selectIndex(0)
-            #setCssProperty("--app-font-task", str(#vectFontFamilies!.getItem(0)))
-        endif
-
-        REM Add Control to switch layout from list view to card view
-        #switchLayout! = #winNavBar!.addRadioButton("Layout Type")
-        #switchLayout!.addClass("switchLayout")
-        #switchLayout!.setAttribute("switch", "")
-        #switchLayout!.setAttribute("expanse", "m")
-        #switchLayout!.setCallback(BBjControl.ON_CHECK_CHANGE, #this!, "OnSwitchChangeLayout")
-
+        
         #winToolBar! = #createWinToolBar()
         #winTitle! = #createWinTitle()
+        
+
+
+
 
         REM TASK LIST VIEW: main window
         #winTasks! = #winMain!.addChildWindow("Tasks", $00108800$, #sysgui!.getAvailableContext())
@@ -350,7 +309,38 @@ class public TaskApp
     method public BBjChildWindow createWinToolBar()
         winToolBar! = #winMain!.addChildWindow("ToolBar", $00108800$, #sysgui!.getAvailableContext())
         winToolBar!.addClass("winToolBar")
+                
+        REM Create a linefeed-delimited list of font families from the vectory to populate the BBjListButton
+        fontFamiliesList! = java.lang.String.join($0a$, java.util.Arrays.asList(#vectFontFamilies!))
+        REM Modfify each entry in the list so that use uses HTML markup to style the font name to that font family
+        regExSearchFor! = "(?mi)^(.*)$"
+        regExReplaceWith! = "<html><span style='font-family:$1;font-weight:var(--app-font-weight-task);font-size:var(--app-font-size-task);letter-spacing:var(--app-font-spacing-task);'>$1</span>"
+        fontFamiliesList! = fontFamiliesList!.replaceAll(regExSearchFor!, regExReplaceWith!)
 
+        REM Add the font family listbutton, add some custom classes, and set the callback
+        lstFontFamily! = winToolBar!.addListButton(fontFamiliesList!)
+        lstFontFamily!.setAttribute("button-height", "2.25em")
+        lstFontFamily!.setAttribute("label", "Font Family")
+        lstFontFamily!.setAttribute("open-height", "100%")
+        lstFontFamily!.addClass("nav_item nav_fonts")
+        lstFontFamily!.setCallback(BBjControl.ON_LIST_CHANGE, #this!, "onListChangeFontFamilies")
+        
+        REM Select the correct font family for the tasks in the BBjListButton
+        if (#vectFontFamilies!.contains(#prefsTaskFontFamily!)) then
+            REM Select the user's preferred font family in the list
+            lstFontFamily!.selectIndex(#vectFontFamilies!.indexOf(#prefsTaskFontFamily!))
+        else
+            REM Since the user's preferred font family for the tasks wasn't in the vector, we'll default to the first item in the list
+            lstFontFamily!.selectIndex(0)
+            #setCssProperty("--app-font-task", str(#vectFontFamilies!.getItem(0)))
+        endif
+        
+        switchLayout! = winToolBar!.addRadioButton("Layout Type")
+        switchLayout!.addClass("switchLayout")
+        switchLayout!.setAttribute("switch", "")
+        switchLayout!.setAttribute("expanse", "m")
+        switchLayout!.setCallback(BBjControl.ON_CHECK_CHANGE, #this!, "OnSwitchChangeLayout")
+        
         btnAddTask! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='plus'></dwc-icon>")
         btnAddTask!.addClass("toolbar_icon")
         btnAddTask!.setToolTipText("Add Task")
@@ -386,6 +376,9 @@ class public TaskApp
         btnReload!.setToolTipText("Reload")
         btnReload!.setAttribute("expanse", "xs")
         btnReload!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onReload")
+        
+
+
 
         methodret winToolBar!
     methodend
