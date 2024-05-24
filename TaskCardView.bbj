@@ -158,7 +158,8 @@ class public TaskCardView extends TaskView
     REM  * @param BBjButtonPushEvent e!     The BBjButtonPushEvent that causes this method to be executed
     REM  */
     method public void onDelete(BBjButtonPushEvent e!)
-        i = msgbox("This won't do anything yet", BBjSysGui.MSGBOX_BUTTONS_YES_NO + BBjSysGui.MSGBOX_ICON_EXCLAMATION, "Delete Task")
+        #task!.setDeleted(1)
+        BBjAPI().postCustomEvent("TASK_UPDATE",#task!)
     methodend
 classend
 
