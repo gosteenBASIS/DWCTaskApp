@@ -19,8 +19,8 @@
     --app-font-size-task: var(--dwc-font-size-m);
     --app-font-spacing-task: normal;
     --ion-color-primary: var(--app-color-primary);
-    --ion-text-color: var(--dwc-color-black);
-    --ion-text-color-rgb: var(--dwc-color-black);
+    --ion-text-color: var(--dwc-color-body-text);
+    --ion-text-color-rgb: var(--dwc-color-body-text);
 }
 
 /* Override the DWC's default CSS custom properties */
