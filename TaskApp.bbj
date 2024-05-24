@@ -388,9 +388,6 @@ class public TaskApp
         btnReload!.setToolTipText("Reload")
         btnReload!.setAttribute("expanse", "xs")
         btnReload!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onReload")
-        
-
-
 
         methodret winToolBar!
     methodend
