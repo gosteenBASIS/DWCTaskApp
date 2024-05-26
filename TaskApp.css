@@ -15,7 +15,7 @@
     --app-color-text-light:  hsl(0, 0%, var(--app-color-text-light-l));
     --app-color-text-faint:  hsl(0, 0%, var(--app-color-text-faint-l));
     --app-font-family-task: var(--dwc-font-family);
-    --app-font-weight-task: var(--dwc-font-weight-semibold);
+    --app-font-weight-task: var(--dwc-font-weight-bold);
     --app-font-size-task: var(--dwc-font-size-m);
     --app-font-spacing-task: normal;
     --ion-color-primary: var(--app-color-primary);
@@ -24,19 +24,23 @@
     --ion-font-family: var(--app-font-family);
 }
 
+
+
 /* Override the DWC's default CSS custom properties */
 /* ================================================ */
 :root {
-    --dwc-font-family: 'AR One Sans', 'Gabarito', 'K2D', 'Overlock', 'Encode Sans Semicondensed', 'Aller', 'Alatsi', 'Akrobat', var(--dwc-font-family-sans);
+    --dwc-font-family: 'Gabarito', 'K2D', 'Overlock', 'Encode Sans Semicondensed', 'Aller', 'Alatsi', 'Akrobat', var(--dwc-font-family-sans);
     --dwc-color-body-text: var(--app-color-text-normal);
     --dwc-color-primary-h: var(--app-color-h);
     --dwc-color-default-h: var(--app-color-h);
     --dwc-color-default-s: 25%;
     --dwc-list-padding: calc(var(--dwc-space) / 2);
+    --dwc-choicebox-button-height: 2.35em;
+    --dwc-combobox-field-height: var(--dwc-choicebox-button-height);
 }
 
 
-/* Dark mode CSS custom properties                  */
+/* Dark mode specific CSS custom properties         */
 /* ================================================ */
 [data-app-theme="dark"], [data-app-theme="dark-pure"] {
     --app-color-text-normal-l: 90%;
@@ -49,24 +53,23 @@
 /* ================================================ */
 
 /* Modify the entire DOM */
-html, body, .BBjWindowManagerDesktop {
+html, body, dwc-frame-manager{
     background: var(--app-color-window-bg);
     padding: 0;
     margin: 0;
-    width: 100%;
-    height: 100%;
+    width: 100dvw;
+    height: 100dvh;
     display: flex;
 }
 
 /* Modify ALL BBjButtons by setting their color and font size & weight */
 dwc-button::part(label) {
-    /* color: var(--app-color-primary); */
     font-size: var(--dwc-font-size-l);
     font-weight: var(--dwc-font-weight-semibold);
 }
 
 /* Set a larger minimum width for the message box buttons */
-.BBjMsgBox-button {
+dwc-dialog footer dwc-button {
     min-width: 5em;
 }
 
@@ -80,53 +83,18 @@ dwc-checkbox.hydrated {
     transform: scale3d(1,1,1);
     padding-left: 1px;
 }
-.fadeIn {
-    animation: fadeIn 350ms ease-in-out 1 forwards;
-}
-.zoomIn {
-    animation: zoomIn 400ms ease-in-out 1 forwards;
-}
-.bounceIn {
-    animation: bounceIn 2500ms ease-in-out 1 forwards;
-}
-.pulse {
-    animation: bounceIn 2500ms ease-in-out 1 forwards;
-}
 
 
-/* BBjRadioButton styled as a Switch                */
-/* ================================================ */
-.switchLayout {
-    --dwc-switch-size: 4em;
-    --dwc-switch-background: hsl(var(--app-color-h), 25%, 90%);
-    --dwc-switch-hover-background:  hsl(var(--app-color-h), 25%, 97%);
-    --dwc-switch-checked-background: hsl(var(--app-color-h), var(--app-color-s), 35%);
-    --dwc-switch-hover-checked-background: hsl(var(--app-color-h), var(--app-color-s), 42%);
-}
-.switchLayout::part(input) {
-    width: 6em;
-}
-.switchLayout.dwc-checked::part(input)::before {
-    transform: translateX(200%);
-}
-.switchLayout:not([checked])::part(input)::after {
-    content: 'List';
-    right: 1.0em;
-    position: absolute;
-    font-weight: bold;
-}
-.switchLayout[checked]::part(input)::after {
-    content: 'Card';
-    left: 1.0em;
-    position: absolute;
-    font-weight: bold;
-}
 
-
-/* Layout                                    */
+/* Layout                                           */
 /* ================================================ */
 
-.BBjSimpleWindow {
+/* Centers dialogs */
+dwc-frame {
+    margin: auto;
+}
+
+dwc-panel {
     width: 100%;
     height: 100%;
 }
@@ -136,10 +104,10 @@ dwc-checkbox.hydrated {
     max-height: 100dvh;
 }
 
-.winMain .BBjPanel {
+.winMain dwc-window-content {
     display: grid;
-    width: 100%;
-    height: 100%;
+    width: 100dvw;
+    height: 100dvh;
     grid-template-areas: 'winToolBar' 'winTitle' 'winTasks';
     grid-template-columns: 1fr;
     grid-template-rows: 3em 10em 1fr;
@@ -196,77 +164,43 @@ dwc-checkbox.hydrated {
     overflow-y: scroll;
 }
 
-/* Task Property Sheet Styling */
-.BBjTopLevelWindow.BBjDialog {
-    margin: auto;
+
+
+/* Task Property Sheet Styling                      */
+/* ================================================ */
+dwc-frame.winTaskPropertiesContainer {
+    /* Increased the selector specificity to override the DWC's dwc-frame flow layout properties */
+    max-height: 90dvh;
+    overflow: auto;
+    max-width: min(30em, 90dvw);
 }
 
-.winTaskPropertiesContainer.BBjTopLevelWindow {
-    /* Had to over-specify to "win the specificity battle" with DWC */
-     max-height: 90dvh;
-     overflow: auto;
-     max-width: max(300px, 40dvw);
-     display: table;
-}
-
-.winTaskProperties .BBjPanel {
-    max-width: 25em;
+.winTaskProperties dwc-window-content {
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
-    /* max-width: 40dvw; */
     padding: var(--dwc-space-l);
     gap: var(--dwc-space-m);
-    /* width: max(300px, 40dvw); */
 }
 
-.winTaskProperties .BBjPanel .BBjControl {
+.winTaskProperties dwc-window-content > * {
     width: 100%;
 }
 
-.winTaskProperties .BBjPanel .BBjInputD,
-.winTaskProperties .BBjPanel .BBjListButton {
+.winTaskProperties dwc-window-content dwc-dropdown .winTaskProperties dwc-window-content dwc-datefield {
     flex: 1 1 auto;
     min-width: 10em;
     width: auto;
 }
-
-.winTaskProperties .BBjPanel .BBjButton {
+.winTaskProperties dwc-window-content dwc-button {
     flex: 1 1 30%;
     min-width: 10em;
     width: auto;
 }
-
-.winTaskProperties .BBjPanel .BBjControl:last-child {
+.winTaskProperties dwc-window-content dwc-button:last-child {
     width: 100%;
 }
 
-@media (max-height: 600px) {
-    .winTaskPropertiesContainer.BBjTopLevelWindow {
-        width: 90%; /* Expand width to 100% when screen height is too small */
-        max-width: none; /* Remove maximum width constraint */
-    }
-}
-
-@media (max-width: 500px) {
-
-    .winMain .BBjPanel {
-        grid-template-columns: 0 1fr;
-    }
-
-    .winTasks {
-        padding: 5% 5%;
-    }
-}
-
-/* .winTaskProperties .BBjChildWindow {
-    display: flex;
-    flex-flow: row;
-    justify-content: space-between;
-    margin-top: 1em;
-    padding: var(--dwc-focus-ring-width);
-}
-*/
 
 
 /* Day and Date headers for TaskList window         */
@@ -285,14 +219,18 @@ dwc-checkbox.hydrated {
     font-weight: normal;
 }
 
-.BBjDialogGlassPane {
-    background-color: hsla(0, 0%, 0%, 0.5);
+
+
+/* Glasspane for modal dialog windows               */
+/* ================================================ */
+dwc-dialog-glass-pane {
+    background: hsla(var(--app-color-h), 20%, 20%, 0.8)
 }
 
 
 
-
-
+/* Popup menu styling                               */
+/* ================================================ */
 .menu-item::part(control) {
 	padding: none;
 }
@@ -308,6 +246,8 @@ dwc-checkbox.hydrated {
 .no-events {
     pointer-events: none;
 }
+
+
 
 /*  Toolbar Icons                                   */
 /* ================================================ */
@@ -362,6 +302,19 @@ dwc-checkbox.hydrated {
 
 /* Animations                                       */
 /* ================================================ */
+.fadeIn {
+    animation: fadeIn 350ms ease-in-out 1 forwards;
+}
+.zoomIn {
+    animation: zoomIn 400ms ease-in-out 1 forwards;
+}
+.bounceIn {
+    animation: bounceIn 2500ms ease-in-out 1 forwards;
+}
+.pulse {
+    animation: bounceIn 2500ms ease-in-out 1 forwards;
+}
+
 @keyframes zoomIn {
     from {
         transform: scale3d(0, 0, 0);
