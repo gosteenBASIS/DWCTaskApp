@@ -70,7 +70,7 @@
 	justify-self: left;
 	align-items: start;
 	font-size: 18px;
-	line-height: 1.4em;
+	/* line-height: 1.4em; */
 	text-wrap: wrap;
 	height: auto;
 	max-height: 3lh;
@@ -153,10 +153,9 @@
 .winCardView .textDescription {
 	grid-row-start: 4;
  	grid-column: 1 / 3;
- 	line-height: 1.4em;
    	height: 8.4em;
   	/* overflow: hidden; */
-	opacity: .5;
+	color: hsla(var(--app-color-h), 15%, 50%);
 
 	/* adds ellipsis to end of 6th line of paragraph - no full browser support of this feature yet */
 	display: -webkit-box;
@@ -165,6 +164,8 @@
     /* overflow: auto;  */
     text-overflow: ellipsis;
 	text-wrap: wrap;
+
+	align-self: stretch;
 }
 
 .winCardView .dueDate {

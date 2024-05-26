@@ -4,6 +4,7 @@
 	color: var(--dwc-color-danger);
 	white-space: nowrap;
 	font-weight: 600;
+	opacity: 0.75;
 }
 
 /*  Priority flags and popup menus                  */
@@ -13,9 +14,7 @@
 	opacity: .1;
 }
 
-/* Priority 1 is blue, so we'd typically use the DWC's primary color but since we allow the user */
-/* to customize the primary color hue, then we have to force this to the default primary color hue */
-.priority-5 {
+priority-5 {
     color: #2c80d4;
 	opacity: 1;
 }

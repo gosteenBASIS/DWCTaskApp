@@ -46,9 +46,10 @@ dwc-checkbox {
 
 /* Description styling on task-list-view */
 .winListView .textDescription {
-    opacity: 0.5;
+    /* opacity: 0.5; */
     align-self: start;
     grid-column: 2 / 2;
+    color: hsla(var(--app-color-h), 15%, 50%);
 }
 
 .winListView .priorityFlag {
