@@ -108,8 +108,10 @@ class public TaskApp
     field protected BBjString prefsTaskFontSize! = "var(--dwc-font-size-m)"
     REM /** The user's preferred font letter spacing (CSS: letter-spacing) for the tasks.  This will usually be 'normal', but can be a length as in '0.5px'. */
     field protected BBjString prefsTaskFontSpacing! = "normal"
-    REM /** The user's preferred font letter spacing (CSS: letter-spacing) for the tasks.  This will usually be 'normal', but can be a length as in '0.5px'. */
+    REM /** The user's preferred task view layout: card or list. */
     field protected BBjString prefsTaskView! = "list"
+    REM /** The user's preferred global hue color to tint the app. */
+    field protected BBjString prefsTaskHue! = "15"
     REM /** The user's preferred font weight for the tasks */
     field protected BBjNumber prefsDefaultTaskPriority! = 3
     REM /** The TaskApp's version, used for display purposes only */
@@ -169,6 +171,7 @@ class public TaskApp
         #hashPrefs!.put("prefsTaskFontSpacing", #prefsTaskFontSpacing!)
         #hashPrefs!.put("prefsDefaultTaskPriority", #prefsDefaultTaskPriority!)
         #hashPrefs!.put("prefsTaskView", #prefsTaskView!)
+        #hashPrefs!.put("prefsTaskHue", #prefsTaskHue!)
         #hashPrefs!.put("prefsVersion", #prefsVersion!)
 
         REM Read the user's preferences from a cookie, then apply all saved values to the HashMap of user preferences
@@ -627,10 +630,12 @@ class public TaskApp
         #prefsTaskFontSize! = #hashPrefs!.get("prefsTaskFontSize").toString()
         #prefsTaskFontSpacing! = #hashPrefs!.get("prefsTaskFontSpacing").toString()
         #prefsTaskView! = #hashPrefs!.get("prefsTaskView").toString()
+        #prefsTaskHue! = #hashPrefs!.get("prefsTaskHue").toString()
         #prefsDefaultTaskPriority! = num(#hashPrefs!.get("prefsDefaultTaskPriority"))
 
         REM Now apply the user preferences
         #webManager!.setTheme(#prefsTheme!, err=*NEXT)
+        #setCssProperty("--app-color-h", #prefsTaskHue!)
         #setCssProperty("--app-font-family-task", #prefsTaskFontFamily!)
         #setCssProperty("--app-font-weight-task", #prefsTaskFontWeight!)
         #setCssProperty("--app-font-size-task", #prefsTaskFontSize!)
