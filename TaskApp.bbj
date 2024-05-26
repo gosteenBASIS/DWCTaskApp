@@ -39,20 +39,18 @@ class public TaskApp
     field protected BBjChildWindow      winTaskCardPriority!
     field protected BBjChildWindow      winTaskCardDueDate!
     field protected BBjChildWindow      winTasks!
+    field public    BBjChildWindow      winTasksCardView!
     field protected BBjVector           vectTaskLists! = BBjAPI().makeVector()
+    field protected BBjWebComponent     segmentChangeView!
 
     REM NavBar and ToolBar controls
     field protected BBjButton           btnAddTaskFAB!
-    field protected BBjListButton       lstFontFamily!
-    field protected BBjRadioButton      switchLayout!
 
     REM Misc Data
     field protected BBjString           appName! = "TaskApp"
-    field protected BBjString           version! = "0.07"
+    field protected BBjString           version! = "0.1"
     field protected BBjString           appPath! = dsk("") + dir("")
-    field protected BBjVector           vectFontFamilies! = BBjAPI().makeVector()
     field public    BBjString           taskView! = "incomplete"
-    field public    BBjChildWindow      winTaskCardView!
     field public    BBjButton           btnIncompleteView!
     field public    BBjButton           btnCompleteView!
     field public    BBjButton           btnPriorityView!
@@ -105,11 +103,13 @@ class public TaskApp
     REM /** The user's preferred font family (CSS: font-family)for the tasks */
     field protected BBjString prefsTaskFontFamily! = "Rambla"
     REM /** The user's preferred font weight (CSS: font-weight)for the tasks */
-    field protected BBjString prefsTaskFontWeight! = "var(--dwc-font-weight-semibold)"
+    field protected BBjString prefsTaskFontWeight! = "var(--dwc-font-weight-bold)"
     REM /** The user's preferred font size for the tasks.
     field protected BBjString prefsTaskFontSize! = "var(--dwc-font-size-m)"
     REM /** The user's preferred font letter spacing (CSS: letter-spacing) for the tasks.  This will usually be 'normal', but can be a length as in '0.5px'. */
     field protected BBjString prefsTaskFontSpacing! = "normal"
+    REM /** The user's preferred font letter spacing (CSS: letter-spacing) for the tasks.  This will usually be 'normal', but can be a length as in '0.5px'. */
+    field protected BBjString prefsTaskView! = "list"
     REM /** The user's preferred font weight for the tasks */
     field protected BBjNumber prefsDefaultTaskPriority! = 3
     REM /** The TaskApp's version, used for display purposes only */
@@ -128,9 +128,9 @@ class public TaskApp
         #injectCSSFile("Settings.css")
 
         REM ' set legacy BBj className values when running in DWC.
-        if info(3,6)="6" then
-            bbjapi().getWebManager().setAttribute("dwc.class","true")
-        endif
+        REM if info(3,6)="6" then
+        REM     bbjapi().getWebManager().setAttribute("dwc.class","true")
+        REM endif
 
         REM Set the app's icon in the browser's tab
         url! = "https://public.basis.cloud/images/DWCTaskApp.svg"
@@ -146,28 +146,12 @@ class public TaskApp
         #webManager!.injectLinkUrl(url!, 1, "rel=apple-touch-icon,type=image/png")
         #webManager!.injectLinkUrl(url!, 1, "rel=icon,type=image/png")
 
-        REM Inject links for a number of custom Google fonts
-        fontFamily! = "?family=Asap&family=Bebas+Neue&family=Fira+Sans&family=Fredoka:wght@300..700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Marcellus+SC&family=Marko+One&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Oswald:wght@200..700&family=Rambla:ital,wght@0,400;0,700;1,400;1,700&family=Signika:wght@300;400&family=Teko:wght@300..700&family=Ubuntu&family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Work+Sans"
-        fontFamily! = fontFamily! + "&family=K2D:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800"
-        #webManager!.injectLinkUrl("https://fonts.googleapis.com", 1, "rel=preconnect")
-        #webManager!.injectLinkUrl("https://fonts.gstatic.com", 1, "crossorigin")
-        #webManager!.injectLinkUrl("https://fonts.googleapis.com/css2?" + fontFamily!, 1, "rel=stylesheet,display=swap")
-
         REM Inject links for Ionic Web Components
         url! = "https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"
         #webManager!.injectScriptUrl(url!,1,"type=module")
 
         url! = "https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"
         #webManager!.injectScriptUrl(url!,1,"type=module")
-
-        REM Create a list of font families filled with Google fonts that the user will be able to choose from to style the tasks
-        DATA "Marcellus SC", "Marko One", "Merriweather", "Oswald", "Rambla", "Signika", "Teko", "Ubuntu", "Ubuntu Mono", "Work Sans", "Asap", "K2D", "Bebas Neue", "Fira Sans", "Fredoka",  "Lato"
-        while 1
-            DREAD family$,err=*BREAK
-            #vectFontFamilies!.addItem(family$)
-        wend
-        REM Sort the vector of fonts alphabetically by name
-        java.util.Collections.sort(#vectFontFamilies!)
 
         REM Create the collection for the tasks
         #tasks! = new TreeMap()
@@ -184,11 +168,12 @@ class public TaskApp
         #hashPrefs!.put("prefsTaskFontSize", #prefsTaskFontSize!)
         #hashPrefs!.put("prefsTaskFontSpacing", #prefsTaskFontSpacing!)
         #hashPrefs!.put("prefsDefaultTaskPriority", #prefsDefaultTaskPriority!)
+        #hashPrefs!.put("prefsTaskView", #prefsTaskView!)
         #hashPrefs!.put("prefsVersion", #prefsVersion!)
 
         REM Read the user's preferences from a cookie, then apply all saved values to the HashMap of user preferences
-        REM This means that the HashMap is initially filled with default values, but then the user's saved preferences replace the defaults
-        hashPrefsFromCookie! = #getCookies(#appName!,err=*NEXT)
+        REM This means that the HashMap that was initially filled with default values will now contain the user's saved preferences
+        hashPrefsFromCookie! = Utils.getCookies(#appName!,err=*NEXT)
         if (hashPrefsFromCookie! <> null()) then
             it! = hashPrefsFromCookie!.keySet().iterator()
             while (it!.hasNext())
@@ -200,23 +185,11 @@ class public TaskApp
             wend
         endif
 
-        REM Get the updated preferences from the HashMap and apply the values to our field variables
-        #prefsTheme! = #hashPrefs!.get("prefsTheme").toString()
-        #prefsTaskFontFamily! = #hashPrefs!.get("prefsTaskFontFamily").toString()
-        #prefsTaskFontWeight! = #hashPrefs!.get("prefsTaskFontWeight").toString()
-        #prefsTaskFontSize! = #hashPrefs!.get("prefsTaskFontSize").toString()
-        #prefsTaskFontSpacing! = #hashPrefs!.get("prefsTaskFontSpacing").toString()
-        #prefsDefaultTaskPriority! = num(#hashPrefs!.get("prefsDefaultTaskPriority"))
-
-        REM Finally, apply user preferences
-        #webManager!.setTheme(#prefsTheme!, err=*NEXT)
-        #setCssProperty("--app-font-family-task", #prefsTaskFontFamily!)
-        #setCssProperty("--app-font-weight-task", #prefsTaskFontWeight!)
-        #setCssProperty("--app-font-size-task", #prefsTaskFontSize!)
-        #setCssProperty("--app-font-spacing-task", #prefsTaskFontSpacing!)
-
         REM Register for a custom event that the TaskProperties fires after the user is done editing or adding a task
         BBjAPI().setCustomEventCallback("TASK_UPDATE",#this!,"onTaskUpdate")
+
+        REM Register for a custom event that the user has  modified their preferences via the Settings dialog
+        BBjAPI().setCustomEventCallback("SETTINGS_UPDATE",#this!,"onSettingsUpdate")
     methodend
 
 
@@ -239,7 +212,7 @@ class public TaskApp
     REM  */
     method public void createMainWindow()
         #winMain! = #sysgui!.addWindow("TaskApp", $011C1091$)
-        #winMain!.addClass("winMain")
+        #winMain!.addClass("winMain fadeIn")
         #winMain!.setIcon(#appPath!+"images/DWCTaskApp.png")
 
         #winToolBar! = #createWinToolBar()
@@ -247,21 +220,20 @@ class public TaskApp
 
         REM TASK LIST VIEW: main window
         #winTasks! = #winMain!.addChildWindow("Tasks", $00108800$, #sysgui!.getAvailableContext())
-        #winTasks!.addClass("winTasks listLayout")
+        #winTasks!.addClass("winTasks")
 
         REM TASK CARD VIEW: main window
-        #winTaskCardView! = #winMain!.addChildWindow("Tasks", $00108800$, #sysgui!.getAvailableContext())
-        #winTaskCardView!.addClass("winTaskCardView")
-        #winTaskCardView!.setVisible(0)
+        #winTasksCardView! = #winMain!.addChildWindow("Tasks", $00108800$, #sysgui!.getAvailableContext())
+        #winTasksCardView!.addClass("winTaskCardView")
+        #winTasksCardView!.setVisible(0)
 
-        #winTaskCard! = #winTaskCardView!.addChildWindow("All Tasks", $00108800$, #sysgui!.getAvailableContext())
+        #winTaskCard! = #winTasksCardView!.addChildWindow("All Tasks", $00108800$, #sysgui!.getAvailableContext())
         #winTaskCard!.addClass("winCardTasks fadeIn")
-        #winTaskCardComplete! = #winTaskCardView!.addChildWindow("Completed Tasks", $00108800$, #sysgui!.getAvailableContext())
+        #winTaskCardComplete! = #winTasksCardView!.addChildWindow("Completed Tasks", $00108800$, #sysgui!.getAvailableContext())
         #winTaskCardComplete!.addClass("winCardTasks fadeIn")
         #winTaskCardComplete!.setVisible(0)
 
         #addTaskList("default")
-
 
         REM Create the FAB (floating action button) and the toolbar buttons
         #btnAddTaskFAB! = #winMain!.addButton("<html><dwc-icon pool='tabler' name='plus'></dwc-icon>")
@@ -270,6 +242,8 @@ class public TaskApp
         #btnAddTaskFAB!.setAttribute("expanse", "xs")
         #btnAddTaskFAB!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onAddTask")
 
+        REM Apply the user's preferences, then display the tasks and set the main window visible
+        #applyUserPreferences()
         #displayTasks()
         #winMain!.setVisible(1)
     methodend
@@ -289,11 +263,11 @@ class public TaskApp
         labelDate!.addClass("labelDate")
         labelDate!.setName("labelDate")
 
-        segmentChangeView! = winTitle!.addWebComponent("ion-segment")
-        segmentChangeView!.setAttribute("value","list")
-        segmentChangeView!.setAttribute("mode","md")
+        #segmentChangeView! = cast(BBjWebComponent, winTitle!.addWebComponent("ion-segment"))
+        #segmentChangeView!.setAttribute("value","list")
+        #segmentChangeView!.setAttribute("mode","md")
 
-        eventOptions! = segmentChangeView!.newEventOptions()
+        eventOptions! = #segmentChangeView!.newEventOptions()
         eventOptions!.addItem("value","event.target.value")
 
         segmentCardView! = winTitle!.addWebComponent("ion-segment-button")
@@ -304,10 +278,10 @@ class public TaskApp
         segmentListView!.setAttribute("value","list")
         segmentListView!.setHtml("List View")
 
-        segmentChangeView!.setSlot(segmentListView!)
-        segmentChangeView!.setSlot(segmentCardView!)
+        #segmentChangeView!.setSlot(segmentListView!)
+        #segmentChangeView!.setSlot(segmentCardView!)
 
-        segmentChangeView!.setCallback("ionChange", #this!, "OnChangeLayout", eventOptions!)
+        #segmentChangeView!.setCallback("ionChange", #this!, "OnChangeLayout", eventOptions!)
 
         methodret winTitle!
     methodend
@@ -319,31 +293,6 @@ class public TaskApp
     method public BBjChildWindow createWinToolBar()
         winToolBar! = #winMain!.addChildWindow("ToolBar", $00108800$, #sysgui!.getAvailableContext())
         winToolBar!.addClass("winToolBar")
-
-        REM Create a linefeed-delimited list of font families from the vectory to populate the BBjListButton
-        fontFamiliesList! = java.lang.String.join($0a$, java.util.Arrays.asList(#vectFontFamilies!))
-        REM Modfify each entry in the list so that use uses HTML markup to style the font name to that font family
-        regExSearchFor! = "(?mi)^(.*)$"
-        regExReplaceWith! = "<html><span style='font-family:$1;font-weight:var(--app-font-weight-task);font-size:var(--app-font-size-task);letter-spacing:var(--app-font-spacing-task);'>$1</span>"
-        fontFamiliesList! = fontFamiliesList!.replaceAll(regExSearchFor!, regExReplaceWith!)
-
-        REM Add the font family listbutton, add some custom classes, and set the callback
-        lstFontFamily! = winToolBar!.addListButton(fontFamiliesList!)
-        lstFontFamily!.setAttribute("button-height", "2.25em")
-        lstFontFamily!.setAttribute("label", "Font Family")
-        lstFontFamily!.setAttribute("open-height", "100%")
-        lstFontFamily!.addClass("nav_item nav_fonts")
-        lstFontFamily!.setCallback(BBjControl.ON_LIST_CHANGE, #this!, "onListChangeFontFamilies")
-
-        REM Select the correct font family for the tasks in the BBjListButton
-        if (#vectFontFamilies!.contains(#prefsTaskFontFamily!)) then
-            REM Select the user's preferred font family in the list
-            lstFontFamily!.selectIndex(#vectFontFamilies!.indexOf(#prefsTaskFontFamily!))
-        else
-            REM Since the user's preferred font family for the tasks wasn't in the vector, we'll default to the first item in the list
-            lstFontFamily!.selectIndex(0)
-            #setCssProperty("--app-font-task", str(#vectFontFamilies!.getItem(0)))
-        endif
 
         btnAddTask! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='plus'></dwc-icon>")
         btnAddTask!.addClass("toolbar_icon")
@@ -606,11 +555,15 @@ class public TaskApp
     REM  * @param BBjWebEvent event!    The BBjWebEvent object that triggered this method
     REM  */
     method public void OnChangeLayout(BBjWebEvent event!)
-    REM toggles visibility for both view windows
-        cardView = (event!.getEventMap().get("value") = "card")
-        #winTaskCardView!.setVisible(cardView)
-        #winTasks!.setVisible(!cardView)
-        methodret
+        REM Get the chosen layout type, which is either "list" or "card", and save it to the preferences
+        #prefsTaskView! = event!.getEventMap().get("value").toString()
+        #hashPrefs!.put("prefsTaskView", #prefsTaskView!)
+        Utils.setCookies(#appName!, #hashPrefs!, err=*NEXT)
+
+        REM Show the list or card window based on the chosen layout
+        showListview = #prefsTaskView! = "list"
+        #winTasks!.setVisible(showListview,err=*NEXT)
+        #winTasksCardView!.setVisible(!showListview,err=*NEXT)
     methodend
 
     REM /**
@@ -648,6 +601,54 @@ class public TaskApp
         REM Automatically export every time a task is updated
         #onExport(null())
     methodend
+
+    REM /**
+    REM  * Activated by custom event SETTINGS_UPDATE
+    REM  * This method handles any UI or data updates that may be necessary when the user's preferences are modified.
+    REM  *
+    REM  * @param BBjCustomEvent event! A BBjCustomEvent that has the updated preferences HashMap as a payload.
+    REM  */
+    method public void onSettingsUpdate(BBjCustomEvent event!)
+        #hashPrefs! = cast(HashMap, event!.getObject())
+        #applyUserPreferences()
+    methodend
+
+
+    REM /**
+    REM  * Sets the field variables from the preferences HashMap and applies them to the user interface.
+    REM  *
+    REM  * @param BBjCustomEvent event! A BBjCustomEvent that has the updated preferences HashMap as a payload.
+    REM  */
+    method public void applyUserPreferences()
+        REM Get the preferences from the HashMap and apply the values to our field variables
+        #prefsTheme! = #hashPrefs!.get("prefsTheme").toString()
+        #prefsTaskFontFamily! = #hashPrefs!.get("prefsTaskFontFamily").toString()
+        #prefsTaskFontWeight! = #hashPrefs!.get("prefsTaskFontWeight").toString()
+        #prefsTaskFontSize! = #hashPrefs!.get("prefsTaskFontSize").toString()
+        #prefsTaskFontSpacing! = #hashPrefs!.get("prefsTaskFontSpacing").toString()
+        #prefsTaskView! = #hashPrefs!.get("prefsTaskView").toString()
+        #prefsDefaultTaskPriority! = num(#hashPrefs!.get("prefsDefaultTaskPriority"))
+
+        REM Now apply the user preferences
+        #webManager!.setTheme(#prefsTheme!, err=*NEXT)
+        #setCssProperty("--app-font-family-task", #prefsTaskFontFamily!)
+        #setCssProperty("--app-font-weight-task", #prefsTaskFontWeight!)
+        #setCssProperty("--app-font-size-task", #prefsTaskFontSize!)
+        #setCssProperty("--app-font-spacing-task", #prefsTaskFontSpacing!)
+
+        showListview = #prefsTaskView! = "list"
+        #winTasks!.setVisible(showListview,err=*NEXT)
+        #winTasksCardView!.setVisible(!showListview,err=*NEXT)
+        #segmentChangeView!.setAttribute("value",#prefsTaskView!)
+
+        REM Ensure the preferred font works if it's a Google font
+        fontFamilyLink! = "https://fonts.googleapis.com/css2?family=" + #prefsTaskFontFamily! + "&display=swap"
+        #webManager!.injectLinkUrl(fontFamilyLink!, 0, "rel=stylesheet")
+
+        REM Save out the user's preferences in a cookie
+        Utils.setCookies(#appName!, #hashPrefs!, err=*NEXT)
+    methodend
+
 
     REM /**
     REM  * Removes a Task from the tasklist by specifying the tasks's ID
@@ -731,33 +732,6 @@ class public TaskApp
             #taskView! = "incomplete"
             #winTaskCardComplete!.setVisible(0)
         endif
-    methodend
-
-    REM /**
-    REM  * Callback that's executed when the user selects a custom font family.
-    REM  * This gets the list button's selected index, then resolves that to
-    REM  * a custom font family that's stored in the #vectFontFamilies!
-    REM  * vector.  It then sets the CSS custom property for the DWC's
-    REM  * sans-serif font family to the chosen font.
-    REM  *
-    REM  * @param BBjListChangeEvent e!    The BBjListButton's ON_LIST_CHANGE event
-    REM  */
-    method public void onListChangeFontFamilies(BBjListChangeEvent e!)
-        declare auto BBjString fontFamily!
-
-        REM Get the selected item from the list
-        fontFamilyHtml! = e!.getSelectedItem()
-
-        REM Since the item has HTML markup to style the family namne, remove all the HTML tags
-        fontFamily! = fontFamilyHtml!.replaceAll("<[^>]*>", "")
-
-        REM Now set the font for the tasks by setting the CSS custom property that we defined for that purpose
-        #setCssProperty("--app-font-family-task", fontFamily!)
-
-        REM Save out the user's preferred task font family in a cookie
-        #prefsTaskFontFamily! = fontFamily!
-        #hashPrefs!.put("prefsTaskFontFamily", #prefsTaskFontFamily!)
-        #setCookies(#appName!, #hashPrefs!, err=*NEXT)
     methodend
 
     REM /**
@@ -857,6 +831,9 @@ class public TaskApp
                 read record(chan, siz=-1000000) json$
             close(chan)
             loadedTasksFromFile = 1
+            Utils.consoleLog("Loaded " + str(#tasks!.size()) + " tasks from server file")
+        else
+            Utils.consoleLog("Loaded " + str(#tasks!.size()) + " tasks from browser storage")
         endif
 
         parser! = new JsonParser()
@@ -872,8 +849,6 @@ class public TaskApp
             #addTask(t!)
         wend
 
-        Utils.consoleLog("Loaded " + str(#tasks!.size()) + " tasks")
-
         rem If we loaded the tasks from the server file, then write them to browser storage
         if (loadedTasksFromFile) then
             #onExport(null())
@@ -885,99 +860,6 @@ class public TaskApp
         #createSampleTasks(20)
         Utils.consoleLog("created " + str(#tasks!.size()) + " sample tasks")
         #onExport(null())
-    methodend
-
-
-    REM /**
-    REM  * Method to set multiple string-based user preferences via a HashMap to reduce client-server round trips
-    REM  * <p>
-    REM  * The get/setCookies() methods bypasses the effort of creating string templates and BBjTemplatedStrings as well as encoding
-    REM  * information for safety and portability.  You only have to provide a unique key value that's used to
-    REM  * store the information (usually the app's name, but it can be virtually any string) and a HashMap filled
-    REM  * with the information to store.  The method iterates through the HashMap's keys and builds a string
-    REM  * that consists of the HashMap's key/value pairs joined by the <code>"-,-"</code> characters in an
-    REM  * attempt to provide a reasonable separator that won't interfere with the stored data.
-    REM  * <p>
-    REM  * Both get/setCookies() methods throw errors, so you may want to add an <code>,err=</code> branch when
-    REM  * calling these methods.  The getCookies() method will return a Hashmap filled with key/value pairs if
-    REM  * the cookie exists.  If it does not exist, it will return <code>null()</code>.
-    REM  * <p>
-    REM  * The corresponding <code>getCookies()</code> method is used to retrieve the stored information from the
-    REM  * client's computer (GUI) or browser (BUI).  You only need to provide the unique key value when getting
-    REM  * the saved cookies, greatly simplifying the reading/writing of user properties
-    REM  *
-    REM  * @param BBjString p_cookieKey$    A BBjString with the unique identifier for the saved cookie, such as the application's name
-    REM  * @param HashMap p_cookieHashMap!  A HashMap filled with key/value pairs to be stored where the key is the field name and the value is the string value for that field
-    REM  *
-    REM  * @see <a href='https://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html' target='_blank'>HashMap</a> for more information on the Java HashMap object
-    REM  */
-    method public static void setCookies(BBjString p_cookieKey$, HashMap p_cookieHashMap!)
-        it! = p_cookieHashMap!.keySet().iterator()
-        while it!.hasNext()
-            key$ = it!.next()
-            value$ = str(p_cookieHashMap!.get(key$))
-            fullString$ = fullString$ + key$ + "-,-" + value$ + $0A$
-        wend
-        fullString$ = fullString$(1, len(fullString$)-1)
-
-        REM Encode the string contents and store it in the user properties based on the provided application key
-        encodedCookies$ = URLEncoder.encode(fullString$)
-        tc! = BBjAPI().getThinClient(err=ERR_GETTING_THINCLIENT)
-        tc!.setUserProperty(p_cookieKey$, encodedCookies$, err=ERR_WRITING_COOKIE)
-        methodret
-
-        ERR_GETTING_THINCLIENT:
-        throw "Error getting the BBjThinClient when trying to set cookies.  The error message was: " + errmes(-1), 725
-
-        ERR_WRITING_COOKIE:
-        throw "Error saving cookie.  The error message was: " + errmes(-1), 720
-    methodend
-
-
-    REM /**
-    REM  * Method to get multiple string-based user preferences in a HashMap to reduce client-server round trips
-    REM  * <p>
-    REM  * The get/setCookies() methods offer a simple way to persist application setting via a HashMap.  You
-    REM  * save information by calling the setCookies() method providing a unique key value that's used to
-    REM  * store the information (usually the app's name, but it can be virtually any string) and a HashMap filled
-    REM  * with the information to store.  You can then call the getCookies() method to retrieve the saved
-    REM  * information in a HashMap.  The methods bypass the effort of creating string templates and BBjTemplatedStrings
-    REM  * as well as encoding information for safety and portability.
-    REM  * <p>
-    REM  * Both get/setCookies() methods throw errors, so you may want to add an <code>,err=</code> branch when
-    REM  * calling these methods.  The getCookies() method will return a Hashmap filled with key/value pairs if
-    REM  * the cookie exists.  If it does not exist, it will return <code>null()</code>.
-    REM  *
-    REM  * @param BBjString p_cookieKey$    A BBjString with the unique identifier for the saved cookie, such as the application's name
-    REM  *
-    REM  * @return HashMap                  A HashMap filled with key/value pairs, basically a clone of the HahMap provided to the setCookies() method.  If the cookie doesn't exist on the client's machine or browser, the method retuns null().
-    REM  */
-    method public static HashMap getCookies(BBjString p_cookieKey$)
-        declare HashMap             hashCookies!
-
-        tc! = BBjAPI().getThinClient(err=ERR_GETTING_THINCLIENT)
-        prop$ = tc!.getUserProperty(p_cookieKey$, ERR=ERR_READING_COOKIE)
-        cookieValue! = URLDecoder.decode(prop$)
-        if (cookieValue! <> null()) then
-            hashCookies! = new HashMap()
-            fieldList! = java.util.Arrays.asList(cookieValue!.split($0A$))
-            for fieldNum = 0 to fieldList!.size()-1
-                keyVal! = fieldList!.get(fieldNum)
-                keyValVector! = java.util.Arrays.asList(keyVal!.split("-,-"))
-                hashCookies!.put(keyValVector!.get(0,err=*NEXT), keyValVector!.get(1,err=*NEXT))
-            next
-        endif
-        methodret hashCookies!
-
-        ERR_GETTING_THINCLIENT:
-        throw "Error getting the BBjThinClient when trying to get cookies.  The error message was: " + errmes(-1), 725
-
-        ERR_READING_COOKIE:
-        if (err=11) then
-            methodret null()
-        else
-            throw "Error: " + str(err) + ", With error message: " + errmes(-1), 720
-        endif
     methodend
 
 classend
