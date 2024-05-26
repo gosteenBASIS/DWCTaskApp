@@ -45,6 +45,7 @@
 /* Dark mode specific CSS custom properties         */
 /* ================================================ */
 [data-app-theme="dark"], [data-app-theme="dark-pure"] {
+    --app-color-b: 65%;
     --app-color-text-normal-l: 90%;
     --app-color-text-light-l:  70%;
     --app-color-text-faint-l:  60%;
@@ -231,7 +232,9 @@ dwc-frame.winTaskPropertiesContainer {
 /* Glasspane for modal dialog windows               */
 /* ================================================ */
 dwc-dialog-glass-pane {
-    background: hsla(var(--app-color-h), 20%, 20%, 0.8)
+    background: hsla(var(--app-color-h), 20%, 20%, 0.8);
+    max-width: 200dvw;
+    max-height: 200dvh;
 }
 
 

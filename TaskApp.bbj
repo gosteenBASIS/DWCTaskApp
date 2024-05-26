@@ -129,10 +129,8 @@ class public TaskApp
         #injectCSSFile("taskCardView.css")
         #injectCSSFile("Settings.css")
 
-        REM ' set legacy BBj className values when running in DWC.
-        REM if info(3,6)="6" then
-        REM     bbjapi().getWebManager().setAttribute("dwc.class","true")
-        REM endif
+        REM To prevent the user from accidentally pinching and zooming on a phone
+        #webManager!.setMeta("viewport", "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no")
 
         REM Set the app's icon in the browser's tab
         url! = "https://public.basis.cloud/images/DWCTaskApp.svg"
