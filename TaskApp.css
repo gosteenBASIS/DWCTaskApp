@@ -35,6 +35,8 @@
     --dwc-color-default-h: var(--app-color-h);
     --dwc-color-default-s: 25%;
     --dwc-list-padding: calc(var(--dwc-space) / 2);
+    --dwc-color-chooser-slider-height: 2.5em;
+    --dwc-color-chooser-pointer-size: 3em;
     --dwc-choicebox-button-height: 2.35em;
     --dwc-combobox-field-height: var(--dwc-choicebox-button-height);
 }
@@ -46,6 +48,10 @@
     --app-color-text-normal-l: 90%;
     --app-color-text-light-l:  70%;
     --app-color-text-faint-l:  60%;
+
+    .winToolBar {
+        background: hsl(var(--app-color-h), 25%, 20%);
+    }
 }
 
 
@@ -128,6 +134,7 @@ dwc-panel {
     align-items: center;
     padding: var(--dwc-space);
     gap: var(--dwc-space) var(--dwc-space);
+    background: hsl(var(--app-color-h), 25%, 90%);
 
     /* This keeps the buttons together and centers them on the display */
     /* width: fit-content;
