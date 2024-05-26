@@ -1,7 +1,7 @@
 REM /**
 REM  * TaskCardView.bbj
 REM  * @author gosteen, ndecker, bhighhill
-REM  * 
+REM  *
 REM  * TaskCardView represents the childwindow of a task view
 REM  */
 REM package TaskApp

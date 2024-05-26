@@ -1,7 +1,7 @@
 /* The CSS file that accompanies the TaskApp DWC application - Card View Layout */
 
 .winTaskCardView {
-	margin-top: 70px;
+	margin-top: 1em;
 	display: flex;
 	/* flex-wrap: wrap; */
  	justify-content: center;
@@ -57,7 +57,7 @@
 	cursor: pointer;
 }
 
-.winCardView .BBjStaticText {
+.winCardView dwc-static-text {
     font-family: var(--app-font-task);
     font-weight: 500;
 }
@@ -74,7 +74,7 @@
 	text-wrap: wrap;
 	height: auto;
 	max-height: 3lh;
-} 
+}
 
 .winCardView .textStatus {
 	grid-row: 2 / 2;
@@ -157,11 +157,11 @@
    	height: 8.4em;
   	/* overflow: hidden; */
 	opacity: .5;
-	
-	/* adds ellipsis to end of 6th line of paragraph - no full browser support of this feature yet */ 	
-	display: -webkit-box; 
-    -webkit-box-orient: vertical; 
-    -webkit-line-clamp: 6; 
+
+	/* adds ellipsis to end of 6th line of paragraph - no full browser support of this feature yet */
+	display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 6;
     /* overflow: auto;  */
     text-overflow: ellipsis;
 	text-wrap: wrap;
@@ -203,5 +203,11 @@
 }
 
 .winCardView .complete {
-	background-color: rgba(6, 209, 60, .05); 
+	background-color: rgba(6, 209, 60, .05);
+}
+
+/* Task items that are complete */
+.task.complete .textTitle {
+    filter: opacity(0.65);
+	text-decoration: line-through;
 }

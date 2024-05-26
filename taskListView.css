@@ -9,6 +9,7 @@
     justify-items: start;
     border: transparent;
     border-bottom-color: var(--dwc-color-gray-80);
+    padding-right: 0.5em;
 }
 
 dwc-checkbox {
@@ -23,16 +24,19 @@ dwc-checkbox {
     white-space: nowrap;
 }
 
-.task .BBjStaticText {
-    font-family: var(--app-font-family-task);
-    font-weight: var(--app-font-weight-task);
-    letter-spacing: var(--app-font-spacing-task);
+.task dwc-static-text {
     font-size: 1.1em;
     align-self: center;
     white-space: nowrap;
 	text-overflow: ellipsis;
 	max-width: 99%;
     transition: letter-spacing 100ms ease;
+}
+
+.task dwc-static-text.textTitle, .task dwc-static-text.textDescription {
+    font-family: var(--app-font-family-task);
+    font-weight: var(--app-font-weight-task);
+    letter-spacing: var(--app-font-spacing-task);
 }
 
 /* Title styling on task-list-view */
@@ -61,7 +65,7 @@ dwc-checkbox {
 }
 
 /* Task items that are complete */
-.task.complete .BBjStaticText {
+.task.complete dwc-static-text {
     filter: opacity(0.65);
 	text-decoration: line-through;
 }
