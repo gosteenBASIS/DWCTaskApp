@@ -1,6 +1,6 @@
 REM /**
 REM  * TaskApp.bbj
-REM  * @author gosteen, ndecker, bhighhill
+REM  * @author gosteen, ndecker, bhighhill, aanasta
 REM  */
 REM package TaskApp
 
@@ -28,7 +28,6 @@ class public TaskApp
     field protected BBjWebManager       webManager!
     field protected BBjTopLevelWindow   winMain!
     field protected TaskProperties      taskProperties!
-    field protected Settings            settings!
     field protected TaskCardView        taskCardView! = new TaskCardView()
     field protected BBjChildWindow      winToolBar!
     field protected BBjChildWindow      winTitle!
@@ -43,8 +42,11 @@ class public TaskApp
     field protected BBjVector           vectTaskLists! = BBjAPI().makeVector()
     field protected BBjWebComponent     segmentChangeView!
 
-    REM NavBar and ToolBar controls
-    field protected BBjButton           btnAddTaskFAB!
+    REM /** The Settings class that shows the settings window for the application */
+    field protected Settings            settings!
+
+    REM /** The hashmap that stores all the user's preferences */
+    field private HashMap hashPrefs!
 
     REM Misc Data
     field protected BBjString           appName! = "TaskApp"
@@ -94,33 +96,15 @@ class public TaskApp
         methodret "system"
     methodend
 
-    REM Define the user preferences which will be stored in a HashMap and saved out as a cookie
-    REM ========================================
-    REM /** The hashmap that stores all the user's preferences */
-    field private HashMap hashPrefs!
-    REM /** The user's preferred DWC theme to use for the UI, i.e. light, dark, dark-pure, or system */
-    field protected BBjString prefsTheme! = #THEME_SYSTEM()
-    REM /** The user's preferred font family (CSS: font-family)for the tasks */
-    field protected BBjString prefsTaskFontFamily! = "Rambla"
-    REM /** The user's preferred font weight (CSS: font-weight)for the tasks */
-    field protected BBjString prefsTaskFontWeight! = "var(--dwc-font-weight-bold)"
-    REM /** The user's preferred font size for the tasks.
-    field protected BBjString prefsTaskFontSize! = "var(--dwc-font-size-m)"
-    REM /** The user's preferred font letter spacing (CSS: letter-spacing) for the tasks.  This will usually be 'normal', but can be a length as in '0.5px'. */
-    field protected BBjString prefsTaskFontSpacing! = "normal"
-    REM /** The user's preferred task view layout: card or list. */
-    field protected BBjString prefsTaskView! = "list"
-    REM /** The user's preferred global hue color to tint the app. */
-    field protected BBjString prefsTaskHue! = "15"
-    REM /** The user's preferred font weight for the tasks */
-    field protected BBjNumber prefsDefaultTaskPriority! = 3
-    REM /** The TaskApp's version, used for display purposes only */
-    field protected BBjString prefsVersion! = #version!
-
 
     REM Constructors
     REM ========================================
     method public TaskApp()
+
+        REM Log the startup time
+        Utils.consoleLog("Starting at " + date(0:"%Y-%Mz-%Dz %Hz:%mz:%sz"))
+
+
         REM Instatiate the WebManager and use it to inject the app's CSS
         #webManager! = BBjAPI().getWebManager()
         #injectCSSFile("TaskApp.css")
@@ -162,15 +146,16 @@ class public TaskApp
 
         REM Create the HashMap to store the user preferences and load it up with the default values
         #hashPrefs! = new HashMap()
-        #hashPrefs!.put("prefsTheme", #prefsTheme!)
-        #hashPrefs!.put("prefsTaskFontFamily", #prefsTaskFontFamily!)
-        #hashPrefs!.put("prefsTaskFontWeight", #prefsTaskFontWeight!)
-        #hashPrefs!.put("prefsTaskFontSize", #prefsTaskFontSize!)
-        #hashPrefs!.put("prefsTaskFontSpacing", #prefsTaskFontSpacing!)
-        #hashPrefs!.put("prefsDefaultTaskPriority", #prefsDefaultTaskPriority!)
-        #hashPrefs!.put("prefsTaskView", #prefsTaskView!)
-        #hashPrefs!.put("prefsTaskHue", #prefsTaskHue!)
-        #hashPrefs!.put("prefsVersion", #prefsVersion!)
+        #hashPrefs!.put("prefsTaskTheme", #THEME_SYSTEM())
+        #hashPrefs!.put("prefsTaskFontFamily", "Rambla")
+        #hashPrefs!.put("prefsTaskFontWeight", "var(--dwc-font-weight-bold)")
+        #hashPrefs!.put("prefsTaskFontSize", "var(--dwc-font-size-m)")
+        #hashPrefs!.put("prefsTaskFontSpacing", "normal")
+        #hashPrefs!.put("prefsDefaultTaskPriority", "3")
+        #hashPrefs!.put("prefsTaskView", "list")
+        #hashPrefs!.put("prefsTaskHue", "15")
+        #hashPrefs!.put("prefsTaskTips", "1")
+        #hashPrefs!.put("prefsVersion", #version!)
 
         REM Read the user's preferences from a cookie, then apply all saved values to the HashMap of user preferences
         REM This means that the HashMap that was initially filled with default values will now contain the user's saved preferences
@@ -185,6 +170,7 @@ class public TaskApp
                 endif
             wend
         endif
+        Utils.consoleLogValues("User's Preferences after getting cookie:", #hashPrefs!.toString())
 
         REM Register for a custom event that the TaskProperties fires after the user is done editing or adding a task
         BBjAPI().setCustomEventCallback("TASK_UPDATE",#this!,"onTaskUpdate")
@@ -200,7 +186,7 @@ class public TaskApp
     REM  * Runs the TaskApp application
     REM  */
     method public void run()
-        #onImport(null())
+        #importTasks()
 
         REM Create the UI and display the tasks
         #sysgui! = BBjAPI().openSysGui("X0")
@@ -237,11 +223,11 @@ class public TaskApp
         #addTaskList("default")
 
         REM Create the FAB (floating action button) and the toolbar buttons
-        #btnAddTaskFAB! = #winMain!.addButton("<html><dwc-icon pool='tabler' name='plus'></dwc-icon>")
-        #btnAddTaskFAB!.addClass("btnAddTaskFAB")
-        #btnAddTaskFAB!.setAttribute("theme", "primary")
-        #btnAddTaskFAB!.setAttribute("expanse", "xs")
-        #btnAddTaskFAB!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onAddTask")
+        btnAddTaskFAB! = #winMain!.addButton("<html><dwc-icon pool='tabler' name='plus'></dwc-icon>")
+        btnAddTaskFAB!.addClass("btnAddTaskFAB")
+        btnAddTaskFAB!.setAttribute("theme", "primary")
+        btnAddTaskFAB!.setAttribute("expanse", "xs")
+        btnAddTaskFAB!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onAddTask")
 
         REM Apply the user's preferences, then display the tasks and set the main window visible
         #applyUserPreferences()
@@ -297,39 +283,49 @@ class public TaskApp
 
         btnAddTask! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='plus'></dwc-icon>")
         btnAddTask!.addClass("toolbar_icon")
-        btnAddTask!.setToolTipText("Add Task")
+
         btnAddTask!.setAttribute("expanse", "xs")
         btnAddTask!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onAddTask")
 
         btnShowCompletedTasks! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='checks'></dwc-icon>")
         btnShowCompletedTasks!.addClass("toolbar_icon icon-completed")
-        btnShowCompletedTasks!.setToolTipText("Completed Tasks")
+
         btnShowCompletedTasks!.setAttribute("expanse", "xs")
         btnShowCompletedTasks!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onShowCompletedTasks")
 
         btnSettings! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='settings'></dwc-icon>")
         btnSettings!.addClass("toolbar_icon")
-        btnSettings!.setToolTipText("Settings")
+
         btnSettings!.setAttribute("expanse", "xs")
         btnSettings!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onShowSettings")
 
-        btnExport! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='file-download'></dwc-icon>")
+        btnExport! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='cloud-download'></dwc-icon>")
         btnExport!.addClass("toolbar_icon")
-        btnExport!.setToolTipText("Export tasks")
-        btnExport!.setAttribute("expanse", "xs")
-        btnExport!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onExport")
 
-        btnImport! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='file-upload'></dwc-icon>")
+        btnExport!.setAttribute("expanse", "xs")
+        btnExport!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onExportToFile")
+
+        btnImport! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='cloud-upload'></dwc-icon>")
         btnImport!.addClass("toolbar_icon")
-        btnImport!.setToolTipText("Import tasks")
+
         btnImport!.setAttribute("expanse", "xs")
-        btnImport!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onImport")
+        btnImport!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onImportFromFile")
 
         btnReload! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='reload'></dwc-icon>")
         btnReload!.addClass("toolbar_icon icon_reload")
-        btnReload!.setToolTipText("Reload")
+
         btnReload!.setAttribute("expanse", "xs")
         btnReload!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onReload")
+
+        REM Set tooltips for the buttons based on the user's preference
+        if (#hashPrefs!.get("prefsTaskTips") = "1") then
+            btnAddTask!.setToolTipText("Add Task")
+            btnShowCompletedTasks!.setToolTipText("Completed Tasks")
+            btnSettings!.setToolTipText("Settings")
+            btnExport!.setToolTipText("Export tasks")
+            btnImport!.setToolTipText("Import tasks")
+            btnReload!.setToolTipText("Reload Application")
+        endif
 
         methodret winToolBar!
     methodend
@@ -352,11 +348,13 @@ class public TaskApp
         REM TASK LIST VIEW: task loop
         while it!.hasNext()
             task! = it!.next()
-            view! = #addTaskListView(task!)
+            if (task!.getComplete() = 0) then
+                view! = #addTaskListView(task!)
+            endif
 
             cardView! = #addTaskCardView(task!)
             if (task!.getComplete()) then
-                view!.setVisible(1)
+                cardView!.setVisible(1)
             endif
         wend
     methodend
@@ -459,29 +457,29 @@ class public TaskApp
     REM /**
     REM  * Open an edit window to edit or create a new task
     REM  *
-    REM  * @param e!    A BBjClickEvent
+    REM  * @param event!    A BBjClickEvent
     REM  */
-    method public void onTaskClick(BBjClickEvent e!)
+    method public void onTaskClick(BBjClickEvent event!)
         REM Only open window if it doesn't exist, this should be a field variable
         REM We're not using the click event as a click; it could be more efficient to pass a more useful object
         declare auto Task t!
         if (#taskProperties! = null()) then
             #taskProperties! = new TaskProperties()
         endif
-        t! = #tasks!.get(e!.getControl().getAttribute("id"))
+        t! = #tasks!.get(event!.getControl().getAttribute("id"))
         #taskProperties!.loadTask(t!)
 
         REM TASK CARD VIEW: onTaskClick method
-        win! = e!.getControl()
+        win! = event!.getControl()
         lock! = "<html><dwc-icon pool='tabler' name='lock' style='width: 30px; height: 30px'></dwc-icon>"
         lockOpen! = "<html><dwc-icon pool='tabler' name='lock-open' style='width: 30px; height: 30px'></dwc-icon>"
-        btnLock! = e!.getControl().getUserData()
+        btnLock! = event!.getControl().getUserData()
 
         if (btnLock! = null()) OR (btnLock!.getText() = lockOpen!) then
             if (#taskProperties! = null()) then
                 #taskProperties! = new TaskProperties()
             endif
-            t! = #tasks!.get(e!.getControl().getAttribute("id"))
+            t! = #tasks!.get(event!.getControl().getAttribute("id"))
             #taskProperties!.loadTask(t!)
         else
             unlockResult! = msgbox("Would you like to edit task now?", BBjSysGui.MSGBOX_BUTTONS_YES_NO + BBjSysGui.MSGBOX_ICON_INFORMATION, "Unlock Task to Edit")
@@ -496,7 +494,7 @@ class public TaskApp
                 win!.removeClass("card-task-complete")
                 win!.addClass("card-task")
 
-                t! = #tasks!.get(e!.getControl().getAttribute("id"))
+                t! = #tasks!.get(event!.getControl().getAttribute("id"))
                 #taskProperties!.loadTask(t!)
 
                 dataVector! = BBjAPI().makeVector()
@@ -557,12 +555,12 @@ class public TaskApp
     REM  */
     method public void OnChangeLayout(BBjWebEvent event!)
         REM Get the chosen layout type, which is either "list" or "card", and save it to the preferences
-        #prefsTaskView! = event!.getEventMap().get("value").toString()
-        #hashPrefs!.put("prefsTaskView", #prefsTaskView!)
+        prefsTaskView! = event!.getEventMap().get("value").toString()
+        #hashPrefs!.put("prefsTaskView", prefsTaskView!)
         Utils.setCookies(#appName!, #hashPrefs!, err=*NEXT)
 
         REM Show the list or card window based on the chosen layout
-        showListview = #prefsTaskView! = "list"
+        showListview = #hashPrefs!.get("prefsTaskView") = "list"
         #winTasks!.setVisible(showListview,err=*NEXT)
         #winTasksCardView!.setVisible(!showListview,err=*NEXT)
     methodend
@@ -599,8 +597,8 @@ class public TaskApp
             #removeTask(task!)
         endif
 
-        REM Automatically export every time a task is updated
-        #onExport(null())
+        REM Automatically export the tasks every time a task is updated so that we never lose data
+        #exportTasks()
     methodend
 
     REM /**
@@ -621,37 +619,39 @@ class public TaskApp
     REM  * @param BBjCustomEvent event! A BBjCustomEvent that has the updated preferences HashMap as a payload.
     REM  */
     method public void applyUserPreferences()
-        REM Get the preferences from the HashMap and apply the values to our field variables
-        #prefsTheme! = #hashPrefs!.get("prefsTheme").toString()
-        #prefsTaskFontFamily! = #hashPrefs!.get("prefsTaskFontFamily").toString()
-        #prefsTaskFontWeight! = #hashPrefs!.get("prefsTaskFontWeight").toString()
-        #prefsTaskFontSize! = #hashPrefs!.get("prefsTaskFontSize").toString()
-        #prefsTaskFontSpacing! = #hashPrefs!.get("prefsTaskFontSpacing").toString()
-        #prefsTaskView! = #hashPrefs!.get("prefsTaskView").toString()
-        #prefsTaskHue! = #hashPrefs!.get("prefsTaskHue").toString()
-        #prefsDefaultTaskPriority! = num(#hashPrefs!.get("prefsDefaultTaskPriority"))
+        #webManager!.setTheme(#hashPrefs!.get("prefsTaskTheme").toString(), err=*NEXT)
+        #setCssProperty("--app-color-h", #hashPrefs!.get("prefsTaskHue").toString())
+        #setCssProperty("--app-font-family-task", #hashPrefs!.get("prefsTaskFontFamily").toString())
+        #setCssProperty("--app-font-weight-task", #hashPrefs!.get("prefsTaskFontWeight").toString())
+        #setCssProperty("--app-font-size-task", #hashPrefs!.get("prefsTaskFontSize").toString())
+        #setCssProperty("--app-font-spacing-task", #hashPrefs!.get("prefsTaskFontSpacing").toString())
 
-        REM Now apply the user preferences
-        #webManager!.setTheme(#prefsTheme!, err=*NEXT)
-        #setCssProperty("--app-color-h", #prefsTaskHue!)
-        #setCssProperty("--app-font-family-task", #prefsTaskFontFamily!)
-        #setCssProperty("--app-font-weight-task", #prefsTaskFontWeight!)
-        #setCssProperty("--app-font-size-task", #prefsTaskFontSize!)
-        #setCssProperty("--app-font-spacing-task", #prefsTaskFontSpacing!)
-
-        showListview = #prefsTaskView! = "list"
+        showListview = #hashPrefs!.get("prefsTaskView").toString() = "list"
         #winTasks!.setVisible(showListview,err=*NEXT)
         #winTasksCardView!.setVisible(!showListview,err=*NEXT)
-        #segmentChangeView!.setAttribute("value",#prefsTaskView!)
+        #segmentChangeView!.setAttribute("value", #hashPrefs!.get("prefsTaskView").toString())
 
         REM Ensure the preferred font works if it's a Google font
-        fontFamilyLink! = "https://fonts.googleapis.com/css2?family=" + #prefsTaskFontFamily! + "&display=swap"
+        fontFamilyLink! = "https://fonts.googleapis.com/css2?family=" + #hashPrefs!.get("prefsTaskFontFamily").toString() + "&display=swap"
         #webManager!.injectLinkUrl(fontFamilyLink!, 0, "rel=stylesheet")
 
         REM Save out the user's preferences in a cookie
         Utils.setCookies(#appName!, #hashPrefs!, err=*NEXT)
     methodend
 
+    REM /**
+    REM  * Removes all Tasks from the tasklist
+    REM  */
+    method public void removeAllTasks()
+        it! = #tasks!.keySet().iterator()
+        while it!.hasNext()
+            uuid! = it!.next()
+            #taskListViews!.remove(uuid!)
+            #taskCardViews!.remove(uuid!)
+        wend
+        #tasks!.clear()
+        Utils.consoleLog("Removed all tasks from the #tasks! collection")
+    methodend
 
     REM /**
     REM  * Removes a Task from the tasklist by specifying the tasks's ID
@@ -676,12 +676,16 @@ class public TaskApp
     REM /**
     REM  * Displays the app's settings window
     REM  *
-    REM  * @param BBjButtonPushEvent e! The BBjButtonPushEvent that causes this method to be executed
+    REM  * @param BBjButtonPushEvent event! The BBjButtonPushEvent that causes this method to be executed
     REM  */
-    method public void onShowSettings(BBjButtonPushEvent e!)
+    method public void onShowSettings(BBjButtonPushEvent event!)
+        REM If we haven't yet instantiated the Settings class, do so now.
+        REM Otherwise, we'll reuse the one that we used previously to make it display faster.
         if (#settings! = null()) then
             #settings! = new Settings()
         endif
+
+        REM Show the settings window and pass along our HashMap with the user's preferences
         #settings!.onShowSettings(#hashPrefs!)
     methodend
 
@@ -691,9 +695,9 @@ class public TaskApp
     REM  * The code creates a BBjBuiUrlCloseAction object to load the app's URL.  That way, the app can
     REM  * do a RELEASE which causes the same app to be loaded and executed again.
     REM  *
-    REM  * @param BBjButtonPushEvent e! The BBjButtonPushEvent that causes this method to be executed
+    REM  * @param BBjButtonPushEvent event! The BBjButtonPushEvent that causes this method to be executed
     REM  */
-    method public void onReload(BBjButtonPushEvent e!)
+    method public void onReload(BBjButtonPushEvent event!)
         action! = #webManager!.urlAction(#webManager!.getUrl())
         #webManager!.setEndAction(action!)
         release
@@ -704,9 +708,9 @@ class public TaskApp
     REM  *  - creating a new Task object
     REM  *  - displaying the Task's property sheet to the user for customization
     REM  *
-    REM  * @param BBjButtonPushEvent e! The BBjButtonPushEvent that causes this method to be executed
+    REM  * @param BBjButtonPushEvent event! The BBjButtonPushEvent that causes this method to be executed
     REM  */
-    method public void onAddTask(BBjButtonPushEvent e!)
+    method public void onAddTask(BBjButtonPushEvent event!)
         REM create a new task
         task! = new Task()
         REM open the edit window on that task
@@ -724,10 +728,10 @@ class public TaskApp
     REM  * - Toggles all related classes
     REM  * - Triggered by #btnCompleteView!
     REM  *
-    REM  * @param BBjButtonPushEvent e! The BBjButtonPushEvent that causes this method to be executed
+    REM  * @param BBjButtonPushEvent event! The BBjButtonPushEvent that causes this method to be executed
     REM  */
-    method public void onShowCompletedTasks(BBjButtonPushEvent e!)
-        btnShowCompletedTasks! = e!.getControl()
+    method public void onShowCompletedTasks(BBjButtonPushEvent event!)
+        btnShowCompletedTasks! = event!.getControl()
         btnShowCompletedTasks!.toggleClass("icon-completed-selected")
         if (#taskView! = "incomplete") then
             #taskView! = "complete"
@@ -796,11 +800,9 @@ class public TaskApp
     methodend
 
     REM /**
-    REM  * Callback method for the export button. Exports tasks to a task.json file.
-    REM  *
-    REM  * @param BBjButtonPushEvent e! The BBjButtonPushEvent that called this method
+    REM  * Exports tasks to the client browser's storage
     REM  */
-    method public void onExport(BBjButtonPushEvent e!)
+    method public void exportTasks()
         json! = #getTasksAsJsonArray()
         gson! = new GsonBuilder().setPrettyPrinting().create()
 
@@ -809,20 +811,124 @@ class public TaskApp
         BBjAPI().getThinClient().setUserProperty(BBjThinClient.USER_PROPERTIES_STORAGE, #appName!, jsonString!)
 
         Utils.consoleLog("Exported " + str(#tasks!.size()) + " tasks to the client browser's storage")
-        chan = unt
-        f$ = #appPath! + "tasks.json"
-        open(chan, isz=-1, mode="O_TRUNC,O_CREATE") f$
-            write record(chan) gson!.toJson(json!).toString()
-        close(chan)
+        REM chan = unt
+        REM f$ = #appPath! + "tasks.json"
+        REM open(chan, isz=-1, mode="O_TRUNC,O_CREATE") f$
+        REM     write record(chan) jsonString!
+        REM close(chan)
 
     methodend
 
     REM /**
-    REM  * Callback for the Import tasks button.  Imports tasks from the tasks.json file in the TaskApp app directory.
+    REM  * Callback method that exports the tasks to a JSON file on the client.  Since
+    REM  * this app is running in the browser, the file will be saved in the user's
+    REM  * browser's download directory.
     REM  *
-    REM  * @param BBjButtonPushEvent e!     BBjButtonPushEvent that invoked this method.
+    REM  * @param BBjButtonPushEvent event! The BBjButtonPushEvent that called this method
     REM  */
-    method public void onImport(BBjButtonPushEvent e!)
+    method public void onExportToFile(BBjButtonPushEvent event!)
+        declare auto BBjThinClient thinClient!
+        declare auto BBjClientFileSystem clientFileSystem!
+        declare auto BBjClientFile clientFile!
+        declare auto File serverFile!
+        declare auto BBjString serverFilePath!
+
+        REM Get the tasks as a JSON array string
+        json! = #getTasksAsJsonArray()
+        gson! = new GsonBuilder().setPrettyPrinting().create()
+        jsonString! = gson!.toJson(json!).toString()
+
+        rem Write out the JSON to a file on the server
+        serverFile! = File.createTempFile("DWCTaskApp.tasks", ".json")
+        serverFile!.deleteOnExit()
+        serverFilePath! = serverFile!.getCanonicalPath()
+        chan = unt
+        open(chan,MODE="O_TRUNC,O_CREATE") serverFilePath!
+            print(chan) jsonString!
+        close(chan)
+
+        rem Download the server file to the client
+        thinClient! = BBjAPI().getThinClient()
+        clientFileSystem! = thinClient!.getClientFileSystem()
+        clientFile! = clientFileSystem!.getClientFile("DWCTaskApp.tasks.json")
+        clientFile!.copyToClient(serverFilePath!)
+        erase serverFilePath!
+
+        msg! = "<html><h3>Exported your tasks successfully!</h3>"
+        msg! = msg! + "<p>Your tasks have been downloaded to your browser's download directory "
+        msg! = msg! + "as a JSON file named:</p><p><code style='font-weight:bold'>DWCTaskApp.tasks.json</code>.</p></html>"
+        temp=msgbox(msg!, BBjSysGui.MSGBOX_ICON_INFORMATION, "Export Completed", mode="theme=success")
+    methodend
+
+
+    REM /**
+    REM  * Imports the tasks from a JSON file on the client.
+    REM  *
+    REM  * @param BBjButtonPushEvent event!     BBjButtonPushEvent that invoked this method.
+    REM  */
+    method public void onImportFromFile(BBjButtonPushEvent event!)
+        declare auto BBjThinClient thinClient!
+        declare auto BBjClientFileSystem clientFileSystem!
+        declare auto BBjClientFile clientFile!
+
+        REM Get the saved tasks JSON file from the client
+        clientFileResult! = FILEOPEN("Upload a previously-exported JSON tasks file", dsk("")+dir(""),"","json","JSON Files (*.json)" +$0a$ + "*.json" + $0a$ + "All Files (*.*)" + $0a$ + "*.*", 0 ,MODE="CLIENT,EXISTS=1,STYLE=style",err=*NEXT)
+        if (clientFileResult! = "::BAD::") OR (clientFileResult! = "::CANCEL::") then methodret
+        thinClient! = BBjAPI().getThinClient()
+        clientFileSystem! = thinClient!.getClientFileSystem()
+        clientFile! = clientFileSystem!.getClientFile(clientFileResult!)
+        serverFilePath! = clientFile!.copyFromClient()
+
+        rem Attempt to load tasks from the file that we got from the client
+        chan = unt
+        open(chan, isz=-1, err=ERR_MISSING_TASKS_FILE) serverFilePath!
+            read record(chan, siz=-1000000) json$
+        close(chan)
+        erase serverFilePath!
+        Utils.consoleLogValues("Read in task JSON from client file:", json$)
+
+        REM Parse the contents of the file
+        parser! = new JsonParser()
+        json! = parser!.parseString(json$)
+
+        REM Ensure that we got a JSON array of objects, if not then it's not a valid task export file
+        if !(json!.isJsonArray()) then
+            temp=msgbox("The uploaded JSON file did not contain an array of Tasks!", BBjSysGui.MSGBOX_ICON_STOP, "Invalid Task JSON File", mode="theme=danger")
+            methodret
+        endif
+
+        rem Get the array of tasks
+        gson! = new GsonBuilder().setPrettyPrinting().create()
+        array! = gson!.fromJson(json!, JsonArray.class)
+
+        rem From this point on, we have a valid array of tasks so we should remove the current tasks before importing the new ones
+        #removeAllTasks()
+
+        rem Add all the tasks from the imported array and then update the display
+        it! = array!.iterator()
+        while(it!.hasNext())
+            jsonTask! = it!.next()
+            t! = new Task(jsonTask!)
+            #addTask(t!)
+        wend
+
+        rem If we loaded the tasks from the server file, then call the export method to write them to browser storage
+        #exportTasks()
+        Utils.consoleLog("Loaded " + str(#tasks!.size()) + " tasks from imported client file")
+
+        rem For now, simply reload the app to show the updated list of tasks
+        action! = #webManager!.urlAction(#webManager!.getUrl())
+        #webManager!.setEndAction(action!)
+        release
+
+    ERR_MISSING_TASKS_FILE:
+    methodend
+
+
+    REM /**
+    REM  * Imports tasks from the client's browser storage
+    REM  */
+    method public void importTasks()
         rem Read in the tasks from the client browser's storage
         json$ = BBjAPI().getThinClient().getUserProperty(BBjThinClient.USER_PROPERTIES_STORAGE, #appName!, err=*NEXT)
 
@@ -834,9 +940,6 @@ class public TaskApp
                 read record(chan, siz=-1000000) json$
             close(chan)
             loadedTasksFromFile = 1
-            Utils.consoleLog("Loaded " + str(#tasks!.size()) + " tasks from server file")
-        else
-            Utils.consoleLog("Loaded " + str(#tasks!.size()) + " tasks from browser storage")
         endif
 
         parser! = new JsonParser()
@@ -852,17 +955,20 @@ class public TaskApp
             #addTask(t!)
         wend
 
-        rem If we loaded the tasks from the server file, then write them to browser storage
+        rem If we loaded the tasks from the server file, then call the export method to write them to browser storage
         if (loadedTasksFromFile) then
-            #onExport(null())
+            #exportTasks()
+            Utils.consoleLog("Loaded " + str(#tasks!.size()) + " tasks from server file")
+        else
+            Utils.consoleLog("Loaded " + str(#tasks!.size()) + " tasks from browser storage")
         endif
         methodret
 
         ERR_MISSING_TASKS_FILE:
         rem If the tasks aren't present in browser storage or a server file, then we create sample tasks
-        #createSampleTasks(20)
+        #createSampleTasks(5)
         Utils.consoleLog("created " + str(#tasks!.size()) + " sample tasks")
-        #onExport(null())
+        #exportTasks()
     methodend
 
 classend
@@ -883,6 +989,7 @@ use java.util.TreeMap
 use java.util.HashMap
 use java.net.URLEncoder
 use java.net.URLDecoder
+use java.io.File
 
 REM Google's Gson for JSON, which is included with BBj
 use com.google.gson.Gson;           REM https://javadoc.io/static/com.google.code.gson/gson/2.10.1/com.google.gson/com/google/gson/Gson.html
