@@ -171,7 +171,7 @@
 .winCardView .dueDate {
 	background-color: lightgray;
 	width: fit-content;
-	padding: .3em;
+	padding: 0.25em 0.5em;
 	border-radius: .4em;
 }
 
@@ -195,16 +195,16 @@
 	font-weight: 600;
 }
 
-.winCardView .blocked {
-	background-color:rgba(197, 124, 124, .1);
+.winCardView.blocked {
+	background-color:rgba(197, 124, 124, .15);
 }
 
-.winCardView .deferred {
-	background-color: rgba(149, 157, 165, 0.1);
+.winCardView.deferred {
+	background-color: rgba(149, 157, 165, 0.15);
 }
 
-.winCardView .complete {
-	background-color: rgba(6, 209, 60, .05);
+.winCardView.complete {
+	background-color: rgba(6, 209, 60, .15);
 }
 
 /* Task items that are complete */

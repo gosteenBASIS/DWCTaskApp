@@ -170,7 +170,6 @@ class public Utils
         BBjAPI().getWebManager().injectStyle(css!, 0, "app_custom_css_property")
     methodend
 
-
     REM ================================================================================================
     REM Convert a string to title case
     REM ================================================================================================
@@ -222,7 +221,7 @@ class public Utils
     REM  * Converts the Julian date given in the form of a BBjNumber to a java.time.LocalDate
     REM  * <p>
     REM  * Julian date of 1/1/1970 is 2440588.
-    REM  * 
+    REM  *
     REM  * @param BBjNumber jul!    A BBjNumber representation of the julian date.
     REM  * @return LocalDate        The java.time.LocalDate representation of the given BBjNumber representation of the Julian date
     REM  */
@@ -232,9 +231,9 @@ class public Utils
 
     REM /**
     REM  * Converts the given java.time.LocalDate to a BBjNumber representation of the Julian date
-    REM  * 
+    REM  *
     REM  * @param LocalDate ld!     A java.time.LocalDate representation of a date.
-    REM  * @return BBjNumber        The BBjNumber representaion of the Julian date formed from the given java.time.LocalDate. 
+    REM  * @return BBjNumber        The BBjNumber representaion of the Julian date formed from the given java.time.LocalDate.
     REM  */
     method public static BBjNumber getJulian(LocalDate ld!)
         methodret ld!.toEpochDay()+2440588
