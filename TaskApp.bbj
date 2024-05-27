@@ -26,6 +26,8 @@ class public TaskApp
     REM ========================================
     field protected BBjSysGui           sysgui!
     field protected BBjWebManager       webManager!
+    field protected BBjThinClient       thinClient!
+    field protected BBjString           clientOs!
     field protected BBjTopLevelWindow   winMain!
     field protected TaskProperties      taskProperties!
     field protected TaskCardView        taskCardView! = new TaskCardView()
@@ -104,7 +106,6 @@ class public TaskApp
         REM Log the startup time
         Utils.consoleLog("Starting at " + date(0:"%Y-%Mz-%Dz %Hz:%mz:%sz"))
 
-
         REM Instatiate the WebManager and use it to inject the app's CSS
         #webManager! = BBjAPI().getWebManager()
         #injectCSSFile("TaskApp.css")
@@ -155,7 +156,6 @@ class public TaskApp
         #hashPrefs!.put("prefsTaskView", "list")
         #hashPrefs!.put("prefsTaskHue", "15")
         #hashPrefs!.put("prefsTaskTips", "1")
-        #hashPrefs!.put("prefsVersion", #version!)
 
         REM Read the user's preferences from a cookie, then apply all saved values to the HashMap of user preferences
         REM This means that the HashMap that was initially filled with default values will now contain the user's saved preferences
@@ -170,6 +170,15 @@ class public TaskApp
                 endif
             wend
         endif
+        REM We always override whatever version was saved in the client's history with the latest from the app
+        #hashPrefs!.put("prefsVersion", #version!)
+
+        rem Turn off tooltips on iOS
+        #thinClient! = BBjAPI().getThinClient()
+        #clientOs! = #thinClient!.getClientOSName()
+        if (#clientOs!.contains("iOS")) then #hashPrefs!.put("prefsTaskTips", "0")
+
+        REM Log the user's preferences
         Utils.consoleLogValues("User's Preferences after getting cookie:", #hashPrefs!.toString())
 
         REM Register for a custom event that the TaskProperties fires after the user is done editing or adding a task
@@ -202,6 +211,10 @@ class public TaskApp
         #winMain!.addClass("winMain fadeIn")
         #winMain!.setIcon(#appPath!+"images/DWCTaskApp.png")
 
+        rem Add a special class to the main window based on the client's operating system
+        #winMain!.addClass(#clientOs!)
+
+        rem Create the other windows
         #winToolBar! = #createWinToolBar()
         #winTitle! = #createWinTitle()
 
@@ -282,37 +295,37 @@ class public TaskApp
         winToolBar!.addClass("winToolBar")
 
         btnAddTask! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='plus'></dwc-icon>")
-        btnAddTask!.addClass("toolbar_icon")
+        btnAddTask!.addClass("toolbarIcon")
 
         btnAddTask!.setAttribute("expanse", "xs")
         btnAddTask!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onAddTask")
 
         btnShowCompletedTasks! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='checks'></dwc-icon>")
-        btnShowCompletedTasks!.addClass("toolbar_icon icon-completed")
+        btnShowCompletedTasks!.addClass("toolbarIcon icon-completed")
 
         btnShowCompletedTasks!.setAttribute("expanse", "xs")
         btnShowCompletedTasks!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onShowCompletedTasks")
 
         btnSettings! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='settings'></dwc-icon>")
-        btnSettings!.addClass("toolbar_icon")
+        btnSettings!.addClass("toolbarIcon")
 
         btnSettings!.setAttribute("expanse", "xs")
         btnSettings!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onShowSettings")
 
         btnExport! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='cloud-download'></dwc-icon>")
-        btnExport!.addClass("toolbar_icon")
+        btnExport!.addClass("toolbarIcon")
 
         btnExport!.setAttribute("expanse", "xs")
         btnExport!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onExportToFile")
 
         btnImport! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='cloud-upload'></dwc-icon>")
-        btnImport!.addClass("toolbar_icon")
+        btnImport!.addClass("toolbarIcon")
 
         btnImport!.setAttribute("expanse", "xs")
         btnImport!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onImportFromFile")
 
         btnReload! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='reload'></dwc-icon>")
-        btnReload!.addClass("toolbar_icon icon_reload")
+        btnReload!.addClass("toolbarIcon iconReload")
 
         btnReload!.setAttribute("expanse", "xs")
         btnReload!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onReload")

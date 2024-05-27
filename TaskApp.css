@@ -39,6 +39,8 @@
     --dwc-color-chooser-pointer-size: 3em;
     --dwc-choicebox-button-height: 2.35em;
     --dwc-combobox-field-height: var(--dwc-choicebox-button-height);
+    --dwc-overlay-background: hsla(var(--app-color-h), 20%, 20%, 0.8);
+    --dwc-dialog-modal-background: hsla(var(--app-color-h), 20%, 20%, 0.8);
 }
 
 
@@ -49,6 +51,9 @@
     --app-color-text-normal-l: 90%;
     --app-color-text-light-l:  70%;
     --app-color-text-faint-l:  60%;
+
+    --dwc-overlay-background: hsla(var(--app-color-h), 20%, 20%, 0.8);
+    --dwc-dialog-modal-background: hsla(var(--app-color-h), 20%, 20%, 0.8);
 
     .winToolBar {
         background: hsl(var(--app-color-h), 25%, 20%);
@@ -133,15 +138,9 @@ dwc-panel {
     display: flex;
     flex-flow: row;
     align-items: center;
-    padding: var(--dwc-space);
+    padding: var(--dwc-space-xs) var(--dwc-space);
     gap: var(--dwc-space) var(--dwc-space);
     background: hsl(var(--app-color-h), 25%, 90%);
-
-    /* This keeps the buttons together and centers them on the display */
-    /* width: fit-content;
-    justify-content: space-evenly; */
-
-    /* This keeps the buttons on the far right edge of the display */
     width: 100%;
     justify-content: end;
 }
@@ -232,54 +231,38 @@ dwc-frame.winTaskPropertiesContainer {
 /* Glasspane for modal dialog windows               */
 /* ================================================ */
 dwc-dialog-glass-pane {
-    background: hsla(var(--app-color-h), 20%, 20%, 0.8);
+    --dwc-overlay-background: hsla(var(--app-color-h), 20%, 20%, 0.8);
+    background: var(--dwc-overlay-background);
     max-width: 200dvw;
     max-height: 200dvh;
 }
 
 
 
-/* Popup menu styling                               */
-/* ================================================ */
-.menu-item::part(control) {
-	padding: none;
-}
-
-.menu-item::part(label) {
-	display: none;
-}
-
-.menu_collapse::part(control) {
-    height: 3em;
-}
-
-.no-events {
-    pointer-events: none;
-}
-
-
-
 /*  Toolbar Icons                                   */
 /* ================================================ */
-.toolbar_icon::part(control), .toolbar_icon::part(control)::before {
+.toolbarIcon {
+    height: 100%;
+}
+.toolbarIcon::part(control), .toolbarIcon::part(control)::before {
     background: transparent;
     color: var(--app-color-text-faint);
     transition: all 100ms ease;
     border-color: transparent;
     border-radius: 0.5em;
 }
-.toolbar_icon::part(control):hover, .toolbar_icon::part(control):hover::before {
+.toolbarIcon::part(control):hover, .toolbarIcon::part(control):hover::before {
     border-color: transparent;
     color: var(--app-color-text-normal);
 }
 
 /* The reload toolbar icon is special and has a unique hover effect */
-.icon_reload.toolbar_icon::part(control) {
+.iconReload.toolbarIcon::part(control) {
     color: var(--dwc-color-danger);
     opacity: 0.75;
     transition: all 0.1s ease-in-out;
 }
-.icon_reload.toolbar_icon::part(control):hover {
+.iconReload.toolbarIcon::part(control):hover {
     opacity: 1.0;
     background: var(--dwc-color-danger);
     color: var(--dwc-color-white);
@@ -299,15 +282,21 @@ dwc-dialog-glass-pane {
     right: 3em;
     bottom: 1.5em;
     z-index: 1000;
-    width: 3em;
-    height: 3em;
-    line-height: 1.25rem;
+    width: 5em;
+    height: 5em;
 }
 .btnAddTaskFAB::part(control) {
     border-radius: 100em;
     box-shadow: 0 0.1em 0.5em hsla(0, 0%, 0%, 0.35);
 }
-
+.btnAddTaskFAB dwc-icon {
+    transform: scale3d(2, 2, 2);
+}
+.winMain.iOS .btnAddTaskFAB {
+    position: absolute;
+    right: 2em;
+    bottom: 2em;
+}
 
 
 /* Animations                                       */
