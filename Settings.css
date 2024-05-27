@@ -5,12 +5,12 @@
 
 /* Setting Window and Controls */
 /* ========================================  */
-.winSettings .BBjPanel {
+.winSettings dwc-window-content {
     display: flex;
     flex-flow: column;
     align-items: start;
     justify-content: flex-start;
-    padding: var(--dwc-space);
+    padding: var(--dwc-space-l);
     gap: var(--dwc-space-xl);
     background-color: var(--dwc-color-gray-90);
     min-width: 300px;
@@ -29,11 +29,11 @@
     right: var(--dwc-space-s);
     top: 0.25rem;
     align-self: end;
-    font-size: var(--dwc-font-size-l);
-    font-weight: var(--dwc-font-weight-semibold);
 }
 .winSettings dwc-button.settingsDone::part(label) {
     color: var(--app-color-primary);
+    font-size: var(--dwc-font-size-xl);
+    font-weight: var(--dwc-font-weight-semibold);
 }
 
 /* The chevron icons on setttings buttons */
@@ -50,10 +50,93 @@
 /* The title for each category or section in the settings screen */
 .winSettings .settingsCategoryTitle {
     color: var(--dwc-color-gray-30);
-    font-size: 90%;
-    font-weight: var(--dwc-font-weight-bold);
-    margin-bottom: -15px;
+    font-size: 95%;
+    font-weight: var(--dwc-font-weight-semibold);
+    margin-bottom: -1.5em;
 }
+
+.winSettings .settingsContainer {
+    background: var(--dwc-color-white);
+    border-radius: var(--dwc-border-radius-xl);
+    padding: 0.5em;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: 1fr;
+    align-items: center;
+    justify-items: end;
+    min-height: 3.75em;
+}
+
+.winSettings .settingsIcon {
+}
+
+
+.winSettings dwc-color-chooser {
+    justify-self: end;
+    padding-right: 0.7em;
+    --dwc-border-radius: 100%;
+}
+
+.winSettings .settingsSwitch {
+    --dwc-switch-size: 4em;
+    --dwc-switch-background: hsl(var(--app-color-h), 25%, 90%);
+    --dwc-switch-hover-background:  hsl(var(--app-color-h), 25%, 85%);
+    --dwc-switch-checked-background: hsl(var(--app-color-h), var(--app-color-s), 40%);
+    --dwc-switch-hover-checked-background: hsl(var(--app-color-h), var(--app-color-s), 30%);
+}
+/* Dark mode specific CSS custom properties         */
+/* ================================================ */
+[data-app-theme="dark"], [data-app-theme="dark-pure"] {
+    .winSettings .settingsSwitch {
+        --dwc-switch-background: hsl(var(--app-color-h), 25%, 20%);
+        --dwc-switch-hover-background:  hsl(var(--app-color-h), 25%, 30%);
+        --dwc-switch-checked-background: hsl(var(--app-color-h), var(--app-color-s), 60%);
+        --dwc-switch-hover-checked-background: hsl(var(--app-color-h), var(--app-color-s), 70%);
+    }
+}
+
+
+.winSettings dwc-choicebox::part(button-label) {
+    font-size: var(--dwc-font-size-l);
+    font-size: 600;
+}
+
+.winSettings .settingsSwitch::part(input) {
+    width: 6em;
+}
+
+.winSettings .settingsSwitch[checked]::part(input)::before {
+    transform: translateX(200%);
+}
+
+.winSettings .settingsSwitch:not([checked])::part(input)::after {
+    right: 1.0em;
+    position: absolute;
+    font-weight: bold;
+    font-size: 105%;
+}
+.winSettings .settingsSwitch[checked]::part(input)::after {
+    left: 1.0em;
+    position: absolute;
+    font-weight: bold;
+    font-size: 105%;
+}
+
+/* The text inside the big switches (BBjRadioButtons) */
+.winSettings .switchTheme:not([checked])::part(input)::after {
+    content: 'Light';
+}
+.winSettings .switchTheme[checked]::part(input)::after {
+    content: 'Dark';
+}
+.winSettings .switchTips:not([checked])::part(input)::after {
+    content: 'Off';
+}
+.winSettings .switchTips[checked]::part(input)::after {
+    content: 'On';
+}
+
+
 
 /* The BBjChildWindow in the settings that contains controls for a single setting */
 .winSettings .settingsChildWindow {
@@ -64,7 +147,7 @@
     flex-flow: row;
     align-items: center;
     justify-content: space-between;
-    padding: var(--dwc-focus-ring-width);
+    padding: max(0.5em, var(--dwc-focus-ring-width));
     gap: var(--dwc-space) var(--dwc-space);
     border-radius: var(--dwc-border-radius-xl);
     display: grid;
@@ -82,8 +165,8 @@
 }
 
 
-/* All BBjButtons on the settings window */
-.winSettings dwc-button::part(control) {
+/* Remove the border on all BBjButtons on the settings window */
+.winSettings dwc-button::part(control), .winSettings dwc-button::part(control)::before {
     background: transparent;
     border-width: 0 !important;
 }
@@ -92,7 +175,7 @@
 .winSettings dwc-button:not(.settingsDone)::part(label) {
     text-align: right;
     font-weight: var(--dwc-font-weight-bold);
-    padding-right: 0;
+    padding-right: 0.1em;
     padding-left: calc(2 * var(--dwc-space));
     width: 100%;
     justify-content: end;

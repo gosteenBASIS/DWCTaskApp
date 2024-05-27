@@ -1,142 +1,271 @@
-REM /**
-REM  * This class is responsible for managing the user's preferences and app settings for the TaskApp
-REM  */
-REM Package TaskApp
-
+rem /**
+rem  * This class is responsible for managing the user's preferences and app settings for the TaskApp
+rem  */
 class public Settings
 
+    rem To Do Items
+    rem     - Define background colors or gradients for the main window (winMain)
+    rem     - Define the font size, weight, and spacing
+
+    rem BBjControls for the Settings dialog
     field protected BBjTopLevelWindow   winSettings!
     field protected BBjSysGui           sysgui! = BBjAPI().getSysGui()
     field protected BBjWebManager       webManager! = BBjAPI().getWebManager()
 
-    REM Define the user preferences which will be stored in a HashMap and saved out as a cookie
-    REM ========================================
-    REM /** The hashmap that stores all the user's preferences */
-    field private HashMap hashPrefs!
-    REM /** The user's preferred DWC theme to use for the UI, i.e. light, dark, dark-pure, or system */
-    field protected BBjString prefsTheme!
-    REM /** The user's preferred font family (CSS: font-family)for the tasks */
-    field protected BBjString prefsTaskFontFamily!
-    REM /** The user's preferred font weight (CSS: font-weight)for the tasks */
-    field protected BBjString prefsTaskFontWeight!
-    REM /** The user's preferred font size for the tasks.
-    field protected BBjString prefsTaskFontSize!
-    REM /** The user's preferred font letter spacing (CSS: letter-spacing) for the tasks.  This will usually be 'normal', but can be a length as in '0.5px'. */
-    field protected BBjString prefsTaskFontSpacing!
-    REM /** The user's preferred font weight for the tasks */
-    field protected BBjNumber prefsDefaultTaskPriority!
-    REM /** The TaskApp's version, used for display purposes only */
-    field protected BBjNumber prefsVersion!
-
-    REM Font Chooser Window Dialog
+    rem BBjControls for the Settings Font Chooser dialog
     field private BBjTopLevelWindow     winFontChooser!
     field private BBjChildWindow        winFontChooserType!
     field private BBjChildWindow        winFontChooserSource!
     field private BBjChildWindow        winFontChooserFamilies!
+    field private BBjChildWindow        winFontChooserFontProps!
     field private BBjChildWindow        winFontChooserInfo!
     field private BBjChildWindow        winFontChooserControls!
-    field private BBjListBox            lbFontChooserType!
-    field private BBjListBox            lbFontChooserSource!
-    field private BBjListBox            lbFontChooserFamilies!
-    field private BBjEditBox            edtFontChooserFontFamily!
-    field private BBjStaticText         lblFontChooserSource!
-    field private BBjEditBox            edtFontChooserFontInfo!
-    field private BBjStaticText         lblFontChooserFontInfo!
-    field private BBjString             fontChooserChosenFamily!
-    field private BBjVector             vectFontFamilies!
-    field private BBjVector             vectFontFamiliesLC!
+    field private BBjRadioButton        switchTheme!
+    field private BBjRadioButton        switchTips!
+    field private BBjListButton         lstFontFamily!
+    field private BBjVector             vectFontFamilies! = BBjAPI().makeVector()
+
+    REM /** The hashmap that stores all the user's preferences */
+    field private HashMap hashPrefs!
+
+    rem /**
+    rem  * Settings screen constructor
+    rem  */
+    method public Settings()
+
+        REM Create a list of font families filled with various Google fonts that the user will be able to choose from to style the tasks
+        DATA "Marcellus SC", "Marko One", "Merriweather", "Oswald", "Rambla", "Signika", "Teko", "Ubuntu", "Ubuntu Mono", "Work Sans", "Asap"
+        DATA "K2D", "Bebas Neue", "Fira Sans", "Fira Sans Condensed", "Archivo Narrow",  "Lato", "Barlow Condensed", "Dosis", "Exo 2"
+        DATA "Gentium Book Basic", "Kanit", "Montserrat", "Poppins", "Rubik", "Roboto"
+        fontFamily! = "?"
+        while 1
+            DREAD family$,err=*BREAK
+            #vectFontFamilies!.addItem(family$)
+            fontFamily! = fontFamily! + "&family=" + family$
+        wend
+        fontFamily! = fontFamily!.replaceAll(" ", "+")
+
+        REM Sort the vector of fonts alphabetically by name
+        java.util.Collections.sort(#vectFontFamilies!)
+
+        REM Inject links for the custom Google fonts so that they'll be available on the client
+        #webManager!.injectLinkUrl("https://fonts.googleapis.com", 1, "rel=preconnect")
+        #webManager!.injectLinkUrl("https://fonts.gstatic.com", 1, "crossorigin")
+        #webManager!.injectLinkUrl("https://fonts.googleapis.com/css2?" + fontFamily!, 1, "rel=stylesheet,display=swap")
+    methodend
 
 
-    REM /**
-    REM  * Shows the TaskApp's settings window
-    REM  * 
-    REM  * @param HashMap hashPrefs!    A HashMap containing all of the user's preferences
-    REM  */
+    rem /**
+    rem  * Shows the TaskApp's settings window
+    REM  *
+    REM  * @param HashMap hashPrefs!    The HashMap of user preferences passed in by the TaskApp which contains all the user's preferences for the settings options
+    rem  */
     method public void onShowSettings(HashMap hashPrefs!)
-
+        REM Save the HashMap of the user's preferences that was passed in
         #hashPrefs! = hashPrefs!
 
-
-        themeColor! = "Tangerine"
-
-        REM Create the window and controls if it doesn't yet exist.  Otherwise, we'll simply display the existing one that we created and previously hid.
+        rem Create the window and controls if it doesn't yet exist.  Otherwise, we'll simply display the existing one that we created and previously hid.
         if (#winSettings! = null()) then
+
+            REM Create a linefeed-delimited list of font families from the vectory to populate the BBjListButton
+            fontFamiliesList! = java.lang.String.join($0a$, java.util.Arrays.asList(#vectFontFamilies!))
+            REM Modfify each entry in the list so that use uses HTML markup to style the font name to that font family
+            regExSearchFor! = "(?mi)^(.*)$"
+            REM regExReplaceWith! = "<html><span style='font-family:$1;font-weight:var(--app-font-weight-task);font-size:var(--app-font-size-task);letter-spacing:var(--app-font-spacing-task);'>$1</span>"
+            regExReplaceWith! = "<html><span style='font-family:$1'>$1</span>"
+            fontFamiliesList! = fontFamiliesList!.replaceAll(regExSearchFor!, regExReplaceWith!)
+
+            rem Create the settings window and controls
             #winSettings! = #sysgui!.addWindow(#sysgui!.getAvailableContext(), "TaskApp Settings", $011B0010$)
-            #winSettings!.addClass("winSettings")
+            #winSettings!.addClass("winSettings fadeIn")
             #winSettings!.setOuterStyle("overflow", "hidden")
             #winSettings!.setIcon(dsk("")+dir("")+"images/DWCTaskApp.png")
 
-            REM Create the [Done] button that closes the settings window
+            rem Create the title and the [Done] button that closes the settings window
             title! = #winSettings!.addStaticText("Settings", $4000$)
             title!.addClass("settingsTitle")
             settingsDone! = #winSettings!.addButton("Done")
             settingsDone!.addClass("settingsDone")
 
-            REM Personalization
+            rem Options (tooltips)
+            text! = #winSettings!.addStaticText("Options")
+            text!.addClass("settingsCategoryTitle")
+            winOptions! = #winSettings!.addChildWindow("winOptions", $00108800$, #sysgui!.getAvailableContext())
+            winOptions!.setName("winOptions")
+            winOptions!.addClass("settingsContainer")
+            text! = winOptions!.addStaticText("<html><dwc-icon pool='tabler' name='message' class='settingsIcon'></dwc-icon>&&nbsp;Show Tooltips")
+            text!.addClass("settingsLabel")
+            #switchTips! = cast(BBjChildWindow, winOptions!).addRadioButton("")
+            #switchTips!.setAttribute("switch", "true")
+            #switchTips!.addClass("switchTips settingsSwitch")
+
+            rem Personalization
             text! = #winSettings!.addStaticText("Personalization")
             text!.addClass("settingsCategoryTitle")
-            win! = #winSettings!.addChildWindow("", $00108800$, #sysgui!.getAvailableContext())
-            win!.addClass("settingsChildWindow")
-            text! = win!.addStaticText("<html><dwc-icon pool='tabler' name='palette' class='icon'></dwc-icon>&&nbsp; Theme")
+            winPersonalization! = #winSettings!.addChildWindow("winPersonalization", $00108800$, #sysgui!.getAvailableContext())
+            winPersonalization!.setName("winPersonalization")
+            winPersonalization!.addClass("settingsContainer")
+            text! = winPersonalization!.addStaticText("<html><dwc-icon pool='tabler' name='palette' class='settingsIcon'></dwc-icon>&&nbsp;Theme")
             text!.addClass("settingsLabel")
-            settingsThemeColor! = win!.addButton("<html>" + themeColor! + " <dwc-icon pool='tabler' name='chevron-right' class='chevron'></dwc-icon>")
-            settingsThemeColor!.addClass("toolbar_icon")
+            #switchTheme! = cast(BBjChildWindow, winPersonalization!).addRadioButton("")
+            #switchTheme!.setAttribute("switch", "true")
+            #switchTheme!.addClass("switchTheme settingsSwitch")
 
-            REM Typography
+            rem Color
+            text! = #winSettings!.addStaticText("Color")
+            text!.addClass("settingsCategoryTitle")
+            win! = #winSettings!.addChildWindow("", $00108800$, #sysgui!.getAvailableContext())
+            win!.addClass("settingsChildWindow settingsContainer")
+            text! = win!.addStaticText("<html><dwc-icon pool='tabler' name='color-swatch' class='icon'></dwc-icon>&&nbsp; Color")
+            text!.addClass("settingsLabel")
+            colorPicker! = win!.addColorChooser()
+            colorPicker!.setAttribute("popup", "true")
+            hue! = #winSettings!.getComputedStyle("--app-color-h")
+            colorPicker!.putClientProperty("value", "hsl(" + hue! + ", 75%, 35%)")
+            colorPicker!.putClientProperty("components", "hue, preview, eyeDropper, input")
+
+            rem Font Family
             text! = #winSettings!.addStaticText("Font")
             text!.addClass("settingsCategoryTitle")
             win! = #winSettings!.addChildWindow("", $00108800$, #sysgui!.getAvailableContext())
-            win!.addClass("settingsChildWindow")
+            win!.addClass("settingsChildWindow settingsContainer")
             text! = win!.addStaticText("<html><dwc-icon pool='tabler' name='typography' class='icon'></dwc-icon>&&nbsp; Typography")
             text!.addClass("settingsLabel")
-            settingsTypography! = win!.addButton("<html>" + #hashPrefs!.get("prefsTaskFontFamily") + " <dwc-icon pool='tabler' name='chevron-right' class='chevron'></dwc-icon>")
-            settingsTypography!.addClass("toolbar_icon")
+            #lstFontFamily! = cast(BBjListButton, win!.addListButton(fontFamiliesList!))
+            #lstFontFamily!.setAttribute("placement", "top-start")
 
-            REM About
+            rem About
             text! = #winSettings!.addStaticText("About the App")
             text!.addClass("settingsCategoryTitle")
             win! = #winSettings!.addChildWindow("", $00108800$, #sysgui!.getAvailableContext())
-            win!.addClass("settingsChildWindow")
+            win!.addClass("settingsChildWindow settingsContainer")
             text! = win!.addStaticText("<html><dwc-icon pool='tabler' name='info-circle' class='icon'></dwc-icon>&&nbsp; About")
-            settingsAbout! = win!.addButton("<html>Version " + #hashPrefs!.get("prefsVersion") + " <dwc-icon pool='tabler' name='chevron-right' class='chevron'></dwc-icon>")
+            settingsAbout! = win!.addButton("<html>Version " + #hashPrefs!.get("prefsVersion").toString() + " <dwc-icon pool='tabler' name='chevron-right' class='chevron'></dwc-icon>")
             settingsAbout!.addClass("toolbar_icon settingsValue")
 
-            REM Set the control callbacks
+            rem Set the control callbacks
             settingsDone!.setCallback(BBjButton.ON_BUTTON_PUSH, #this!, "onSettingsDone")
-            settingsThemeColor!.setCallback(BBjButton.ON_BUTTON_PUSH, #this!, "onSettingsThemeColor")
+            #switchTheme!.setCallback(BBjRadioButton.ON_CHECK_CHANGE, #this!, "onSettingsTheme")
+            #switchTips!.setCallback(BBjRadioButton.ON_CHECK_CHANGE, #this!, "onSettingsTooltip")
             settingsAbout!.setCallback(BBjButton.ON_BUTTON_PUSH, #this!, "onSettingsAbout")
-            settingsTypography!.setCallback(BBjButton.ON_BUTTON_PUSH, #this!, "onSettingsTypography")
+            #lstFontFamily!.setCallback(BBjListButton.ON_LIST_CHANGE, #this!, "onSettingsChangeFontFamily")
+            colorPicker!.setCallback(BBjColorChooser.ON_COLORCHOOSER_CHANGE, #this!, "onSettingsHue")
         endif
 
-        REM Since we created the window from BBj as hidden, we have to show it.
-        REM The actual visibility will be a combination of BBj's setVisible() and CSS to animate the opacity.
+        rem Ensure that the settings screen matches the preferences (especially if the settings screen is reused)
+        #switchTheme!.setSelected(iff(#hashPrefs!.get("prefsTaskTheme") = "dark", 1, 0))
+        #switchTips!.setSelected(iff(#hashPrefs!.get("prefsTaskTips") = "1", 1, 0))
+
+        REM Select the correct font family in the BBjListEdit
+        #selectPreferredFontFamily()
+
+        rem Since we created the window from BBj as hidden, we have to show it.
         #winSettings!.setVisible(1)
     methodend
 
-    REM /**
-    REM  * Hides settings dialog window.
-    REM  * 
-    REM  * @param BBjButtonPushEvent e! The button push event.
-    REM  */
-    method public void onSettingsDone(BBjButtonPushEvent e!)
+
+    rem /**
+    rem  * Selects the user's preferred font family in the list
+    rem  */
+    method public void selectPreferredFontFamily()
+        fontFamily! = #hashPrefs!.get("prefsTaskFontFamily").toString()
+        if (#vectFontFamilies!.contains(fontFamily!)) then
+            REM Select the user's preferred font family in the list
+            #lstFontFamily!.selectIndex(#vectFontFamilies!.indexOf(fontFamily!))
+        else
+            REM Since the user's preferred font family for the tasks wasn't in the vector, we'll default to the first item in the list
+            #lstFontFamily!.selectIndex(0)
+        endif
+    methodend
+
+
+    rem /**
+    rem  * Closes the settings dialog
+    rem  */
+    method public void onSettingsDone(BBjButtonPushEvent event!)
         #winSettings!.setVisible(0)
+        BBjAPI().postCustomEvent("SETTINGS_UPDATE", #hashPrefs!)
     methodend
 
-    REM /**
-    REM  * Sets the theme color to the color selected from the drop down.
-    REM  * 
-    REM  * @param BBjButtonPushEvent e! The button push event.
-    REM  */
-    method public void onSettingsThemeColor(BBjButtonPushEvent e!)
-        temp = msgbox("Not Yet Implemented", BBjSysGui.MSGBOX_ICON_STOP, "TaskApp", mode="theme=warning")
+
+    rem /**
+    rem  * Sets the theme to dark or light
+    rem  */
+    method public void onSettingsTheme(BBjCheckChangeEvent event!)
+        declare auto BBjRadioButton control!
+
+        REM Figure out if the user chose the dark or light theme based on the state of the radiobutton
+        control! = event!.getControl()
+        prefsTaskTheme! = iff(control!.isSelected(), "dark", "light")
+
+        rem Set the theme so the user sees the change, then store it in the preferences HashMap and let the Taskapp know
+        #hashPrefs!.put("prefsTaskTheme", prefsTaskTheme!)
+        BBjAPI().postCustomEvent("SETTINGS_UPDATE", #hashPrefs!)
     methodend
 
+
+    rem /**
+    rem  * Enables or disables the tooltips on tasks
+    rem  */
+    method public void onSettingsTooltip(BBjCheckChangeEvent event!)
+        declare auto BBjRadioButton control!
+
+        control! = event!.getControl()
+        prefsTaskTips! = iff(control!.isSelected(), "1", "0")
+        #hashPrefs!.put("prefsTaskTips", prefsTaskTips!)
+        BBjAPI().postCustomEvent("SETTINGS_UPDATE", #hashPrefs!)
+
+        temp = msgbox("Your tooltip changes will be applied the next time the app is run.", BBjSysGui.MSGBOX_ICON_INFORMATION, "Tooltips Updated", mode="theme=primary")
+    methodend
+
+
+    rem /**
+    rem  * Sets the app's primary color hue
+    rem  */
+    method public void onSettingsHue(BBjColorChooserChangeEvent event!)
+        declare auto BBjColorChooser control!
+
+        rem Store the chosen hue in the preferences HashMap
+        control! = event!.getControl()
+        hue! = str(control!.getClientProperty("hue"))
+        #hashPrefs!.put("prefsTaskHue", hue!)
+
+        rem Let the Taskapp know that we updated the preferences
+        BBjAPI().postCustomEvent("SETTINGS_UPDATE", #hashPrefs!)
+    methodend
+
+
     REM /**
-    REM  * Displays information about the TaskApp
-    REM  * 
-    REM  * @param BBjButtonPushEvent e! The button push event.
+    REM  * Callback that's executed when the user selects a custom font family.
+    REM  * This gets the list button's selected index, then resolves that to
+    REM  * a custom font family that's stored in the #vectFontFamilies!
+    REM  * vector.  It then sets the CSS custom property for the DWC's
+    REM  * sans-serif font family to the chosen font.
+    REM  *
+    REM  * @param BBjListChangeEvent event!    The BBjListButton's ON_LIST_CHANGE event
     REM  */
-    method public void onSettingsAbout(BBjButtonPushEvent e!)
+    method public void onSettingsChangeFontFamily(BBjListChangeEvent event!)
+        declare auto BBjString fontFamily!
+
+        REM Get the selected item from the list
+        fontFamilyHtml! = event!.getSelectedItem()
+
+        REM Since the item has HTML markup to style the family namne, remove all the HTML tags
+        fontFamily! = fontFamilyHtml!.replaceAll("<[^>]*>", "")
+
+        REM Save out the user's preferred task font family in the preferences
+        #hashPrefs!.put("prefsTaskFontFamily", fontFamily!)
+        #selectPreferredFontFamily()
+
+        rem Let the Taskapp know that we updated the preferences
+        BBjAPI().postCustomEvent("SETTINGS_UPDATE", #hashPrefs!)
+    methodend
+
+
+    rem /**
+    rem  * Opens the dialog that lets the user choose a font family from a variety of sources that originate from the CSSFonts.csv file
+    rem  */
+    method public void onSettingsAbout(BBjButtonPushEvent event!)
         REM msg! = "<html><img src=""https://public.basis.cloud/images/DWCTaskApp.svg"" height=""0px""> DWC TaskApp version " + #version!
         msg! = "<html><div style='padding: 0.75em 0 0 0;'>The TaskApp application was authored by: "
         msg! = msg! + "<ul>"
@@ -146,293 +275,17 @@ class public Settings
         msg! = msg! + "<li>Nick Decker</li>"
         msg! = msg! + "</ul></div>"
         mode! = "theme=primary,ICON=./images/DWCTaskApp.png,ICONWIDTH=42"
-        temp = msgbox(msg!, BBjSysGui.MSGBOX_ICON_INFORMATION, "TaskApp  Version " + #hashPrefs!.get("prefsVersion"), mode=mode!)
-    methodend
-
-
-    REM /**
-    REM  * Opens the dialog that lets the user choose a font family from a variety of sources that originate from the CSSFonts.csv file
-    REM  * 
-    REM  * @param BBjButtonPushEvent e! The button push event.
-    REM  */
-    method public void onSettingsTypography(BBjButtonPushEvent e!)
-        REM ========================================================================================================================
-        REM Create the App's Font Chooser Window when it's first needed, then simply hide/show it later via CSS
-        REM ========================================================================================================================
-
-        declare auto CssFontFamily font!
-
-        REM Create the window and controls if it doesn't yet exist.  Otherwise, we'll simply display the existing one that we created and hid previously.
-        if (#winFontChooser! = null()) then
-            #winFontChooser! = #sysgui!.addWindow(#sysgui!.getAvailableContext(), 0,0,0,0, "", $001B0012$)
-            #winFontChooser!.addOuterStyle("winFontChooser glasspane hiddenWindow ")
-            #winFontChooser!.setCallback(BBjTopLevelWindow.ON_CLOSE, #this!, "onFontChooserClose")
-
-            REM Type
-            #winFontChooserType! = #winFontChooser!.addChildWindow("Font Type", $00108800$, #sysgui!.getAvailableContext())
-            #winFontChooserType!.addStyle("winContainer")
-            lbl! = #winFontChooserType!.addStaticText("Font Type")
-            options! = java.lang.String.join($0a$, java.util.Arrays.asList(#vectCssFontTypes!))
-            #lbFontChooserType! = #winFontChooserType!.addListBox(options!)
-            #lbFontChooserType!.setCallback(BBjListBox.ON_LIST_CLICK, #this!, "onFontChooserTypeChange")
-
-            REM Source
-            #winFontChooserSource! = #winFontChooser!.addChildWindow("Font Source", $00108800$, #sysgui!.getAvailableContext())
-            #winFontChooserSource!.addStyle("winContainer")
-            lbl! = #winFontChooserSource!.addStaticText("Font Source")
-            options! = java.lang.String.join($0a$, java.util.Arrays.asList(#vectCssFontSources!))
-            #lbFontChooserSource! = #winFontChooserSource!.addListBox(options!)
-            #lbFontChooserSource!.selectIndex(0)
-            #lbFontChooserSource!.setCallback(BBjListBox.ON_LIST_CLICK, #this!, "onFontChooserSourceChange")
-
-            REM Families
-            #winFontChooserFamilies! = #winFontChooser!.addChildWindow("Font Families", $00108800$, #sysgui!.getAvailableContext())
-            #winFontChooserFamilies!.addStyle("winContainer winFontFamilies")
-            #lblFontChooserSource! = #winFontChooserFamilies!.addStaticText("Font Families")
-            #edtFontChooserFontFamily! = #winFontChooserFamilies!.addEditBox("")
-            #edtFontChooserFontFamily!.setPlaceholder("Type a Custom Font Family")
-            #edtFontChooserFontFamily!.setAttribute("type", "text")
-            #edtFontChooserFontFamily!.setCallback(BBjEditBox.ON_EDIT_MODIFY, #this!, "onFontChooserFamilyEdit")
-            #lbFontChooserFamilies! = #winFontChooserFamilies!.addListBox("")
-            #lbFontChooserFamilies!.setCallback(BBjListBox.ON_LIST_CLICK, #this!, "onFontChooserFamilyChange")
-
-            REM Font info
-            #winFontChooserInfo! = #winFontChooser!.addChildWindow("Font In formation", $00108800$, #sysgui!.getAvailableContext())
-            #winFontChooserInfo!.addStyle("winContainer winInfo")
-            #lblFontChooserFontInfo! = #winFontChooserInfo!.addStaticText("Font Information")
-            #edtFontChooserFontInfo! = #winFontChooserInfo!.addEditBox("")
-            #edtFontChooserFontInfo!.setText("The quick brown fox jumped over the lazy dogs")
-
-            REM OK/Cancel buttons
-            #winFontChooserControls! = #winFontChooser!.addChildWindow("Commit Font Selection Or Cancel", $00108800$, #sysgui!.getAvailableContext())
-            #winFontChooserControls!.addStyle("winContainer winControls")
-            btnOk! = #winFontChooserControls!.addButton("OK")
-            btnOk!.setAttribute("theme", "primary")
-            btnOk!.setAttribute("expanse", "m")
-            btnOk!.setCallback(BBjButton.ON_BUTTON_PUSH, #this!, "onFontChooserOk")
-            btnCancel! = #winFontChooserControls!.addButton("Cancel")
-            btnCancel!.setAttribute("theme", "danger")
-            btnCancel!.setAttribute("expanse", "m")
-            btnCancel!.setCallback(BBjButton.ON_BUTTON_PUSH, #this!, "onFontChooserClose")
-
-            REM Attempt to see if the user is on a Mac, or Mac-like OS, in which case they're used to
-            isMacLike = num(#sysgui!.executeScript("/(Mac|iPhone|iPod|iPad)/i.test(navigator.platform);"),err=*NEXT)
-            if (isMacLike) then
-                btnCancel!.setStyle("order", "1")
-                btnOk!.setStyle("order", "2")
-            endif
-        endif
-
-        REM Update the property that we're modifying
-        #winFontChooser!.setUserData(fontChooserFontProperty!)
-
-        REM Choose the best fitting type based on the property
-        if (fontChooserFontProperty!.contains("--dwc-font-family-sans")) then #lbFontChooserType!.selectIndex(#vectCssFontTypes!.indexOf("Sans-Serif"))
-        if (fontChooserFontProperty!.contains("--dwc-font-family-mono")) then #lbFontChooserType!.selectIndex(#vectCssFontTypes!.indexOf("Monospace"))
-
-        REM Set the configuration options to defaults by choosing the Default font source and filling the Font Families list with the appropriate families
-        #winFontChooser!.setTitle("Font Family Chooser for " + fontChooserFontProperty!)
-
-        REM Fill the desired font families and clear out the EditBox
-        #onFontChooserFillFontFamilies()
-        #edtFontChooserFontFamily!.setText("")
-
-        REM Since we created the window from BBj as hidden, we have to show it.  The actual visibility will be a combination of BBj's setVisible() and CSS to animate the opacity.
-        #setWindowVisibility(#winFontChooser!, 1)
-    methodend
-
-
-    REM /**
-    REM  * Fill the Font Families listbox based on the chosen type and source.
-    REM  * 
-    REM  * @param BBjListClickEvent event!  The invoking BBjListClickEvent
-    REM  */
-    method public void onFontChooserTypeChange(BBjListClickEvent event!)
-        #onFontChooserFillFontFamilies()
-    methodend
-
-
-    REM /**
-    REM  * Fills the Font Families listbox based on the chosen type and source.
-    REM  */
-    method public void onFontChooserFillFontFamilies()
-        declare auto CssFontFamily font!
-        declare auto LinkedHashMap hash!
-
-        REM Get the font type and source based on the chosen list items, which we'll use later to find matches
-        type! = #vectCssFontTypes!.getItem(#lbFontChooserType!.getSelectedIndex()).toString().toLowerCase()
-        source! = #vectCssFontSources!.getItem(#lbFontChooserSource!.getSelectedIndex()).toString().toLowerCase()
-
-        REM Figure out the correct LinkedHashMap to use for the font families
-        switch source!
-            case CssFontFamily.SOURCE_DEFAULT()
-                hash! = #hashCssFontsDefault!; break
-            case CssFontFamily.SOURCE_FALLBACK()
-                hash! = #hashCssFontsFallback!; break
-            case CssFontFamily.SOURCE_LOCAL()
-                hash! = #hashCssFontsLocal!; break
-            case CssFontFamily.SOURCE_GOOGLE()
-                hash! = #hashCssFontsGoogle!; break
-            case default
-                REM The "All Types" catch-all
-                hash! = #hashCssFontFamilies!; break
-        swend
-
-        REM Build the list of font families that match the source and type and store them in the #vectFontFamilies! vector
-        #vectFontFamilies! = BBjAPI().makeVector()
-        it! = hash!.keySet().iterator()
-        while it!.hasNext()
-            family! = it!.next().toString()
-            font! = hash!.get(family!)
-            if ((type! = "all types") or (font!.getType() = type!)) then
-                rem !!! the following will style the fonts, but then we have to parse out the HTML tags, and it ruins searching
-REM                 family! =  family! + " <html>&nbsp;&nbsp;<span style='font-family: " + family! + ";'> (Sample Text)</span>"
-                #vectFontFamilies!.addItem(family!)
-            endif
-        wend
-
-        REM Sort the fonts alphabetically, ignoring case
-        Collections.sort(#vectFontFamilies!, String.CASE_INSENSITIVE_ORDER)
-
-        REM Create a copy of the #vectFontFamilies! that has all the entries in lower case so that we can do case-insensitive matching later
-        #vectFontFamiliesLC! = cast(BBjVector, #vectFontFamilies!.clone())
-        it! = #vectFontFamiliesLC!.listIterator()
-        while (it!.hasNext())
-            it!.set(it!.next().toLowerCase())
-        wend
-
-        REM Clear out the font families listbox.  We'll later fill it with matching types
-        #lbFontChooserFamilies!.removeAllItems()
-
-        REM Fill the font families listbox with the matching fonts, select the first font, set the font info, and set the CSS custom property
-        if (#vectFontFamilies!.size()) then
-            #lbFontChooserFamilies!.insertItems(0, #vectFontFamilies!)
-            #lbFontChooserFamilies!.selectIndex(0)
-            family! = #lbFontChooserFamilies!.getItemAt(0)
-            #lblFontChooserSource!.setText("Font Families (" + cvs(str(#vectFontFamilies!.size()),3) + ")")
-
-            REM Set the font info
-            #onFontChooserFamilySelection(family!)
-        else
-            REM Reset the font info since there are no matching fonts
-            #lblFontChooserFontInfo!.setText("Sample")
-            #edtFontChooserFontInfo!.setStyle("font-family", "unset")
-        endif
-    methodend
-
-
-    REM /**
-    REM  * Applies the selected font family to all text.
-    REM  * 
-    REM  * @param BBjString family! The name of the chosen font family
-    REM  */
-    method public void onFontChooserFamilySelection(BBjString family!)
-        declare auto CssFontFamily font!
-
-        REM Parse the chosen font family to remove all HTML tags that style the text, leaving just the font family
-
-        #fontChooserChosenFamily! = family!
-
-        REM Get the font from the hash of known fonts if possible, so that we have more information about it
-        font! = #hashCssFontFamilies!.get(#fontChooserChosenFamily!)
-        if (font! <> null()) then
-            REM The font-family is in our list of fonts from the CSV file
-            text! = "<html>Sample for <span style='background-color: var(--dwc-color-primary); color: var(--dwc-color-white); font-weight: bold; padding: 0.2em 0.4em; border-radius: var(--dwc-border-radius);'>" + #fontChooserChosenFamily! + "</span>"
-            text! = text! + " (Type: <span style='color: var(--dwc-color-success-text-light);'>" + #toTitleCase(font!.getType()) + "</span>"
-            text! = text! + ", Source: <span style='color: var(--dwc-color-success-text-light);'>" + #toTitleCase(font!.getSource()) + "</span>)"
-            #lblFontChooserFontInfo!.setText(text!)
-        else
-            REM The font-family was not found in our list of fonts from the CSV file
-            #lblFontChooserFontInfo!.setText("Sample for " + #fontChooserChosenFamily!)
-        endif
-
-        REM Set the style of the sample so that the text is shown with the chosen font-family.  Force quotes in case the family contains spaces.
-        if (#fontChooserChosenFamily!.contains(" ")) then fontFamily! =  "'" + #fontChooserChosenFamily! + "'" else  fontFamily! =  #fontChooserChosenFamily!
-        #edtFontChooserFontInfo!.setStyle("font-family", fontFamily!)
-    methodend
-
-
-    REM /**
-    REM  * Callback for when the user changes the Font Source.
-    REM  * 
-    REM  * @param BBjListClickEvent event!  The BBjListClickEvent that invoked this method.
-    REM  */
-    method public void onFontChooserSourceChange(BBjListClickEvent event!)
-        #onFontChooserFillFontFamilies()
-    methodend
-
-
-    REM /**
-    REM  * Callback for when the user changes the Font Family by selecting a listbox item.
-    REM  * 
-    REM  * @param BBjListClickEvent event!  The BBjListClickEvent that invoked this method.
-    REM  */
-    method public void onFontChooserFamilyChange(BBjListClickEvent event!)
-        #fontChooserChosenFamily! = #lbFontChooserFamilies!.getAllItems().get(event!.getSelectedIndex()).toString()
-        #onFontChooserFamilySelection(#fontChooserChosenFamily!)
-    methodend
-
-
-    REM /**
-    REM  * Callback for when the user changes the Font Family by typing in the EditBox.
-    REM  * 
-    REM  * @param BBjEditModifyEvent event! The BBjEditModifyEvent that invoked this method.
-    REM  */
-    method public void onFontChooserFamilyEdit(BBjEditModifyEvent event!)
-        declare auto BBjString family!
-        #fontChooserChosenFamily! = event!.getText()
-
-        REM See if we can find a match in the list for the family that the user has typed into the EditBox
-        index = #vectFontFamiliesLC!.indexOf(#fontChooserChosenFamily!.toLowerCase())
-        if (index > -1) then
-            REM The lowercase version of the typed-in font family exists in the listbox, so we select it and change the variable to the correct case from the listbox item
-            #lbFontChooserFamilies!.selectIndex(index)
-            #fontChooserChosenFamily! = #lbFontChooserFamilies!.getItemAt(index)
-        else
-            REM Iterate through the list of families and select the best partial match with a "startsWith" algorithm
-            it! = #vectFontFamiliesLC!.iterator()
-            while it!.hasNext()
-                family! = it!.next()
-                if (family!.startsWith(#fontChooserChosenFamily!.toLowerCase())) then
-                    index = #vectFontFamiliesLC!.indexOf(family!)
-                    #lbFontChooserFamilies!.selectIndex(index)
-                    #fontChooserChosenFamily! = #lbFontChooserFamilies!.getItemAt(index)
-                    break
-                endif
-            wend
-        endif
-
-        REM Apply the typed-in font-family
-        #onFontChooserFamilySelection(#fontChooserChosenFamily!)
-    methodend
-
-
-    REM /**
-    REM  * Callback for when the user clicks the OK button, which means that they DID change the font family.
-    REM  * 
-    REM  * @param BBjButtonPushEvent event!     The BBjButtonPushEvent that invoked this method
-    REM  */
-    method protected void onFontChooserOk(BBjButtonPushEvent event!)
-        REM Set the CSS custom property to the selected font family
-        #setRootStyle(#winFontChooser!.getUserData().toString(), #fontChooserChosenFamily!)
-        #setWindowVisibility(#winFontChooser!, 0)
-    methodend
-
-
-    REM /**
-    REM  * Callback for when the user closes the Font Chooser window or clicks the Cancel button, which means they did NOT change the font family.
-    REM  * 
-    REM  * @param BBjEvent event!           The BBjEvent that invoked this method
-    REM  */
-    method protected void onFontChooserClose(BBjEvent event!)
-        #fontChooserChosenFamily! = ""
-        #setWindowVisibility(#winFontChooser!, 0)
+        temp = msgbox(msg!, BBjSysGui.MSGBOX_ICON_INFORMATION, "TaskApp  Version " + #hashPrefs!.get("prefsVersion").toString(), mode=mode!)
     methodend
 
 classend
 
-REM BBj USE Statements
+rem BBj USE Statements
 use ::TaskApp.bbj::TaskApp
+use ::CssFontFamily.bbj::CssFontFamily
+use ::Utils.bbj::Utils
 
-REM Java USE Statements
+rem Java USE Statements
 use java.util.HashMap
+use java.util.LinkedHashMap
+use java.util.Collections
