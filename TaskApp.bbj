@@ -114,6 +114,10 @@ class public TaskApp
         #injectCSSFile("taskCardView.css")
         #injectCSSFile("Settings.css")
 
+        rem Change the "click to reload web application" message
+        #webManager!.setEndAction(#webManager!.msgAction("Launch the TaskApp"))
+        #webManager!.setErrAction(#webManager!.msgAction("Launch the TaskApp"))
+
         REM To prevent the user from accidentally pinching and zooming on a phone
         #webManager!.setMeta("viewport", "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no")
 
@@ -123,7 +127,7 @@ class public TaskApp
         #webManager!.injectLinkUrl(url!, 1, attrib!, err=*NEXT)
 
         rem Set the title of the app
-        #webManager!.setTitle("TaskApp")
+        #webManager!.setTitle("TaskApp", "{BrowserTitle}")
 
         rem Set the homescreen icon for smartphones and tablets
         url! = "https://public.basis.cloud/images/DWCTaskApp.png"
@@ -175,7 +179,7 @@ class public TaskApp
 
         rem Turn off tooltips on iOS
         #thinClient! = BBjAPI().getThinClient()
-        #clientOs! = #thinClient!.getClientOSName()
+        #clientOs! = #thinClient!.getClientOSName().replaceAll(" ", "_")
         if (#clientOs!.contains("iOS")) then #hashPrefs!.put("prefsTaskTips", "0")
 
         REM Log the user's preferences
@@ -312,13 +316,13 @@ class public TaskApp
         btnSettings!.setAttribute("expanse", "xs")
         btnSettings!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onShowSettings")
 
-        btnExport! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='cloud-download'></dwc-icon>")
+        btnExport! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='download'></dwc-icon>")
         btnExport!.addClass("toolbarIcon")
 
         btnExport!.setAttribute("expanse", "xs")
         btnExport!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onExportToFile")
 
-        btnImport! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='cloud-upload'></dwc-icon>")
+        btnImport! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='upload'></dwc-icon>")
         btnImport!.addClass("toolbarIcon")
 
         btnImport!.setAttribute("expanse", "xs")
