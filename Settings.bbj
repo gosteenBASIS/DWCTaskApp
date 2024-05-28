@@ -37,7 +37,7 @@ class public Settings
         REM Create a list of font families filled with various Google fonts that the user will be able to choose from to style the tasks
         DATA "Marcellus SC", "Marko One", "Merriweather", "Oswald", "Rambla", "Signika", "Teko", "Ubuntu", "Ubuntu Mono", "Work Sans", "Asap"
         DATA "K2D", "Bebas Neue", "Fira Sans", "Fira Sans Condensed", "Archivo Narrow",  "Lato", "Barlow Condensed", "Dosis", "Exo 2"
-        DATA "Gentium Book Basic", "Kanit", "Montserrat", "Poppins", "Rubik", "Roboto"
+        DATA "Gentium Book Basic", "Kanit", "Montserrat", "Poppins", "Poetsen One", "Rubik", "Roboto"
         fontFamily! = "?"
         while 1
             DREAD family$,err=*BREAK
@@ -131,7 +131,7 @@ class public Settings
             text!.addClass("settingsCategoryTitle")
             win! = #winSettings!.addChildWindow("", $00108800$, #sysgui!.getAvailableContext())
             win!.addClass("settingsChildWindow settingsContainer")
-            text! = win!.addStaticText("<html><dwc-icon pool='tabler' name='typography' class='icon'></dwc-icon>&&nbsp; Typography")
+            text! = win!.addStaticText("<html><dwc-icon pool='tabler' name='typography' class='icon'></dwc-icon>&&nbsp; Task Font")
             text!.addClass("settingsLabel")
             #lstFontFamily! = cast(BBjListButton, win!.addListButton(fontFamiliesList!))
             #lstFontFamily!.setAttribute("placement", "top-start")
