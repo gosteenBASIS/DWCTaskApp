@@ -7,6 +7,17 @@
 	opacity: 0.75;
 }
 
+.task .complete {
+	color: var(--app-color-primary);
+	text-decoration: none;
+}
+
+/* Task items that are complete */
+.task.complete .textTitle {
+    filter: opacity(0.65);
+	text-decoration: line-through;
+}
+
 /*  Priority flags and popup menus                  */
 /* ================================================ */
 .priority-6 {

@@ -12,7 +12,6 @@ class public TaskCardView extends TaskView
     field protected BBjButton       btnSetComplete!
     field protected BBjString       lock! = "<html><dwc-icon pool='tabler' name='lock' style='width: 30px; height: 30px'></dwc-icon>"
     field protected BBjString       lockOpen! = "<html><dwc-icon pool='tabler' name='lock-open' style='width: 30px; height: 30px'></dwc-icon>"
-    field protected BBjStaticText   status!
 
     REM /**
     REM  * Constructor for the TaskCardView
@@ -24,10 +23,6 @@ class public TaskCardView extends TaskView
         #super!(parent!,t!)
         #win!.addClass("winCardView")
         #title!.addClass("textTitle")
-
-        #status! = #win!.addStaticText("")
-        #status!.addClass("textStatus")
-        if (#task!.getComplete()) then #status!.setText("Date of Completion")
 
         #btnLock! = #win!.addButton(#lock!)
 
@@ -80,38 +75,6 @@ class public TaskCardView extends TaskView
         #description!.setToolTipText(#task!.getDescription())
         #title!.setToolTipText(#task!.getTitle())
 
-        if (#task!.getComplete()) then #status!.setText("Date of Completion")
-    methodend
-
-    REM /**
-    REM  * If task is incomplete:
-    REM  * - If a task is past due, adds a "Past Due!" notice
-    REM  * - If a task is due today, adds a "Due Today!" notice
-    REM  * - Otherwise, adds the task's due date
-    REM  * - Notices are set to BBjStaticText #due!
-    REM  *
-    REM  * If task is complete:
-    REM  * - adds the date of completion
-    REM  * - Completion date is set to BBjStaticText #status!
-    REM  */
-    method public void setDueNotice()
-        #super!.setDueNotice()
-        dueDate! = date(#task!.getDueDate():"%Dl, %Ml %D")
-        due! = ""
-
-        if (#task!.getComplete() = 0) then
-
-            if (#task!.getDueDate() > -1 AND #task!.getDueDate() > jul(date(0))) then
-                due! = "Due " + STR(dueDate!)
-                #due!.setText(due!)
-                #due!.addClass("dueDate")
-            endif
-        endif
-
-        if (#task!.getComplete()) then
-            #status!.setText("Date of Completion")
-            #status!.addClass("textStatus")
-        endif
     methodend
 
     REM /**
