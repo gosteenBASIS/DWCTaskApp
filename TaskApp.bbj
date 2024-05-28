@@ -256,7 +256,7 @@ class public TaskApp
         winTitle! = #winMain!.addChildWindow("Title", $00108800$, #sysgui!.getAvailableContext())
         winTitle!.addClass("winTitle")
 
-        labelDay! = winTitle!.addStaticText("Today", $4000$)
+        labelDay! = winTitle!.addStaticText(date(0:"%Dl, %Ml %D"), $4000$)
         labelDay!.addClass("labelDay")
         labelDay!.setName("labelDay")
         labelDate! = winTitle!.addStaticText(date(0:"%Dl, %Ml %D"), $4000$)
@@ -354,7 +354,7 @@ class public TaskApp
         REM it! = #tasks!.values().iterator()
 
         REM New code that gets a sorted TreeMap of the tasks
-        #winTitle!.getControl("labelDate").setText("<html>" + date(0:"%Dl, %Ml %D") + $0A$ + "<span class='labelSortingIndicator'>Tasks Sorted by Priority")
+        #winTitle!.getControl("labelDate").setText("<html><span class='labelSortingIndicator'>" + str(#tasks!.size()) + " Tasks Sorted by Priority")
         orderedTasks! = #getSortedTasks("priority")
         it! = orderedTasks!.values().iterator()
 

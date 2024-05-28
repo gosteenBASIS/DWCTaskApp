@@ -6,6 +6,7 @@ class public Settings
     rem To Do Items
     rem     - Define background colors or gradients for the main window (winMain)
     rem     - Define the font size, weight, and spacing
+    rem     - Add an option for native controls (for now, probably just the BBjColorChooser)
 
     rem BBjControls for the Settings dialog
     field protected BBjTopLevelWindow   winSettings!
@@ -99,7 +100,7 @@ class public Settings
             #switchTips!.setAttribute("switch", "true")
             #switchTips!.addClass("switchTips settingsSwitch")
 
-            rem Personalization
+            rem Personalization (Dark/Light Theme)
             text! = #winSettings!.addStaticText("Personalization")
             text!.addClass("settingsCategoryTitle")
             winPersonalization! = #winSettings!.addChildWindow("winPersonalization", $00108800$, #sysgui!.getAvailableContext())
@@ -111,7 +112,7 @@ class public Settings
             #switchTheme!.setAttribute("switch", "true")
             #switchTheme!.addClass("switchTheme settingsSwitch")
 
-            rem Color
+            rem Color (Choosing the DWC's primmary color hue)
             text! = #winSettings!.addStaticText("Color")
             text!.addClass("settingsCategoryTitle")
             win! = #winSettings!.addChildWindow("", $00108800$, #sysgui!.getAvailableContext())
@@ -120,6 +121,7 @@ class public Settings
             text!.addClass("settingsLabel")
             colorPicker! = win!.addColorChooser()
             colorPicker!.setAttribute("popup", "true")
+            colorPicker!.setAttribute("theme", "primary")
             hue! = #winSettings!.getComputedStyle("--app-color-h")
             colorPicker!.putClientProperty("value", "hsl(" + hue! + ", 75%, 35%)")
             colorPicker!.putClientProperty("components", "hue, preview, eyeDropper, input")
