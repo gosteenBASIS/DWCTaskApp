@@ -825,7 +825,7 @@ class public TaskApp
 
         rem Write the tasks out to the client browser's storage
         jsonString! = gson!.toJson(json!).toString()
-        BBjAPI().getThinClient().setUserProperty(BBjThinClient.USER_PROPERTIES_STORAGE, #appName!, jsonString!)
+        #thinClient!.setUserProperty(BBjThinClient.USER_PROPERTIES_STORAGE, #appName!, jsonString!)
 
         Utils.consoleLog("Exported " + str(#tasks!.size()) + " tasks to the client browser's storage")
         REM chan = unt
@@ -844,7 +844,6 @@ class public TaskApp
     REM  * @param BBjButtonPushEvent event! The BBjButtonPushEvent that called this method
     REM  */
     method public void onExportToFile(BBjButtonPushEvent event!)
-        declare auto BBjThinClient thinClient!
         declare auto BBjClientFileSystem clientFileSystem!
         declare auto BBjClientFile clientFile!
         declare auto File serverFile!
@@ -865,8 +864,7 @@ class public TaskApp
         close(chan)
 
         rem Download the server file to the client
-        thinClient! = BBjAPI().getThinClient()
-        clientFileSystem! = thinClient!.getClientFileSystem()
+        clientFileSystem! = #thinClient!.getClientFileSystem()
         clientFile! = clientFileSystem!.getClientFile("DWCTaskApp.tasks.json")
         clientFile!.copyToClient(serverFilePath!)
         erase serverFilePath!
@@ -884,15 +882,13 @@ class public TaskApp
     REM  * @param BBjButtonPushEvent event!     BBjButtonPushEvent that invoked this method.
     REM  */
     method public void onImportFromFile(BBjButtonPushEvent event!)
-        declare auto BBjThinClient thinClient!
         declare auto BBjClientFileSystem clientFileSystem!
         declare auto BBjClientFile clientFile!
 
         REM Get the saved tasks JSON file from the client
-        clientFileResult! = FILEOPEN("Upload a previously-exported JSON tasks file", dsk("")+dir(""),"","json","JSON Files (*.json)" +$0a$ + "*.json" + $0a$ + "All Files (*.*)" + $0a$ + "*.*", 0 ,MODE="CLIENT,EXISTS=1,STYLE=style",err=*NEXT)
+        clientFileResult! = FILEOPEN("Import tasks from a previously-exported tasks file", dsk("")+dir(""),"","json","JSON Files (*.json)" +$0a$ + "*.json" + $0a$ + "All Files (*.*)" + $0a$ + "*.*", 0 ,MODE="CLIENT,EXISTS=1,STYLE=style",err=*NEXT)
         if (clientFileResult! = "::BAD::") OR (clientFileResult! = "::CANCEL::") then methodret
-        thinClient! = BBjAPI().getThinClient()
-        clientFileSystem! = thinClient!.getClientFileSystem()
+        clientFileSystem! = #thinClient!.getClientFileSystem()
         clientFile! = clientFileSystem!.getClientFile(clientFileResult!)
         serverFilePath! = clientFile!.copyFromClient()
 
