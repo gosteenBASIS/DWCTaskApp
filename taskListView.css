@@ -2,7 +2,7 @@
 /* ================================================ */
 .winListView {
 	display: grid;
-	grid-template-columns: 1.8em 1fr 9ch;
+	grid-template-columns: 1.8em 1fr 10ch;
     grid-template-rows: 2.5em 2em;
 	grid-column-gap: 0.25em;
     height: 4.5em;
