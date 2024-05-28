@@ -114,6 +114,10 @@ class public TaskApp
         #injectCSSFile("taskCardView.css")
         #injectCSSFile("Settings.css")
 
+        rem Change the "click to reload web application" message
+        #webManager!.setEndAction(#webManager!.msgAction("Launch the TaskApp"))
+        #webManager!.setErrAction(#webManager!.msgAction("Launch the TaskApp"))
+
         REM To prevent the user from accidentally pinching and zooming on a phone
         #webManager!.setMeta("viewport", "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no")
 
@@ -123,7 +127,7 @@ class public TaskApp
         #webManager!.injectLinkUrl(url!, 1, attrib!, err=*NEXT)
 
         rem Set the title of the app
-        #webManager!.setTitle("TaskApp")
+        #webManager!.setTitle("TaskApp", "{BrowserTitle}")
 
         rem Set the homescreen icon for smartphones and tablets
         url! = "https://public.basis.cloud/images/DWCTaskApp.png"
@@ -175,7 +179,7 @@ class public TaskApp
 
         rem Turn off tooltips on iOS
         #thinClient! = BBjAPI().getThinClient()
-        #clientOs! = #thinClient!.getClientOSName()
+        #clientOs! = #thinClient!.getClientOSName().replaceAll(" ", "_")
         if (#clientOs!.contains("iOS")) then #hashPrefs!.put("prefsTaskTips", "0")
 
         REM Log the user's preferences
@@ -312,13 +316,13 @@ class public TaskApp
         btnSettings!.setAttribute("expanse", "xs")
         btnSettings!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onShowSettings")
 
-        btnExport! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='cloud-download'></dwc-icon>")
+        btnExport! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='download'></dwc-icon>")
         btnExport!.addClass("toolbarIcon")
 
         btnExport!.setAttribute("expanse", "xs")
         btnExport!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onExportToFile")
 
-        btnImport! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='cloud-upload'></dwc-icon>")
+        btnImport! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='upload'></dwc-icon>")
         btnImport!.addClass("toolbarIcon")
 
         btnImport!.setAttribute("expanse", "xs")
@@ -821,7 +825,7 @@ class public TaskApp
 
         rem Write the tasks out to the client browser's storage
         jsonString! = gson!.toJson(json!).toString()
-        BBjAPI().getThinClient().setUserProperty(BBjThinClient.USER_PROPERTIES_STORAGE, #appName!, jsonString!)
+        #thinClient!.setUserProperty(BBjThinClient.USER_PROPERTIES_STORAGE, #appName!, jsonString!)
 
         Utils.consoleLog("Exported " + str(#tasks!.size()) + " tasks to the client browser's storage")
         REM chan = unt
@@ -840,7 +844,6 @@ class public TaskApp
     REM  * @param BBjButtonPushEvent event! The BBjButtonPushEvent that called this method
     REM  */
     method public void onExportToFile(BBjButtonPushEvent event!)
-        declare auto BBjThinClient thinClient!
         declare auto BBjClientFileSystem clientFileSystem!
         declare auto BBjClientFile clientFile!
         declare auto File serverFile!
@@ -861,8 +864,7 @@ class public TaskApp
         close(chan)
 
         rem Download the server file to the client
-        thinClient! = BBjAPI().getThinClient()
-        clientFileSystem! = thinClient!.getClientFileSystem()
+        clientFileSystem! = #thinClient!.getClientFileSystem()
         clientFile! = clientFileSystem!.getClientFile("DWCTaskApp.tasks.json")
         clientFile!.copyToClient(serverFilePath!)
         erase serverFilePath!
@@ -880,15 +882,13 @@ class public TaskApp
     REM  * @param BBjButtonPushEvent event!     BBjButtonPushEvent that invoked this method.
     REM  */
     method public void onImportFromFile(BBjButtonPushEvent event!)
-        declare auto BBjThinClient thinClient!
         declare auto BBjClientFileSystem clientFileSystem!
         declare auto BBjClientFile clientFile!
 
         REM Get the saved tasks JSON file from the client
-        clientFileResult! = FILEOPEN("Upload a previously-exported JSON tasks file", dsk("")+dir(""),"","json","JSON Files (*.json)" +$0a$ + "*.json" + $0a$ + "All Files (*.*)" + $0a$ + "*.*", 0 ,MODE="CLIENT,EXISTS=1,STYLE=style",err=*NEXT)
+        clientFileResult! = FILEOPEN("Import tasks from a previously-exported tasks file", dsk("")+dir(""),"","json","JSON Files (*.json)" +$0a$ + "*.json" + $0a$ + "All Files (*.*)" + $0a$ + "*.*", 0 ,MODE="CLIENT,EXISTS=1,STYLE=style",err=*NEXT)
         if (clientFileResult! = "::BAD::") OR (clientFileResult! = "::CANCEL::") then methodret
-        thinClient! = BBjAPI().getThinClient()
-        clientFileSystem! = thinClient!.getClientFileSystem()
+        clientFileSystem! = #thinClient!.getClientFileSystem()
         clientFile! = clientFileSystem!.getClientFile(clientFileResult!)
         serverFilePath! = clientFile!.copyFromClient()
 

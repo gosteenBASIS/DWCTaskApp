@@ -293,7 +293,6 @@ dwc-dialog-glass-pane {
     transform: scale3d(2, 2, 2);
 }
 .winMain.iOS .btnAddTaskFAB {
-    position: absolute;
     right: 2em;
     bottom: 2em;
 }
