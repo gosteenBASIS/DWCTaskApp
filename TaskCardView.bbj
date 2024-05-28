@@ -8,10 +8,7 @@ REM package TaskApp
 
 class public TaskCardView extends TaskView
     field protected BBjButton       btnDeleteTask!
-    field protected BBjButton       btnLock!
     field protected BBjButton       btnSetComplete!
-    field protected BBjString       lock! = "<html><dwc-icon pool='tabler' name='lock' style='width: 30px; height: 30px'></dwc-icon>"
-    field protected BBjString       lockOpen! = "<html><dwc-icon pool='tabler' name='lock-open' style='width: 30px; height: 30px'></dwc-icon>"
 
     REM /**
     REM  * Constructor for the TaskCardView
@@ -23,17 +20,6 @@ class public TaskCardView extends TaskView
         #super!(parent!,t!)
         #win!.addClass("winCardView")
         #title!.addClass("textTitle")
-
-        #btnLock! = #win!.addButton(#lock!)
-
-        if (#task!.getComplete() = 0) then
-            #btnLock!.setVisible(0)
-            #setPriorityFlag()
-        else
-            #win!.setUserData(#btnLock!)
-            #btnLock!.addClass("btnLock")
-            #btnLock!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "setLock")
-        endif
 
         #btnSetComplete! = #win!.addButton("")
 
@@ -57,47 +43,17 @@ class public TaskCardView extends TaskView
         if (#task!.getComplete()) then
             #win!.addClass("complete")
             #btnSetComplete!.setText("Mark as Incomplete")
-            #win!.setToolTipText("Unlock to edit task")
-            #btnLock!.addClass("btnLock")
-            #btnLock!.removeClass("btnLockOpen")
-            #btnLock!.setText(#lock!)
             if (#priorityFlag! <> null()) then #priorityFlag!.addClass("priority-transparent")
         else
             #win!.removeClass("complete")
             #win!.setToolTipText("Click to edit task")
             #btnSetComplete!.setText("Mark as Complete")
-            #btnLock!.removeClass("btnLock")
-            #btnLock!.addClass("btnLockOpen")
-            #btnLock!.setText(#lockOpen!)
             if (#priorityFlag! <> null()) then #priorityFlag!.removeClass("priority-transparent")
         endif
 
         #description!.setToolTipText(#task!.getDescription())
         #title!.setToolTipText(#task!.getTitle())
 
-    methodend
-
-    REM /**
-    REM  * - Toggles a completed task lock icon between open and closed
-    REM  * - Icon is set to BBjStaticText #btnLock!
-    REM  * - Toggles associated classes
-    REM  *
-    REM  * @param BBjButtonPushEvent e!     The BBjButtonPushEvent that causes this method to be executed
-    REM  */
-    method public void setLock(BBjButtonPushEvent e!)
-        if (#btnLock!.getText() = #lock!) then
-            #btnLock!.setText(#lockOpen!)
-            #btnLock!.removeClass("btnLock")
-            #btnLock!.addClass("btnLockOpen")
-            #win!.removeClass("complete")
-            #win!.setToolTipText("Click to edit task")
-        else
-            #btnLock!.setText(#lock!)
-            #btnLock!.removeClass("btnLockOpen")
-            #btnLock!.addClass("btnLock")
-            #win!.addClass("complete")
-            #win!.setToolTipText("Unlock to edit task")
-        endif
     methodend
 
     REM /**

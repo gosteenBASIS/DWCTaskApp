@@ -115,33 +115,6 @@
 	opacity: 1;
 }
 
-.btnLock, .btnLockOpen {
-	margin-top: -7px;
-	margin-right: -7px;
-}
-
-.winCardView .btnLock::part(control), .card-btn-lock::part(control):before {
-	font-size: 15px;
-	background-color: transparent;
-	justify-self: right;
-	color: var(--dwc-color-danger);
-	opacity: .5;
-	border: transparent;
-	grid-column-start: 2;
-	grid-row: 1 / span 2;
-}
-
-.winCardView .btnLockOpen::part(control), .card-btn-lock-open::part(control):before {
-	font-size: 15px;
-	background-color: transparent;
-	justify-self: right;
-	color: var(--dwc-color-success);
-	opacity: .5;
-	border: transparent;
-	grid-column-start: 2;
-	grid-row: 1 / span 2;
-}
-
 /* Description styling on task-list-view */
 .winCardView .textDescription {
 	grid-row-start: 4;
