@@ -41,7 +41,6 @@ class public TaskApp
     field protected BBjChildWindow      winTaskCardDueDate!
     field protected BBjChildWindow      winTasks!
     field public    BBjChildWindow      winTasksCardView!
-    field protected BBjVector           vectTaskLists! = BBjAPI().makeVector()
     field protected BBjWebComponent     segmentChangeView!
 
     REM /** The Settings class that shows the settings window for the application */
@@ -237,7 +236,6 @@ class public TaskApp
         #winTaskCardComplete!.addClass("winCardTasks fadeIn")
         #winTaskCardComplete!.setVisible(0)
 
-        #addTaskList("default")
 
         REM Create the FAB (floating action button) and the toolbar buttons
         btnAddTaskFAB! = #winMain!.addButton("<html><dwc-icon pool='tabler' name='plus'></dwc-icon>")
@@ -443,19 +441,6 @@ class public TaskApp
     methodend
 
     REM /**
-    REM  * Add a Task List Window
-    REM  *
-    REM  * @param BBjString name!   The name of the task list
-    REM  * @return BBjChildWindow   The task list window with the given name
-    REM  */
-    method public BBjChildWindow addTaskList(BBjString name!)
-        taskList! = #winTasks!.addChildWindow(name!, $00108800$, #sysgui!.getAvailableContext())
-        taskList!.addClass("taskList fadeIn")
-        #vectTaskLists!.addItem(taskList!)
-        methodret taskList!
-    methodend
-
-    REM /**
     REM  * Adds a TaskListView for the given Task, and returns the TaskListView
     REM  *
     REM  * @param Task t!       Task that will be used to create the TaskListView
@@ -463,8 +448,7 @@ class public TaskApp
     REM  */
     method public TaskListView addTaskListView(Task task!)
         index = 0
-        taskList! = #vectTaskLists!.getItem(index)
-        view! = new TaskListView(taskList!, task!)
+        view! = new TaskListView(#winTasks!, task!)
 
         #taskListViews!.put(task!.getUuid(), view!)
         view!.getwin().setCallback(BBjControl.ON_CLICK, #this!, "onTaskClick")
