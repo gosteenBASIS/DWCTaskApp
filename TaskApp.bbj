@@ -467,15 +467,8 @@ class public TaskApp
         layout! = event!.getEventMap().get("value").toString()
         #hashPrefs!.put("prefsTaskView", layout!)
         Utils.setCookies(#appName!, #hashPrefs!, err=*NEXT)
-
-        REM Show the list or card window based on the chosen layout
-        if (layout! = "list") then
-            #winTasks!.addClass("winListView")
-            #winTasks!.removeClass("winCardView")
-        else
-            #winTasks!.addClass("winCardView")
-            #winTasks!.removeClass("winListView")
-        endif
+        #winTasks!.removeClass("listView cardView")
+        #winTasks!.addClass(layout!+"View")
     methodend
 
     REM /**
@@ -532,13 +525,10 @@ class public TaskApp
         #setCssProperty("--app-font-size-task", #hashPrefs!.get("prefsTaskFontSize").toString())
         #setCssProperty("--app-font-spacing-task", #hashPrefs!.get("prefsTaskFontSpacing").toString())
 
-        showListview = #hashPrefs!.get("prefsTaskView").toString() = "list"
-        if (showListView) then
-            #winTasks!.addClass("winListView")
-        else
-            #winTasks!.addClass("winCardView")
-        endif
-        #segmentChangeView!.setAttribute("value", #hashPrefs!.get("prefsTaskView").toString())
+        viewPrefs! = #hashPrefs!.get("prefsTaskView").toString()
+        #winTasks!.addClass(viewPrefs! + "View")
+
+        #segmentChangeView!.setAttribute("value", viewPrefs!)
 
         REM Ensure the preferred font works if it's a Google font
         fontFamilyLink! = "https://fonts.googleapis.com/css2?family=" + #hashPrefs!.get("prefsTaskFontFamily").toString() + "&display=swap"

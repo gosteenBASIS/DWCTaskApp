@@ -1,15 +1,21 @@
 /* Task Styling                                     */
 /* ================================================ */
-.winListView dwc-panel {
+.listView {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.listView dwc-panel {
+    flex: 0 0 auto;
 	display: grid;
 	grid-template-columns: 1.8em 1fr auto;
     grid-template-rows: auto 2em;
 	grid-column-gap: 0.25em;
-    height: auto;
+    height: fit-content;
     justify-items: start;
     border: transparent;
     border-bottom-color: var(--dwc-color-gray-80);
-    padding-right: 0.5em;
+    padding: 0.5em 0;
     transition: all 250ms ease;
 }
 
@@ -18,7 +24,7 @@ dwc-checkbox {
     grid-row: 1;
 }
 
-.winListView .dueNotice {
+.listView .dueNotice {
     grid-row: 1;
     grid-column: 3;
     justify-self: right;
@@ -42,20 +48,20 @@ dwc-checkbox {
 }
 
 /* Title styling on task-list-view */
-.winListView .textTitle {
+.listView .textTitle {
     height: auto;
     text-wrap: wrap;
 }
 
 /* Description styling on task-list-view */
-.winListView  .textDescription {
+.listView  .textDescription {
     /* opacity: 0.5; */
     align-self: start;
     grid-column: 2 / 2;
     color: hsla(var(--app-color-h), 15%, 50%);
 }
 
-.winListView .priorityFlag {
+.listView .priorityFlag {
     justify-self: right;
     align-self: start;
     grid-column: 3 / 3;
@@ -63,12 +69,12 @@ dwc-checkbox {
 }
 
 /* Task items that are incomplete */
-.winListView dwc-checkbox::part(input-wrapper) {
+.listView dwc-checkbox::part(input-wrapper) {
     border-color: var(--dwc-color-gray-50);
     background-color: var(--dwc-color-white);
 }
 
-.winListView dwc-checkbox::part(label) {
+.listView dwc-checkbox::part(label) {
     display: none;
 }
 
@@ -120,13 +126,13 @@ dwc-checkbox:not([checked]):hover::part(checked-icon) {
     opacity: 0.25;
 }
 
-.winListView .btnDelete {
+.listView .btnDelete {
     display: none;
 }
 
 
 @media (width <= 500px) {
-	.winListView .dueNotice {
+	.listView .dueNotice {
         display: none;
     }
 }

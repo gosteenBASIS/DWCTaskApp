@@ -152,15 +152,15 @@ dwc-panel {
     align-items: stretch;
     justify-content: center;
 }
+
 .winTasks {
     grid-area: winTasks;
     overflow-y: scroll;
     overflow-x: hidden;
     width: 100%;
+    height: 100%;
     display: flex;
     flex-flow: row;
-    flex-wrap: wrap;
-    justify-content: center;
     padding-top: 2em;
     padding-bottom: 0.5em;
 }
