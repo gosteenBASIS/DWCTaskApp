@@ -15,9 +15,11 @@ class public TaskView
     field protected BBjSysGui       sysgui!
     field public    BBjStaticText   title!
     field public    BBjStaticText   description!
+    field public    BBjCheckBox     checkbox!
     field public    BBjStaticText   due!
     field public    BBjStaticText   priorityFlag!
     field public    BBjString       flagIcon! = "<html><dwc-icon pool='tabler' name='flag-2-filled'></dwc-icon>"
+    field protected BBjButton       btnDeleteTask!
 
     REM /**
     REM  * Constructor for the TaskView object
@@ -40,13 +42,23 @@ class public TaskView
         #title!.addClass("textTitle")
         #description! = #win!.addStaticText("")
         #description!.addClass("textDescription")
-
+        
+        #checkbox! = #win!.addCheckBox("Mark as Complete")
+        #checkbox!.addClass("checkbox")
+        #checkbox!.setCallback(BBjControl.ON_CHECK_CHANGE, #this!, "onTaskCheck")
+        
         #due! = #win!.addStaticText("")
         #due!.addClass("dueNotice")
         #priorityFlag! = #win!.addStaticText(#flagIcon!)
         #priorityFlag!.addClass("priorityFlag")
         #priorityFlag!.setCallback(BBjControl.ON_POPUP_REQUEST, #this!, "OnShowPriorityPopup")
+        
+        trashIcon! = "<html><dwc-icon pool='tabler' name='trash' style='width: 25px; height: 25px'></dwc-icon>"
+        #btnDeleteTask! = #win!.addButton(trashIcon!)
+        #btnDeleteTask!.addClass("btnDelete")
+        #btnDeleteTask!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onDelete")
         #setPriorityFlag()
+        #refresh()
     methodend
 
     REM /**
@@ -60,9 +72,15 @@ class public TaskView
         #clearStyles()
         #title!.setText(#task!.getTitle())
         #description!.setText(#task!.getDescription())
+        #checkbox!.setSelected(#task!.getComplete())
+        label! = "Mark as Complete"
         if (#task!.getComplete()) then
             #win!.addClass("complete")
+            label! = "Mark as Incomplete"
+            
         endif
+        #checkbox!.setAttribute("label",label!)
+
         #setPriorityFlag()
         #setDueNotice()
         if (#flagPopupMenu! <> null()) then
@@ -75,6 +93,9 @@ class public TaskView
                 endif
             next i
         endif
+        
+        #description!.setToolTipText(#task!.getDescription())
+        #title!.setToolTipText(#task!.getTitle())
     methodend
 
     REM /**
@@ -134,9 +155,12 @@ class public TaskView
     REM  */
     method public void setPriorityFlag()
         flagText! = "Priority " + STR(#task!.getPriority())
-        #priorityFlag!.removeClass("priority-1 priority-2 priority-3 priority-4 priority-5 priority-0")
+        #priorityFlag!.removeClass("priority-1 priority-2 priority-3 priority-4 priority-5 priority-0 priority-transparent")
         #priorityFlag!.addClass("priority-" + STR(#task!.getPriority()))
         #priorityFlag!.setToolTipText(flagText!)
+        if (#task!.getComplete()) then
+            #priorityFlag!.addClass("priority-transparent")
+        endif
     methodend
 
     REM /**
@@ -154,6 +178,34 @@ class public TaskView
         next i
     methodend
 
+    REM /**
+    REM  * Method to run when a task's checkbox is changed
+    REM  *
+    REM  * @param BBjCheckChangeEvent e!    The BBjCheckChangeEvent that invoked this method
+    REM  */
+    method public void onTaskCheck(BBjCheckChangeEvent e!)
+        #clearStyles()
+        if (#task!.getComplete()) then
+            #task!.setComplete(0)
+        else
+            #task!.setComplete(1)
+        endif
+        BBjAPI().postCustomEvent("TASK_UPDATE",#task!)
+    methodend
+
+    REM /**
+    REM  * Triggers message box which prompts user for confirmation before deleting a task
+    REM  *
+    REM  * @param BBjButtonPushEvent e!     The BBjButtonPushEvent that causes this method to be executed
+    REM  */
+    method public void onDelete(BBjButtonPushEvent e!)
+        confirmDeleteTask! = msgbox("Are you sure you want to delete this task?", BBjSysGui.MSGBOX_BUTTONS_YES_NO + BBjSysGui.MSGBOX_ICON_EXCLAMATION, "Delete Task")
+    
+        if (confirmDeleteTask! = 6) then
+            #task!.setDeleted(1)
+            BBjAPI().postCustomEvent("TASK_UPDATE",#task!)
+        endif
+    methodend
 
     method public void OnShowPriorityPopup(BBjPopupRequestEvent event!)
         if (#flagPopupMenu! = null()) then #createPopupMenu()

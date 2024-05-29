@@ -30,17 +30,9 @@ class public TaskApp
     field protected BBjString           clientOs!
     field protected BBjTopLevelWindow   winMain!
     field protected TaskProperties      taskProperties!
-    field protected TaskCardView        taskCardView! = new TaskCardView()
     field protected BBjChildWindow      winToolBar!
     field protected BBjChildWindow      winTitle!
-    field protected BBjChildWindow      winViews!
-    field protected BBjChildWindow      winTaskCard!
-    field protected BBjChildWindow      winTaskCardIncomplete!
-    field protected BBjChildWindow      winTaskCardComplete!
-    field protected BBjChildWindow      winTaskCardPriority!
-    field protected BBjChildWindow      winTaskCardDueDate!
     field protected BBjChildWindow      winTasks!
-    field public    BBjChildWindow      winTasksCardView!
     field protected BBjWebComponent     segmentChangeView!
 
     REM /** The Settings class that shows the settings window for the application */
@@ -53,12 +45,6 @@ class public TaskApp
     field protected BBjString           appName! = "TaskApp"
     field protected BBjString           version! = "0.1"
     field protected BBjString           appPath! = dsk("") + dir("")
-    field public    BBjString           taskView! = "incomplete"
-    field public    BBjButton           btnIncompleteView!
-    field public    BBjButton           btnCompleteView!
-    field public    BBjButton           btnPriorityView!
-    field public    BBjButton           btnDueView!
-    field public    BBjNumber           displayType! = 2
 
     REM Some sort of list of tasks.
     REM ========================================
@@ -74,10 +60,7 @@ class public TaskApp
     REM  * @see <a href='https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/TreeMap.html' target='_blank'>TreeMap</a> documentation
     REM  */
     field protected TreeMap tasks!
-    field protected TreeMap taskListViews!
-    field protected TreeMap taskCardViews!
-    field protected TreeMap taskPriorityViews!
-    field protected TreeMap taskDueDateViews!
+    field protected TreeMap taskViews!
 
     REM Constants
     REM ========================================
@@ -143,10 +126,7 @@ class public TaskApp
 
         REM Create the collection for the tasks
         #tasks! = new TreeMap()
-        #taskListViews! = new TreeMap()
-        #taskCardViews! = new TreeMap()
-        #taskPriorityViews! = new TreeMap()
-        #taskDueDateViews! = new TreeMap()
+        #taskViews! = new TreeMap()
 
         REM Create the HashMap to store the user preferences and load it up with the default values
         #hashPrefs! = new HashMap()
@@ -221,21 +201,9 @@ class public TaskApp
         #winToolBar! = #createWinToolBar()
         #winTitle! = #createWinTitle()
 
-        REM TASK LIST VIEW: main window
+        REM TASK VIEW: main window
         #winTasks! = #winMain!.addChildWindow("Tasks", $00108800$, #sysgui!.getAvailableContext())
-        #winTasks!.addClass("winTasks")
-
-        REM TASK CARD VIEW: main window
-        #winTasksCardView! = #winMain!.addChildWindow("Tasks", $00108800$, #sysgui!.getAvailableContext())
-        #winTasksCardView!.addClass("winTaskCardView")
-        #winTasksCardView!.setVisible(0)
-
-        #winTaskCard! = #winTasksCardView!.addChildWindow("All Tasks", $00108800$, #sysgui!.getAvailableContext())
-        #winTaskCard!.addClass("winCardTasks fadeIn")
-        #winTaskCardComplete! = #winTasksCardView!.addChildWindow("Completed Tasks", $00108800$, #sysgui!.getAvailableContext())
-        #winTaskCardComplete!.addClass("winCardTasks fadeIn")
-        #winTaskCardComplete!.setVisible(0)
-
+        #winTasks!.addClass("winTasks fadeIn")
 
         REM Create the FAB (floating action button) and the toolbar buttons
         btnAddTaskFAB! = #winMain!.addButton("<html><dwc-icon pool='tabler' name='plus'></dwc-icon>")
@@ -352,10 +320,7 @@ class public TaskApp
     method public void displayTasks()
         declare auto Task task!
 
-        REM Original code that uses the #tasks object which isn't sorted
-        REM it! = #tasks!.values().iterator()
-
-        REM New code that gets a sorted TreeMap of the tasks
+        REM Get a sorted TreeMap of the tasks
         #winTitle!.getControl("labelDate").setText("<html><span class='labelSortingIndicator'>" + str(#tasks!.size()) + " Tasks Sorted by Priority")
         orderedTasks! = #getSortedTasks("priority")
         it! = orderedTasks!.values().iterator()
@@ -364,12 +329,7 @@ class public TaskApp
         while it!.hasNext()
             task! = it!.next()
             if (task!.getComplete() = 0) then
-                view! = #addTaskListView(task!)
-            endif
-
-            cardView! = #addTaskCardView(task!)
-            if (task!.getComplete()) then
-                cardView!.setVisible(1)
+                view! = #addTaskView(task!)
             endif
         wend
     methodend
@@ -423,34 +383,16 @@ class public TaskApp
     methodend
 
     REM /**
-    REM  * Adds a TaskCardView for the given Task, and returns the TaskCardView
+    REM  * Adds a TaskView for the given Task, and returns the TaskView
     REM  *
-    REM  * @param Task task!        Task that will be made into a TaskCardView
-    REM  * @return TaskCardView     A TaskCardView containing information from the task
+    REM  * @param Task t!       Task that will be used to create the TaskView
+    REM  * @return TaskView     The view control for the given task
     REM  */
-    method public TaskCardView addTaskCardView(Task task!)
-        if (task!.getComplete()) then
-            view! = new TaskCardView(#winTaskCardComplete!, task!)
-        else
-            view! = new TaskCardView(#winTaskCard!, task!)
-        endif
-        #winTaskCardComplete!.setVisible(0)
-        #taskCardViews!.put(task!.getUuid(), view!)
-        view!.getwin().setCallback(BBjControl.ON_CLICK, #this!, "onTaskClick")
-        methodret view!
-    methodend
-
-    REM /**
-    REM  * Adds a TaskListView for the given Task, and returns the TaskListView
-    REM  *
-    REM  * @param Task t!       Task that will be used to create the TaskListView
-    REM  * @return TaskListView The view control for the given task
-    REM  */
-    method public TaskListView addTaskListView(Task task!)
+    method public TaskView addTaskView(Task task!)
         index = 0
-        view! = new TaskListView(#winTasks!, task!)
+        view! = new TaskView(#winTasks!, task!)
 
-        #taskListViews!.put(task!.getUuid(), view!)
+        #taskViews!.put(task!.getUuid(), view!)
         view!.getwin().setCallback(BBjControl.ON_CLICK, #this!, "onTaskClick")
         methodret view!
     methodend
@@ -469,41 +411,6 @@ class public TaskApp
         endif
         t! = #tasks!.get(event!.getControl().getAttribute("id"))
         #taskProperties!.loadTask(t!)
-
-        REM TASK CARD VIEW: onTaskClick method
-        win! = event!.getControl()
-        lock! = "<html><dwc-icon pool='tabler' name='lock' style='width: 30px; height: 30px'></dwc-icon>"
-        lockOpen! = "<html><dwc-icon pool='tabler' name='lock-open' style='width: 30px; height: 30px'></dwc-icon>"
-        btnLock! = event!.getControl().getUserData()
-
-        if (btnLock! = null()) OR (btnLock!.getText() = lockOpen!) then
-            if (#taskProperties! = null()) then
-                #taskProperties! = new TaskProperties()
-            endif
-            t! = #tasks!.get(event!.getControl().getAttribute("id"))
-            #taskProperties!.loadTask(t!)
-        else
-            unlockResult! = msgbox("Would you like to edit task now?", BBjSysGui.MSGBOX_BUTTONS_YES_NO + BBjSysGui.MSGBOX_ICON_INFORMATION, "Unlock Task to Edit")
-            if (unlockResult! = 6) then
-                if (#taskProperties! = null()) then
-                    #taskProperties! = new TaskProperties()
-                endif
-
-                btnLock!.setText(lockOpen!)
-                btnLock!.removeClass("card-btn-lock")
-                btnLock!.addClass("card-btn-lock-open")
-                win!.removeClass("card-task-complete")
-                win!.addClass("card-task")
-
-                t! = #tasks!.get(event!.getControl().getAttribute("id"))
-                #taskProperties!.loadTask(t!)
-
-                dataVector! = BBjAPI().makeVector()
-                dataVector!.addItem(win!)
-                dataVector!.addItem(btnLock!)
-                if (t!.getComplete()) then #taskProperties!.passData(dataVector!)
-            endif
-        endif
 
     methodend
 
@@ -556,14 +463,18 @@ class public TaskApp
     REM  */
     method public void OnChangeLayout(BBjWebEvent event!)
         REM Get the chosen layout type, which is either "list" or "card", and save it to the preferences
-        prefsTaskView! = event!.getEventMap().get("value").toString()
-        #hashPrefs!.put("prefsTaskView", prefsTaskView!)
+        layout! = event!.getEventMap().get("value").toString()
+        #hashPrefs!.put("prefsTaskView", layout!)
         Utils.setCookies(#appName!, #hashPrefs!, err=*NEXT)
 
         REM Show the list or card window based on the chosen layout
-        showListview = #hashPrefs!.get("prefsTaskView") = "list"
-        #winTasks!.setVisible(showListview,err=*NEXT)
-        #winTasksCardView!.setVisible(!showListview,err=*NEXT)
+        if (layout! = "list") then
+            #winTasks!.addClass("winListView")
+            #winTasks!.removeClass("winCardView")
+        else
+            #winTasks!.addClass("winCardView")
+            #winTasks!.removeClass("winListView")
+        endif
     methodend
 
     REM /**
@@ -573,7 +484,7 @@ class public TaskApp
     REM  * @param BBjCustomEvent event! A BBjCustomEvent that has a Task Object as a payload.
     REM  */
     method public void onTaskUpdate(BBjCustomEvent event!)
-        declare auto TaskListView view!
+        declare auto TaskView view!
         declare auto Task t!
         task! = event!.getObject()
         uuid! = task!.getUuid()
@@ -581,17 +492,10 @@ class public TaskApp
         rem If the UUID is not present in #tasks!, this is a new Task to be added.
         if (#tasks!.containsKey(uuid!) = 0) then
             #addTask(task!)
-            #addTaskListView(task!)
-            #addTaskCardView(task!)
+            #addTaskView(task!)
         else
-            listView! = #taskListViews!.get(uuid!)
-            cardView! = #taskCardViews!.get(uuid!)
-            viewPriority! = #taskPriorityViews!.get(uuid!)
-            viewDueDate! = #taskDueDateViews!.get(uuid!)
-            if (listView! <> null()) then listView!.refresh()
-            if (cardView! <> null()) then cardView!.refresh()
-            if (viewPriority! <> null()) then viewPriority!.refresh()
-            if (viewDueDate! <> null()) then viewDueDate!.refresh()
+            view! = #taskViews!.get(uuid!)
+            if (view! <> null()) then view!.refresh()
         endif
 
         if (task!.getDeleted()) then
@@ -628,8 +532,11 @@ class public TaskApp
         #setCssProperty("--app-font-spacing-task", #hashPrefs!.get("prefsTaskFontSpacing").toString())
 
         showListview = #hashPrefs!.get("prefsTaskView").toString() = "list"
-        #winTasks!.setVisible(showListview,err=*NEXT)
-        #winTasksCardView!.setVisible(!showListview,err=*NEXT)
+        if (showListView) then
+            #winTasks!.addClass("winListView")
+        else
+            #winTasks!.addClass("winCardView")
+        endif
         #segmentChangeView!.setAttribute("value", #hashPrefs!.get("prefsTaskView").toString())
 
         REM Ensure the preferred font works if it's a Google font
@@ -647,8 +554,7 @@ class public TaskApp
         it! = #tasks!.keySet().iterator()
         while it!.hasNext()
             uuid! = it!.next()
-            #taskListViews!.remove(uuid!)
-            #taskCardViews!.remove(uuid!)
+            #taskViews!.remove(uuid!)
         wend
         #tasks!.clear()
         Utils.consoleLog("Removed all tasks from the #tasks! collection")
@@ -661,8 +567,7 @@ class public TaskApp
     REM  */
     method public void removeTask(BBjString uuid!)
         #tasks!.remove(uuid!)
-        #taskListViews!.remove(uuid!)
-        #taskCardViews!.remove(uuid!)
+        #taskViews!.remove(uuid!)
     methodend
 
     REM /**
@@ -734,12 +639,6 @@ class public TaskApp
     method public void onShowCompletedTasks(BBjButtonPushEvent event!)
         btnShowCompletedTasks! = event!.getControl()
         btnShowCompletedTasks!.toggleClass("icon-completed-selected")
-        if (#taskView! = "incomplete") then
-            #taskView! = "complete"
-        else
-            #taskView! = "incomplete"
-            #winTaskCardComplete!.setVisible(0)
-        endif
     methodend
 
     REM /**
@@ -974,10 +873,8 @@ classend
 REM BBj USE Statements
 use ::Task.bbj::Task
 use ::TaskProperties.bbj::TaskProperties
-use ::TaskListView.bbj::TaskListView
 use ::TaskView.bbj::TaskView
 use ::Settings.bbj::Settings
-use ::TaskCardView.bbj::TaskCardView
 use ::Utils.bbj::Utils
 
 REM Java USE Statements

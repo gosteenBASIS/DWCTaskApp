@@ -1,6 +1,6 @@
 /* Task Styling                                     */
 /* ================================================ */
-.winListView {
+.winListView dwc-panel {
 	display: grid;
 	grid-template-columns: 1.8em 1fr auto;
     grid-template-rows: 2.5em 2em;
@@ -47,7 +47,7 @@ dwc-checkbox {
 }
 
 /* Description styling on task-list-view */
-.winListView .textDescription {
+.winListView  .textDescription {
     /* opacity: 0.5; */
     align-self: start;
     grid-column: 2 / 2;
@@ -65,6 +65,10 @@ dwc-checkbox {
 .winListView dwc-checkbox::part(input-wrapper) {
     border-color: var(--dwc-color-gray-50);
     background-color: var(--dwc-color-white);
+}
+
+.winListView dwc-checkbox::part(label) {
+    display: none;
 }
 
 /* Task items that are complete */
@@ -113,4 +117,8 @@ dwc-checkbox[checked]:hover::part(checked-icon) {
 dwc-checkbox:not([checked]):hover::part(checked-icon) {
     /* Unchecked, hovering over the checkbox */
     opacity: 0.25;
+}
+
+.winListView .btnDelete {
+    display: none;
 }

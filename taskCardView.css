@@ -1,13 +1,6 @@
 /* The CSS file that accompanies the TaskApp DWC application - Card View Layout */
 
-.winTaskCardView {
-	margin-top: 1em;
-	display: flex;
-	/* flex-wrap: wrap; */
- 	justify-content: center;
-}
-
-.winCardTasks {
+.winCardView {
   	display: flex;
   	padding-top: 30px;
   	justify-content: space-evenly;
@@ -19,7 +12,7 @@
   	padding-bottom: 130px;
 }
 
-.winCardView {
+.winCardView dwc-panel {
 	/* background-color: var(--app-color-window-bg); */
 	border: var(--dwc-color-gray-90);
 	border-radius: 2em;
@@ -35,13 +28,13 @@
 	transition: all 300ms ease !important;
 }
 
-.winCardView:hover {
+.winCardView dwc-panel:hover {
 	transform: scale(0.95);
 	box-shadow: 0 0 4px rgba(149, 157, 165, 0.2);
 	cursor: pointer;
 }
 
-.winCardTask.complete {
+.winCardView dwc-panel.complete {
 	/* background-color: var(--app-color-window-bg); */
 	border: transparent;
 	border-radius: 2em;
@@ -83,18 +76,33 @@
 	grid-row: 1 / span 2;
 }
 
-.btnSetComplete {
+.winCardView dwc-checkbox {
 	justify-self: right;
 	grid-row: 5;
+	margin: auto auto;
+	width: 100%;
 }
 
-.btnSetComplete::part(control) {
+.winCardView dwc-checkbox::part(label) {
 	padding: 0 10px;
 	border-radius: 10px;
+	border: 1px solid;
+	font-size: var(--dwc-font-size-l);
+	color: var(--dwc-color-primary);
+	background-color: var(--dwc-button-background);
+	box-sizing: border-box;
+	width: 100%;
+	margin: auto;
+	padding: var(--dwc-space);
+	align-self: center;
+}
+
+.winCardView dwc-checkbox::part(input-wrapper) {
+	display: none;
 }
 
 /* Trash can icon styling on Completed-task-list-view */
-.btnDelete {
+.winCardView .btnDelete {
 	justify-self: right;
 	grid-row: 5;
 	margin-right: -10px;
@@ -104,14 +112,14 @@
 	--dwc-button-selected-background: none;
 }
 
-.btnDelete::part(control), .card-btn-delete-task::part(control):before {
+.winCardView .btnDelete::part(control), .card-btn-delete-task::part(control):before {
 	font-size: 15px;
 	justify-self: right;
  	opacity: .6;
  	width: fit-content;
 }
 
-.btnDelete::part(control):hover {
+.winCardView .btnDelete::part(control):hover {
 	opacity: 1;
 }
 
@@ -149,7 +157,6 @@
 	padding-top: 5px;
 	display: flex;
 }
-
 
 /*  Task due today and past due badges              */
 /* ================================================ */
