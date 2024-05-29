@@ -30,7 +30,6 @@ class public TaskProperties
     field public BBjButton         buttonSave!
     field public BBjString         lock! = "<html><dwc-icon pool='tabler' name='lock' style='width: 30px; height: 30px'></dwc-icon>"
     field public BBjNumber         dataPassed! = 0 
-    field public BBjNumber         confirmDeleteTask!
 
     field public Task              task!
     
@@ -174,9 +173,9 @@ class public TaskProperties
     REM  * @param BBjButtonPushEvent event!     The BBjButtonPushEvent that called this method
     REM  */
     method public void onDelete(BBjButtonPushEvent event!)
-        #confirmDeleteTask! = msgbox("Are you sure you want to delete this task?", BBjSysGui.MSGBOX_BUTTONS_YES_NO + BBjSysGui.MSGBOX_ICON_EXCLAMATION, "Delete Task")
+        confirmDeleteTask! = msgbox("Are you sure you want to delete this task?", BBjSysGui.MSGBOX_BUTTONS_YES_NO + BBjSysGui.MSGBOX_ICON_EXCLAMATION, "Delete Task")
         
-        if (#confirmDeleteTask! = 6) then
+        if (confirmDeleteTask! = 6) then
             #task!.setDeleted(1)
             BBjAPI().postCustomEvent("TASK_UPDATE",#task!)
             #winTaskProperties!.setVisible(0)
