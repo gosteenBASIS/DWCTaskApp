@@ -165,13 +165,6 @@ dwc-panel {
     padding-bottom: 0.5em;
 }
 
-.taskList {
-    min-width: 200px;
-    max-width: 1000px;
-    overflow-y: scroll;
-}
-
-
 
 /* Task Property Sheet Styling                      */
 /* ================================================ */
