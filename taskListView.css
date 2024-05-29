@@ -10,6 +10,7 @@
     border: transparent;
     border-bottom-color: var(--dwc-color-gray-80);
     padding-right: 0.5em;
+    transition: all 250ms ease;
 }
 
 dwc-checkbox {
