@@ -2,7 +2,7 @@
 /* ================================================ */
 .winListView {
 	display: grid;
-	grid-template-columns: 1.8em 0.9fr auto;
+	grid-template-columns: 1.8em 1fr auto;
     grid-template-rows: 2.5em 2em;
 	grid-column-gap: 0.25em;
     height: 4.5em;
@@ -22,6 +22,8 @@ dwc-checkbox {
     grid-column: 3;
     justify-self: right;
     white-space: nowrap;
+    text-overflow: clip;
+    padding-right: 0.2em;
 }
 
 .task dwc-static-text {

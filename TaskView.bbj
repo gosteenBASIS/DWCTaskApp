@@ -106,7 +106,7 @@ class public TaskView
         due! = ""
         dueDate! = #task!.getDueDate()
         formattedDueDate! = date(#task!.getDueDate():"%Dl, %Ml %D")
-        
+        #due!.addClass("dueNotice")
         if (#task!.getComplete()) then
             due! = "Complete"
             #due!.addClass("complete")
