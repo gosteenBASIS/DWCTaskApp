@@ -6,26 +6,24 @@
   	justify-content: space-evenly;
   	flex-direction: row;
   	flex-wrap: wrap;
-  	gap: 30px;
+  	gap: 1em;
   	overflow: scroll;
   	max-width: fit-content;
   	padding-bottom: 130px;
 }
 
 .winCardView dwc-panel {
-	/* background-color: var(--app-color-window-bg); */
 	border: var(--dwc-color-gray-90);
 	border-radius: 2em;
-	max-width: 280px;
-	min-width: 220px;
-	/* max-height: 820px; */
-	height: 320px;
+	max-width: 25em;
+	min-width: 15em;
+	height: 22em;
 	box-shadow: rgba(149, 157, 165, 0.2) 0 .5em 2em;
 	display: grid;
 	grid-template-columns: 1fr 5ch;
 	grid-template-rows: min-content min-content 5em 9.3em 3em;
 	padding: 1.4em;
-	transition: all 300ms ease !important;
+	transition: all 250ms ease;
 }
 
 .winCardView dwc-panel:hover {
@@ -35,19 +33,8 @@
 }
 
 .winCardView dwc-panel.complete {
-	/* background-color: var(--app-color-window-bg); */
+	/* background-color: hsla(var(--app-color-h), 15%, 10%); */
 	border: transparent;
-	border-radius: 2em;
-	max-width: 280px;
-	min-width: 220px;
-	max-height: 320px;
-	box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-	display: grid;
-	grid-template-columns: 1fr 5ch;
-	grid-template-rows: min-content min-content 5em 9.3em 3em;
-	padding: 1.4em;
-	transition: all 300ms ease !important;
-	cursor: pointer;
 }
 
 .winCardView dwc-static-text {
