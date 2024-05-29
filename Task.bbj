@@ -53,14 +53,6 @@ class public Task
     REM Constants
     REM ========================================
 
-    method public static BBjString FLAG_BLOCKED()
-        methodret "blocked"
-    methodend
-
-    method public static BBjString FLAG_DEFERRED()
-        methodret "deferred"
-    methodend
-
     REM /** A constant value that represents the highest allowed priority */
     method public static BBjNumber PRIORITY_HIGH()
            methodret 1
