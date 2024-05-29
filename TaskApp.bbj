@@ -277,6 +277,7 @@ class public TaskApp
         btnShowCompletedTasks!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onShowCompletedTasks")
 
         btnSettings! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='settings'></dwc-icon>")
+        
         btnSettings!.addClass("toolbarIcon")
 
         btnSettings!.setAttribute("expanse", "xs")
@@ -478,8 +479,8 @@ class public TaskApp
     methodend
 
     REM /**
-    REM  * Activated by custom event TASK_UPDATE
     REM  * This method handles any UI or data updates that may be necessary when a Task is modified.
+    REM  * Activated by custom event TASK_UPDATE
     REM  *
     REM  * @param BBjCustomEvent event! A BBjCustomEvent that has a Task Object as a payload.
     REM  */
