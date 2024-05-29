@@ -3,9 +3,9 @@
 .winListView dwc-panel {
 	display: grid;
 	grid-template-columns: 1.8em 1fr auto;
-    grid-template-rows: 2.5em 2em;
+    grid-template-rows: auto 2em;
 	grid-column-gap: 0.25em;
-    height: 4.5em;
+    height: auto;
     justify-items: start;
     border: transparent;
     border-bottom-color: var(--dwc-color-gray-80);
@@ -28,7 +28,6 @@ dwc-checkbox {
 
 .task dwc-static-text {
     font-size: 1.1em;
-    align-self: center;
     white-space: nowrap;
 	text-overflow: ellipsis;
 	max-width: 99%;
@@ -42,8 +41,9 @@ dwc-checkbox {
 }
 
 /* Title styling on task-list-view */
-.task .title-display {
-	/* font-weight: 700; */
+.winListView .textTitle {
+    height: auto;
+    text-wrap: wrap;
 }
 
 /* Description styling on task-list-view */
@@ -121,4 +121,11 @@ dwc-checkbox:not([checked]):hover::part(checked-icon) {
 
 .winListView .btnDelete {
     display: none;
+}
+
+
+@media (width <= 500px) {
+	.winListView .dueNotice {
+        display: none;
+    }
 }
