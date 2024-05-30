@@ -65,8 +65,8 @@
 /* ================================================ */
 
 /* Modify the entire DOM */
-html, body, dwc-frame-manager{
-    background: var(--app-color-window-bg);
+html, body, dwc-frame-manager {
+    background-color: var(--app-color-primary);
     padding: 0;
     margin: 0;
     width: 100dvw;
