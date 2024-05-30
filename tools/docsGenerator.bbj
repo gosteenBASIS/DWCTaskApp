@@ -5,18 +5,18 @@ REM  *
 REM  */
 
 
-rem Define this tools' folder and derive the project folder from it
+REM Define this tools' folder and derive the project folder from it
 toolsPath! = dsk("")+dir("")
 
-rem Ensure that we have the correct separator
+REM Ensure that we have the correct separator
 fileSeparator! = File.separator
 if !(toolsPath!.contains(fileSeparator!)) then fileSeparator! = "/"
 
-rem Define the project path
+REM Define the project path
 if (toolsPath!.endsWith(fileSeparator!)) then toolsPath! = toolsPath!.substring(0, toolsPath!.length() - 1)
 projectPath! = toolsPath!.substring(0, toolsPath!.lastIndexOf(fileSeparator!))
 
-rem Get a listing of all the .bbj files in the project folder and add them to the ArrayList
+REM Get a listing of all the .bbj files in the project folder and add them to the ArrayList
 projectFolder! = new File(projectPath!)
 filesList! = projectFolder!.list()
 programFiles! = new ArrayList()
@@ -27,34 +27,34 @@ for i = 0 TO filesList!.length - 1
     endif
 next i
 
-rem Ensure that the output destination directory exists
+REM Ensure that the output destination directory exists
 outputFolder! = new File(projectPath! + fileSeparator! + "docs")
 outputFolder!.mkdirs()
 
-rem Generate the JavaDocs
+REM Generate the JavaDocs
 generator! = new BBjDocsGenerator()
 params! = new BBjDocsParameters()
 params!.enableVerbose()
 params!.includePublicProtectedPrivateVisibility()
 generator!.generateBBjdoc(programFiles!, outputFolder!.getCanonicalPath(), params!)
 
-rem Print out the results
+REM Print out the results
 print "Generated JavaDocs for " + str(programFiles!.size()) + " program files"
 print "JavaDocs located in " + outputFolder!.getCanonicalPath()
 
-rem Open up the generated documentation in a browser
+REM Open up the generated documentation in a browser
 url! = "file:///" + outputFolder!.getCanonicalPath().replaceAll(" ", "%20").replaceAll("\\","/") + "/index.html"
 BBjAPI().getThinClient().browse(url!)
 end
 
 
-rem USE Statements
+REM USE Statements
 use java.io.File
 use java.util.ArrayList
 use com.basis.bbjutilities.bbjdocsgenerator.BBjDocsGenerator
 use com.basis.bbjutilities.bbjdocsgenerator.BBjDocsParameters
 
-rem DECLARE statements
+REM DECLARE statements
 declare auto BBjString          toolsPath!
 declare auto BBjString          projectPath!
 declare auto File               projectFolder!

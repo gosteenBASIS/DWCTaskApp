@@ -125,10 +125,10 @@ class public TaskApp
 
         REM We always override whatever version was saved in the client's history with the latest from the app
         #hashPrefs!.put("prefsVersion", #version!)
-        rem Force the browser's background to change ASAP
+        REM Force the browser's background to change ASAP
         #setCssProperty("--app-color-h", #hashPrefs!.get("prefsTaskHue").toString())
 
-        rem Change the "click to reload web application" message
+        REM Change the "click to reload web application" message
         #webManager!.setEndAction(#webManager!.msgAction("Launch the TaskApp"))
         #webManager!.setErrAction(#webManager!.msgAction("Launch the TaskApp"))
 
@@ -140,10 +140,10 @@ class public TaskApp
         attrib! = "rel=icon,type=image/svg,id=dwc_taskapp_icon"
         #webManager!.injectLinkUrl(url!, 1, attrib!, err=*NEXT)
 
-        rem Set the title of the app
+        REM Set the title of the app
         #webManager!.setTitle("TaskApp", "{BrowserTitle}")
 
-        rem Set the homescreen icon for smartphones and tablets
+        REM Set the homescreen icon for smartphones and tablets
         url! = "https://public.basis.cloud/images/DWCTaskApp.png"
         #webManager!.injectLinkUrl(url!, 1, "rel=SHORTCUT ICON,type=image/png")
         #webManager!.injectLinkUrl(url!, 1, "rel=apple-touch-icon,type=image/png")
@@ -160,7 +160,7 @@ class public TaskApp
         #tasks! = new TreeMap()
         #taskViews! = new TreeMap()
 
-        rem Turn off tooltips on iOS
+        REM Turn off tooltips on iOS
         #thinClient! = BBjAPI().getThinClient()
         #clientOs! = #thinClient!.getClientOSName().replaceAll(" ", "_")
         if (#clientOs!.contains("iOS")) then #hashPrefs!.put("prefsTaskTips", "0")
@@ -198,10 +198,10 @@ class public TaskApp
         #winMain!.addClass("winMain fadeIn")
         #winMain!.setIcon(#appPath!+"images/DWCTaskApp.png")
 
-        rem Add a special class to the main window based on the client's operating system
+        REM Add a special class to the main window based on the client's operating system
         #winMain!.addClass(#clientOs!)
 
-        rem Create the other windows
+        REM Create the other windows
         #winToolBar! = #createWinToolBar()
         #winTitle! = #createWinTitle()
 
@@ -486,7 +486,7 @@ class public TaskApp
         task! = event!.getObject()
         uuid! = task!.getUuid()
 
-        rem If the UUID is not present in #tasks!, this is a new Task to be added.
+        REM If the UUID is not present in #tasks!, this is a new Task to be added.
         if (#tasks!.containsKey(uuid!) = 0) then
             #addTask(task!)
             #addTaskView(task!)
@@ -699,7 +699,7 @@ class public TaskApp
         json! = #getTasksAsJsonArray()
         gson! = new GsonBuilder().setPrettyPrinting().create()
 
-        rem Write the tasks out to the client browser's storage
+        REM Write the tasks out to the client browser's storage
         jsonString! = gson!.toJson(json!).toString()
         #thinClient!.setUserProperty(BBjThinClient.USER_PROPERTIES_STORAGE, #appName!, jsonString!)
 
@@ -730,7 +730,7 @@ class public TaskApp
         gson! = new GsonBuilder().setPrettyPrinting().create()
         jsonString! = gson!.toJson(json!).toString()
 
-        rem Write out the JSON to a file on the server
+        REM Write out the JSON to a file on the server
         serverFile! = File.createTempFile("DWCTaskApp.tasks", ".json")
         serverFile!.deleteOnExit()
         serverFilePath! = serverFile!.getCanonicalPath()
@@ -739,7 +739,7 @@ class public TaskApp
             print(chan) jsonString!
         close(chan)
 
-        rem Download the server file to the client
+        REM Download the server file to the client
         clientFileSystem! = #thinClient!.getClientFileSystem()
         clientFile! = clientFileSystem!.getClientFile("DWCTaskApp.tasks.json")
         clientFile!.copyToClient(serverFilePath!)
@@ -768,7 +768,7 @@ class public TaskApp
         clientFile! = clientFileSystem!.getClientFile(clientFileResult!)
         serverFilePath! = clientFile!.copyFromClient()
 
-        rem Attempt to load tasks from the file that we got from the client
+        REM Attempt to load tasks from the file that we got from the client
         chan = unt
         open(chan, isz=-1, err=ERR_MISSING_TASKS_FILE) serverFilePath!
             read record(chan, siz=-1000000) json$
@@ -786,14 +786,14 @@ class public TaskApp
             methodret
         endif
 
-        rem Get the array of tasks
+        REM Get the array of tasks
         gson! = new GsonBuilder().setPrettyPrinting().create()
         array! = gson!.fromJson(json!, JsonArray.class)
 
-        rem From this point on, we have a valid array of tasks so we should remove the current tasks before importing the new ones
+        REM From this point on, we have a valid array of tasks so we should remove the current tasks before importing the new ones
         #removeAllTasks()
 
-        rem Add all the tasks from the imported array and then update the display
+        REM Add all the tasks from the imported array and then update the display
         it! = array!.iterator()
         while(it!.hasNext())
             jsonTask! = it!.next()
@@ -801,11 +801,11 @@ class public TaskApp
             #addTask(t!)
         wend
 
-        rem If we loaded the tasks from the server file, then call the export method to write them to browser storage
+        REM If we loaded the tasks from the server file, then call the export method to write them to browser storage
         #exportTasks()
         Utils.consoleLog("Loaded " + str(#tasks!.size()) + " tasks from imported client file")
 
-        rem For now, simply reload the app to show the updated list of tasks
+        REM For now, simply reload the app to show the updated list of tasks
         action! = #webManager!.urlAction(#webManager!.getUrl())
         #webManager!.setEndAction(action!)
         release
@@ -818,10 +818,10 @@ class public TaskApp
     REM  * Imports tasks from the client's browser storage
     REM  */
     method public void importTasks()
-        rem Read in the tasks from the client browser's storage
+        REM Read in the tasks from the client browser's storage
         json$ = BBjAPI().getThinClient().getUserProperty(BBjThinClient.USER_PROPERTIES_STORAGE, #appName!, err=*NEXT)
 
-        rem If there weren't any tasks in user storage, attempt to load them from a file on the server
+        REM If there weren't any tasks in user storage, attempt to load them from a file on the server
         if (len(json$) = 0) then
             chan = unt
             f$ = #appPath! + "tasks.json"
@@ -844,7 +844,7 @@ class public TaskApp
             #addTask(t!)
         wend
 
-        rem If we loaded the tasks from the server file, then call the export method to write them to browser storage
+        REM If we loaded the tasks from the server file, then call the export method to write them to browser storage
         if (loadedTasksFromFile) then
             #exportTasks()
             Utils.consoleLog("Loaded " + str(#tasks!.size()) + " tasks from server file")
@@ -854,7 +854,7 @@ class public TaskApp
         methodret
 
         ERR_MISSING_TASKS_FILE:
-        rem If the tasks aren't present in browser storage or a server file, then we create sample tasks
+        REM If the tasks aren't present in browser storage or a server file, then we create sample tasks
         #createSampleTasks(5)
         Utils.consoleLog("created " + str(#tasks!.size()) + " sample tasks")
         #exportTasks()

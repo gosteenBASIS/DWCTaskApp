@@ -1,19 +1,19 @@
-rem /**
-rem  * This class is responsible for managing the user's preferences and app settings for the TaskApp
-rem  */
+REM /**
+REM  * This class is responsible for managing the user's preferences and app settings for the TaskApp
+REM  */
 class public Settings
 
-    rem To Do Items
-    rem     - Define background colors or gradients for the main window (winMain)
-    rem     - Define the font size, weight, and spacing
-    rem     - Add an option for native controls (for now, probably just the BBjColorChooser)
+    REM To Do Items
+    REM     - Define background colors or gradients for the main window (winMain)
+    REM     - Define the font size, weight, and spacing
+    REM     - Add an option for native controls (for now, probably just the BBjColorChooser)
 
-    rem BBjControls for the Settings dialog
+    REM BBjControls for the Settings dialog
     field protected BBjTopLevelWindow   winSettings!
     field protected BBjSysGui           sysgui! = BBjAPI().getSysGui()
     field protected BBjWebManager       webManager! = BBjAPI().getWebManager()
 
-    rem BBjControls for the Settings Font Chooser dialog
+    REM BBjControls for the Settings Font Chooser dialog
     field private BBjTopLevelWindow     winFontChooser!
     field private BBjChildWindow        winFontChooserType!
     field private BBjChildWindow        winFontChooserSource!
@@ -29,9 +29,9 @@ class public Settings
     REM /** The hashmap that stores all the user's preferences */
     field private HashMap hashPrefs!
 
-    rem /**
-    rem  * Settings screen constructor
-    rem  */
+    REM /**
+    REM  * Settings screen constructor
+    REM  */
     method public Settings()
 
         REM Create a list of font families filled with various Google fonts that the user will be able to choose from to style the tasks
@@ -56,16 +56,16 @@ class public Settings
     methodend
 
 
-    rem /**
-    rem  * Shows the TaskApp's settings window
+    REM /**
+    REM  * Shows the TaskApp's settings window
     REM  *
     REM  * @param HashMap hashPrefs!    The HashMap of user preferences passed in by the TaskApp which contains all the user's preferences for the settings options
-    rem  */
+    REM  */
     method public void onShowSettings(HashMap hashPrefs!)
         REM Save the HashMap of the user's preferences that was passed in
         #hashPrefs! = hashPrefs!
 
-        rem Create the window and controls if it doesn't yet exist.  Otherwise, we'll simply display the existing one that we created and previously hid.
+        REM Create the window and controls if it doesn't yet exist.  Otherwise, we'll simply display the existing one that we created and previously hid.
         if (#winSettings! = null()) then
 
             REM Create a linefeed-delimited list of font families from the vectory to populate the BBjListButton
@@ -76,19 +76,19 @@ class public Settings
             regExReplaceWith! = "<html><span style='font-family:$1'>$1</span>"
             fontFamiliesList! = fontFamiliesList!.replaceAll(regExSearchFor!, regExReplaceWith!)
 
-            rem Create the settings window and controls
+            REM Create the settings window and controls
             #winSettings! = #sysgui!.addWindow(#sysgui!.getAvailableContext(), "TaskApp Settings", $011B0010$)
             #winSettings!.addClass("winSettings fadeIn")
             #winSettings!.setOuterStyle("overflow", "hidden")
             #winSettings!.setIcon(dsk("")+dir("")+"images/DWCTaskApp.png")
 
-            rem Create the title and the [Done] button that closes the settings window
+            REM Create the title and the [Done] button that closes the settings window
             title! = #winSettings!.addStaticText("Settings", $4000$)
             title!.addClass("settingsTitle")
             settingsDone! = #winSettings!.addButton("Done")
             settingsDone!.addClass("settingsDone")
 
-            rem Options (tooltips)
+            REM Options (tooltips)
             text! = #winSettings!.addStaticText("Options")
             text!.addClass("settingsCategoryTitle")
             winOptions! = #winSettings!.addChildWindow("winOptions", $00108800$, #sysgui!.getAvailableContext())
@@ -100,7 +100,7 @@ class public Settings
             #switchTips!.setAttribute("switch", "true")
             #switchTips!.addClass("switchTips settingsSwitch")
 
-            rem Personalization (Dark/Light Theme)
+            REM Personalization (Dark/Light Theme)
             text! = #winSettings!.addStaticText("Personalization")
             text!.addClass("settingsCategoryTitle")
             winPersonalization! = #winSettings!.addChildWindow("winPersonalization", $00108800$, #sysgui!.getAvailableContext())
@@ -112,7 +112,7 @@ class public Settings
             #switchTheme!.setAttribute("switch", "true")
             #switchTheme!.addClass("switchTheme settingsSwitch")
 
-            rem Color (Choosing the DWC's primmary color hue)
+            REM Color (Choosing the DWC's primmary color hue)
             text! = #winSettings!.addStaticText("Color")
             text!.addClass("settingsCategoryTitle")
             win! = #winSettings!.addChildWindow("", $00108800$, #sysgui!.getAvailableContext())
@@ -126,7 +126,7 @@ class public Settings
             colorPicker!.putClientProperty("value", "hsl(" + hue! + ", 75%, 35%)")
             colorPicker!.putClientProperty("components", "hue, preview, eyeDropper, input")
 
-            rem Font Family
+            REM Font Family
             text! = #winSettings!.addStaticText("Font")
             text!.addClass("settingsCategoryTitle")
             win! = #winSettings!.addChildWindow("", $00108800$, #sysgui!.getAvailableContext())
@@ -136,7 +136,7 @@ class public Settings
             #lstFontFamily! = cast(BBjListButton, win!.addListButton(fontFamiliesList!))
             #lstFontFamily!.setAttribute("placement", "top-start")
 
-            rem About
+            REM About
             text! = #winSettings!.addStaticText("About the App")
             text!.addClass("settingsCategoryTitle")
             win! = #winSettings!.addChildWindow("", $00108800$, #sysgui!.getAvailableContext())
@@ -145,7 +145,7 @@ class public Settings
             settingsAbout! = win!.addButton("<html>Version " + #hashPrefs!.get("prefsVersion").toString() + " <dwc-icon pool='tabler' name='chevron-right' class='chevron'></dwc-icon>")
             settingsAbout!.addClass("toolbar_icon settingsValue")
 
-            rem Set the control callbacks
+            REM Set the control callbacks
             settingsDone!.setCallback(BBjButton.ON_BUTTON_PUSH, #this!, "onSettingsDone")
             #switchTheme!.setCallback(BBjRadioButton.ON_CHECK_CHANGE, #this!, "onSettingsTheme")
             #switchTips!.setCallback(BBjRadioButton.ON_CHECK_CHANGE, #this!, "onSettingsTooltip")
@@ -154,21 +154,21 @@ class public Settings
             colorPicker!.setCallback(BBjColorChooser.ON_COLORCHOOSER_CHANGE, #this!, "onSettingsHue")
         endif
 
-        rem Ensure that the settings screen matches the preferences (especially if the settings screen is reused)
+        REM Ensure that the settings screen matches the preferences (especially if the settings screen is reused)
         #switchTheme!.setSelected(iff(#hashPrefs!.get("prefsTaskTheme") = "dark", 1, 0))
         #switchTips!.setSelected(iff(#hashPrefs!.get("prefsTaskTips") = "1", 1, 0))
 
         REM Select the correct font family in the BBjListEdit
         #selectPreferredFontFamily()
 
-        rem Since we created the window from BBj as hidden, we have to show it.
+        REM Since we created the window from BBj as hidden, we have to show it.
         #winSettings!.setVisible(1)
     methodend
 
 
-    rem /**
-    rem  * Selects the user's preferred font family in the list
-    rem  */
+    REM /**
+    REM  * Selects the user's preferred font family in the list
+    REM  */
     method public void selectPreferredFontFamily()
         fontFamily! = #hashPrefs!.get("prefsTaskFontFamily").toString()
         if (#vectFontFamilies!.contains(fontFamily!)) then
@@ -181,18 +181,18 @@ class public Settings
     methodend
 
 
-    rem /**
-    rem  * Closes the settings dialog
-    rem  */
+    REM /**
+    REM  * Closes the settings dialog
+    REM  */
     method public void onSettingsDone(BBjButtonPushEvent event!)
         #winSettings!.setVisible(0)
         BBjAPI().postCustomEvent("SETTINGS_UPDATE", #hashPrefs!)
     methodend
 
 
-    rem /**
-    rem  * Sets the theme to dark or light
-    rem  */
+    REM /**
+    REM  * Sets the theme to dark or light
+    REM  */
     method public void onSettingsTheme(BBjCheckChangeEvent event!)
         declare auto BBjRadioButton control!
 
@@ -200,15 +200,15 @@ class public Settings
         control! = event!.getControl()
         prefsTaskTheme! = iff(control!.isSelected(), "dark", "light")
 
-        rem Set the theme so the user sees the change, then store it in the preferences HashMap and let the Taskapp know
+        REM Set the theme so the user sees the change, then store it in the preferences HashMap and let the Taskapp know
         #hashPrefs!.put("prefsTaskTheme", prefsTaskTheme!)
         BBjAPI().postCustomEvent("SETTINGS_UPDATE", #hashPrefs!)
     methodend
 
 
-    rem /**
-    rem  * Enables or disables the tooltips on tasks
-    rem  */
+    REM /**
+    REM  * Enables or disables the tooltips on tasks
+    REM  */
     method public void onSettingsTooltip(BBjCheckChangeEvent event!)
         declare auto BBjRadioButton control!
 
@@ -221,18 +221,18 @@ class public Settings
     methodend
 
 
-    rem /**
-    rem  * Sets the app's primary color hue
-    rem  */
+    REM /**
+    REM  * Sets the app's primary color hue
+    REM  */
     method public void onSettingsHue(BBjColorChooserChangeEvent event!)
         declare auto BBjColorChooser control!
 
-        rem Store the chosen hue in the preferences HashMap
+        REM Store the chosen hue in the preferences HashMap
         control! = event!.getControl()
         hue! = str(control!.getClientProperty("hue"))
         #hashPrefs!.put("prefsTaskHue", hue!)
 
-        rem Let the Taskapp know that we updated the preferences
+        REM Let the Taskapp know that we updated the preferences
         BBjAPI().postCustomEvent("SETTINGS_UPDATE", #hashPrefs!)
     methodend
 
@@ -259,14 +259,14 @@ class public Settings
         #hashPrefs!.put("prefsTaskFontFamily", fontFamily!)
         #selectPreferredFontFamily()
 
-        rem Let the Taskapp know that we updated the preferences
+        REM Let the Taskapp know that we updated the preferences
         BBjAPI().postCustomEvent("SETTINGS_UPDATE", #hashPrefs!)
     methodend
 
 
-    rem /**
-    rem  * Opens the dialog that lets the user choose a font family from a variety of sources that originate from the CSSFonts.csv file
-    rem  */
+    REM /**
+    REM  * Opens the dialog that lets the user choose a font family from a variety of sources that originate from the CSSFonts.csv file
+    REM  */
     method public void onSettingsAbout(BBjButtonPushEvent event!)
         REM msg! = "<html><img src=""https://public.basis.cloud/images/DWCTaskApp.svg"" height=""0px""> DWC TaskApp version " + #version!
         msg! = "<html><div style='padding: 0.75em 0 0 0;'>The TaskApp application was authored by: "
@@ -282,12 +282,12 @@ class public Settings
 
 classend
 
-rem BBj USE Statements
+REM BBj USE Statements
 use ::TaskApp.bbj::TaskApp
 use ::CssFontFamily.bbj::CssFontFamily
 use ::Utils.bbj::Utils
 
-rem Java USE Statements
+REM Java USE Statements
 use java.util.HashMap
 use java.util.LinkedHashMap
 use java.util.Collections

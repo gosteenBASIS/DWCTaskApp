@@ -87,7 +87,7 @@ class public TaskView
             for i = Task.PRIORITY_HIGH() to Task.PRIORITY_LOW()
                 menuItem! = #flagPopupMenu!.getMenuItem(i)
                 menuItem!.setVisible(1)
-                rem Hide the flag that matches the task's current priority
+                REM Hide the flag that matches the task's current priority
                 if (#task!.getPriority() = i) then
                     menuItem!.setVisible(0)
                 endif
