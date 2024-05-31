@@ -62,25 +62,6 @@ class public TaskApp
     field protected TreeMap tasks!
     field protected TreeMap taskViews!
 
-    REM Constants
-    REM ========================================
-    REM /** A constant value that's used to set the TaskApp's theme to the DWC's light theme */
-    method public static BBjString THEME_LIGHT()
-        methodret "light"
-    methodend
-    REM /** A constant value that's used to set the TaskApp's theme to the DWC's dark theme */
-    method public static BBjString THEME_DARK()
-        methodret "dark"
-    methodend
-    REM /** A constant value that's used to set the TaskApp's theme to the DWC's system theme,
-    REM  * meaning that it follows the operating system's configuration.  For example, when the
-    REM  * user's device switches to its dark theme, then the app will also switch its theme
-    REM  * to the DWC's dark theme. */
-    method public static BBjString THEME_SYSTEM()
-        methodret "system"
-    methodend
-
-
     REM Constructors
     REM ========================================
     method public TaskApp()
@@ -99,7 +80,7 @@ class public TaskApp
 
         REM Create the HashMap to store the user preferences and load it with the default values
         #hashPrefs! = new HashMap()
-        #hashPrefs!.put("prefsTaskTheme", #THEME_SYSTEM())
+        #hashPrefs!.put("prefsTaskTheme", "system")
         #hashPrefs!.put("prefsTaskFontFamily", "Rambla")
         #hashPrefs!.put("prefsTaskFontWeight", "var(--dwc-font-weight-bold)")
         #hashPrefs!.put("prefsTaskFontSize", "var(--dwc-font-size-m)")
