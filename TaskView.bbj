@@ -129,7 +129,7 @@ class public TaskView
         formattedDueDate! = date(#task!.getDueDate():"%Dl, %Ml %D")
         #due!.addClass("dueNotice")
         if (#task!.getComplete()) then
-            due! = "Complete"
+            due! = "<html><dwc-icon pool='tabler' name='check'></dwc-icon>&nbsp;Complete"
             #due!.addClass("complete")
         else
             if (dueDate! > -1) then
