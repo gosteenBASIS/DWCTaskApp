@@ -46,7 +46,7 @@
 
 /* Dark mode specific CSS custom properties         */
 /* ================================================ */
-[data-app-theme="dark"], [data-app-theme="dark-pure"] {
+[data-app-theme="dark"] {
     --app-color-b: 65%;
     --app-color-text-normal-l: 90%;
     --app-color-text-light-l:  70%;
@@ -209,6 +209,7 @@ dwc-frame.winTaskPropertiesContainer {
     font-size: 1.5em;
     font-weight:  var(--dwc-font-weight-bold);
 }
+
 .labelDate {
     font-size: 1.1em;
     font-weight: var(--dwc-font-weight-semibold);
