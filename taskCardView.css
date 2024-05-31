@@ -32,11 +32,6 @@
 	cursor: pointer;
 }
 
-.cardView dwc-panel.complete {
-	/* background-color: hsla(var(--app-color-h), 15%, 10%); */
-	border: transparent;
-}
-
 .cardView dwc-static-text {
     font-family: var(--app-font-task);
     font-weight: 500;
@@ -82,6 +77,8 @@
 	margin: auto;
 	padding: var(--dwc-space);
 	align-self: center;
+	text-align: center;
+	display: block;
 }
 
 .cardView dwc-checkbox::part(input-wrapper) {
@@ -151,5 +148,18 @@
 	justify-self: left;
 	white-space: nowrap;
 	font-weight: 600;
+}
+
+/* Styling for completed state in light mode */
+.cardView dwc-panel.complete {
+	background-color: hsla(var(--app-color-h), 15%, 75%);
+	border: transparent;
+}
+
+[data-app-theme="dark"] {
+	.cardView dwc-panel.complete {
+		background-color: hsla(var(--app-color-h), 15%, 25%);
+		border: transparent;
+	}
 }
 
