@@ -23,13 +23,6 @@ class public TaskProperties
     field public BBjCEdit          editDescription!
     field public BBjListButton     listPriority!
     field public BBjInputD         dateDue!
-
-    field public BBjButton         buttonDelete!
-    field public BBjButton         buttonCancel!
-    field public BBjButton         buttonSave!
-    field public BBjString         lock! = "<html><dwc-icon pool='tabler' name='lock' style='width: 30px; height: 30px'></dwc-icon>"
-    field public BBjNumber         dataPassed! = 0 
-
     field public Task              task!
     
     REM Constructor
@@ -69,16 +62,16 @@ class public TaskProperties
         #dateDue!.setAttribute("visible-calendar-icon","true")
         #dateDue!.setAttribute("show-weeks","true")
 
-        #buttonDelete! = #winTaskProperties!.addButton("Delete")
-        #buttonDelete!.setAttribute("theme","danger")
-        #buttonCancel! = #winTaskProperties!.addButton(2, "&Cancel")
-        #buttonSave!   = #winTaskProperties!.addButton(1, "&Save")
-        #buttonSave!.setAttribute("theme","primary")
+        buttonDelete! = #winTaskProperties!.addButton("Delete")
+        buttonDelete!.setAttribute("theme","danger")
+        buttonCancel! = #winTaskProperties!.addButton(2, "&Cancel")
+        buttonSave!   = #winTaskProperties!.addButton(1, "&Save")
+        buttonSave!.setAttribute("theme","primary")
 
         REM Callbacks
-        #buttonCancel!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onCancel")
-        #buttonSave!.setCallback(BBjControl.ON_FORM_VALIDATION, #this!, "onSave")
-        #buttonDelete!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onDelete")
+        buttonCancel!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onCancel")
+        buttonSave!.setCallback(BBjControl.ON_FORM_VALIDATION, #this!, "onSave")
+        buttonDelete!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onDelete")
     methodend
 
     REM /**
@@ -153,17 +146,13 @@ class public TaskProperties
     methodend
 
     REM /**
-    REM  * Callback method for cancel button.  Sets data to 0 and closes the window.
+    REM  * Callback method for cancel button. Sets the window visibility to 0.
     REM  * 
     REM  * @param BBjButtonPushEvent e! The BBjButtonPushEvent that called this method.
     REM  */
     method public void onCancel(BBjButtonPushEvent e!)   
-
         #winTaskProperties!.setVisible(0)
         REM Clear fields, set task to null?
-        
-        REM TASK CARD VIEW: reset data passed back to 0
-        #dataPassed! = 0
     methodend
 
     REM /**
