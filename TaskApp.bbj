@@ -230,13 +230,12 @@ class public TaskApp
         labelTaskSorting!.addClass("labelTaskSorting")
         labelTaskSorting!.setName("labelTaskSorting")
 
+        REM Create the segment control
         #segmentChangeView! = cast(BBjWebComponent, winTitle!.addWebComponent("ion-segment"))
         #segmentChangeView!.setAttribute("value","list")
         #segmentChangeView!.setAttribute("mode","md")
 
-        eventOptions! = #segmentChangeView!.newEventOptions()
-        eventOptions!.addItem("value","event.target.value")
-
+        REM Create the segment control buttons
         segmentCardView! = winTitle!.addWebComponent("ion-segment-button")
         segmentCardView!.setAttribute("value","card")
         segmentCardView!.setHtml("Card View")
@@ -245,8 +244,13 @@ class public TaskApp
         segmentListView!.setAttribute("value","list")
         segmentListView!.setHtml("List View")
 
+        REM Add the segment buttons to the segment control slots
         #segmentChangeView!.setSlot(segmentListView!)
         #segmentChangeView!.setSlot(segmentCardView!)
+        
+        REM create eventOptions object so we can get the right information from the Web Component Event
+        eventOptions! = #segmentChangeView!.newEventOptions()
+        eventOptions!.addItem("value","event.target.value")
 
         #segmentChangeView!.setCallback("ionChange", #this!, "OnChangeLayout", eventOptions!)
 
