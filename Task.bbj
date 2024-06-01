@@ -25,8 +25,6 @@ class public Task
     REM /** The description of the task. */
     field public BBjString Description!
 
-    field public BBjVector Tags!
-
     REM /** Boolean indicating whether the task is complete. */
     field public BBjNumber Complete! = 0
 
@@ -128,7 +126,6 @@ class public Task
         #Description! = ""
         #Uuid! = java.util.UUID.randomUUID().toString()
         #Priority! = Task.PRIORITY_LOW()
-        #Tags! = BBjAPI().makeVector()
         #Complete! = 0
         #DueDate! = -1
         #Created! = date(jul(date(0)), tim, "%Yz-%Mz-%DzT%hz:%mz")
