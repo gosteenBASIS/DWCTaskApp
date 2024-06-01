@@ -120,9 +120,6 @@ class public TaskApp
         #clientOs! = #thinClient!.getClientOSName().replaceAll(" ", "_")
         if (#clientOs!.contains("iOS")) then #hashPrefs!.put("prefsTaskTips", "0")
 
-        REM Log the user's preferences
-        Utils.consoleLogValues("User's Preferences after getting cookie:", #hashPrefs!.toString())
-
         REM Register for a custom event that the TaskProperties fires after the user is done editing or adding a task
         BBjAPI().setCustomEventCallback("TASK_UPDATE",#this!,"onTaskUpdate")
 
@@ -181,6 +178,9 @@ class public TaskApp
 
         REM We always override whatever version was saved in the client's history with the latest from the app
         #hashPrefs!.put("prefsVersion", #version!)
+        
+        REM Log the user's preferences
+        Utils.consoleLogValues("User's Preferences after getting cookie:", #hashPrefs!.toString())
     methodend
     
     REM /**
