@@ -18,7 +18,6 @@ REM /**
 REM  * Object that contains and controls the properties window that opens up when editing a Task.
 REM  */
 class public TaskProperties
-    field public BBjSysGui         sysgui!
     field public BBjTopLevelWindow winTaskProperties!
     field public BBjEditBox        editTitle!
     field public BBjCEdit          editDescription!
@@ -37,11 +36,12 @@ class public TaskProperties
     REM ========================================
     method public TaskProperties()
         #task! = null()
-        #sysgui! = BBjAPI().openSysGui("X0")
+        declare auto BBjSysGui sysgui!
+        sysgui! = BBjAPI().openSysGui("X0")
 
         REM Create task properties window
-        #sysgui! = BBjAPI().getSysGui()
-        #winTaskProperties! = #sysgui!.addWindow(#sysgui!.getAvailableContext(), "winTask", $011F0000$)
+        sysgui! = BBjAPI().getSysGui()
+        #winTaskProperties! = sysgui!.addWindow(sysgui!.getAvailableContext(), "winTask", $011F0000$)
         #winTaskProperties!.addClass("winTaskProperties")
         #winTaskProperties!.addOuterClass("winTaskPropertiesContainer")
 
