@@ -89,20 +89,18 @@ class public Task
     REM  */
     method public Task(JsonObject json!)
         #init()
-        REM This error checking doesn't seem to work -- better to use .has() to check if the thing exists?
-        REM get(member) returns Null if it doesn't exist
-        #Title! = json!.get("title",err=*NEXT).getAsString()
-        #Description! = json!.get("description",err=*NEXT).getAsString()
-        #Uuid! = json!.get("uuid").getAsString()
-        #Priority! = json!.get("priority",err=*NEXT).getAsInt()
-
+        if (json!.has("title")) then #Title! = json!.get("title").getAsString()
+        if (json!.has("description")) then #Description! = json!.get("description").getAsString()
+        if (json!.has("uuid")) then #Uuid! = json!.get("uuid").getAsString()
+        if (json!.has("priority")) then #Priority! = json!.get("priority").getAsInt()
+        if (json!.has("duedate")) then #DueDate! = json!.get("duedate").getAsInt()
+        if (json!.has("created")) then #Created! = json!.get("created").getAsString()
+        if (json!.has("complete")) then #Complete! = json!.get("complete").getAsInt()
+        
+        REM Ensure that Priority is within allowed range
         if (#Priority! < #PRIORITY_HIGH() or #Priority! > #PRIORITY_LOW()) then
             #Priority! = #PRIORITY_LOW()
         endif
-
-        #DueDate! = json!.get("duedate",err=*NEXT).getAsInt()
-        #Created! = json!.get("created",err=*NEXT).getAsString()
-        if (json!.has("complete")) then #Complete! = json!.get("complete",err=*NEXT).getAsInt()
     methodend
 
     REM /**
