@@ -226,9 +226,9 @@ class public TaskApp
         labelDay! = winTitle!.addStaticText(date(0:"%Dl, %Ml %D"), $4000$)
         labelDay!.addClass("labelDay")
         labelDay!.setName("labelDay")
-        labelDate! = winTitle!.addStaticText(date(0:"%Dl, %Ml %D"), $4000$)
-        labelDate!.addClass("labelDate")
-        labelDate!.setName("labelDate")
+        labelTaskSorting! = winTitle!.addStaticText(date(0:"%Dl, %Ml %D"), $4000$)
+        labelTaskSorting!.addClass("labelTaskSorting")
+        labelTaskSorting!.setName("labelTaskSorting")
 
         #segmentChangeView! = cast(BBjWebComponent, winTitle!.addWebComponent("ion-segment"))
         #segmentChangeView!.setAttribute("value","list")
@@ -318,7 +318,7 @@ class public TaskApp
         declare auto Task task!
 
         REM Get a sorted TreeMap of the tasks
-        #winTitle!.getControl("labelDate").setText("<html><span class='labelSortingIndicator'>" + str(#tasks!.size()) + " Tasks Sorted by Priority")
+        #winTitle!.getControl("labelTaskSorting").setText("<html><span class='labelSortingIndicator'>" + str(#tasks!.size()) + " Tasks Sorted by Priority")
         orderedTasks! = #getSortedTasks("priority")
         it! = orderedTasks!.values().iterator()
 

@@ -210,7 +210,7 @@ dwc-frame.winTaskPropertiesContainer {
     font-weight:  var(--dwc-font-weight-bold);
 }
 
-.labelDate {
+.labelTaskSorting {
     font-size: 1.1em;
     font-weight: var(--dwc-font-weight-semibold);
 }
