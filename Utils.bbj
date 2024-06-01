@@ -217,31 +217,9 @@ class public Utils
         methodret rtnVal!.toString()
     methodend
 
-    REM /**
-    REM  * Converts the Julian date given in the form of a BBjNumber to a java.time.LocalDate
-    REM  * <p>
-    REM  * Julian date of 1/1/1970 is 2440588.
-    REM  *
-    REM  * @param BBjNumber jul!    A BBjNumber representation of the julian date.
-    REM  * @return LocalDate        The java.time.LocalDate representation of the given BBjNumber representation of the Julian date
-    REM  */
-    method public static LocalDate getLocalDate(BBjNumber jul!)
-        methodret LocalDate.ofEpochDay(jul!-2440588)
-    methodend
-
-    REM /**
-    REM  * Converts the given java.time.LocalDate to a BBjNumber representation of the Julian date
-    REM  *
-    REM  * @param LocalDate ld!     A java.time.LocalDate representation of a date.
-    REM  * @return BBjNumber        The BBjNumber representaion of the Julian date formed from the given java.time.LocalDate.
-    REM  */
-    method public static BBjNumber getJulian(LocalDate ld!)
-        methodret ld!.toEpochDay()+2440588
-    methodend
 classend
 
 REM Java USE Statements
 use java.util.HashMap
 use java.net.URLEncoder
 use java.net.URLDecoder
-use java.time.LocalDate; REM https://docs.oracle.com/javase/8/docs/api/java/time/LocalDate.html
