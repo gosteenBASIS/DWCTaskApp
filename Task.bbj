@@ -127,6 +127,7 @@ class public Task
         #Uuid! = java.util.UUID.randomUUID().toString()
         #Priority! = Task.PRIORITY_LOW()
         #Complete! = 0
+        #Deleted! = 0
         #DueDate! = -1
         #Created! = date(jul(date(0)), tim, "%Yz-%Mz-%DzT%hz:%mz")
     methodend
