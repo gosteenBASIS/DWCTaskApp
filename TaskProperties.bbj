@@ -18,12 +18,12 @@ REM /**
 REM  * Object that contains and controls the properties window that opens up when editing a Task.
 REM  */
 class public TaskProperties
-    field public BBjTopLevelWindow winTaskProperties!
-    field public BBjEditBox        editTitle!
-    field public BBjCEdit          editDescription!
-    field public BBjListButton     listPriority!
-    field public BBjInputD         dateDue!
-    field public Task              task!
+    field protected BBjTopLevelWindow winTaskProperties!
+    field protected BBjEditBox        editTitle!
+    field protected BBjCEdit          editDescription!
+    field protected BBjListButton     listPriority!
+    field protected BBjInputD         dateDue!
+    field protected Task              task!
     
     REM Constructor
     REM ========================================
