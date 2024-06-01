@@ -8,18 +8,18 @@ REM /**
 REM  *  The view controller for tasks that are displayed by the Task App.  Serves as the basis for TaskListView and TaskCardView
 REM  */
 class public TaskView
-    field public    Task            task!
-    field public    BBjChildWindow  win!
-    field public    BBjString       uuid!
-    field public    BBjPopupMenu    flagPopupMenu!
-    field protected BBjSysGui       sysgui!
-    field public    BBjStaticText   title!
-    field public    BBjStaticText   description!
-    field public    BBjCheckBox     checkbox!
-    field public    BBjStaticText   due!
-    field public    BBjStaticText   priorityFlag!
-    field public    BBjString       flagIcon! = "<html><dwc-icon pool='tabler' name='flag-2-filled'></dwc-icon>"
-    field protected BBjButton       btnDeleteTask!
+    field public       BBjChildWindow  Win!
+    field protected    Task            task!
+    field protected    BBjString       uuid!
+    field protected    BBjPopupMenu    flagPopupMenu!
+    field protected    BBjSysGui       sysgui!
+    field protected    BBjStaticText   title!
+    field protected    BBjStaticText   description!
+    field protected    BBjCheckBox     checkbox!
+    field protected    BBjStaticText   due!
+    field protected    BBjStaticText   priorityFlag!
+    field protected    BBjString       flagIcon! = "<html><dwc-icon pool='tabler' name='flag-2-filled'></dwc-icon>"
+    field protected    BBjButton       btnDeleteTask!
 
     REM /**
     REM  * Constructor for the TaskView object
@@ -34,27 +34,27 @@ class public TaskView
         #task! = t!
         #uuid! = #task!.getUuid()
 
-        #win! = parent!.addChildWindow("", $00108000$, #sysgui!.getAvailableContext())
-        #win!.setAttribute("id", #uuid!)
-        #win!.addClass("task clickable")
+        #Win! = parent!.addChildWindow("", $00108000$, #sysgui!.getAvailableContext())
+        #Win!.setAttribute("id", #uuid!)
+        #Win!.addClass("task clickable")
 
-        #title! = #win!.addStaticText("")
+        #title! = #Win!.addStaticText("")
         #title!.addClass("textTitle")
-        #description! = #win!.addStaticText("")
+        #description! = #Win!.addStaticText("")
         #description!.addClass("textDescription")
         
-        #checkbox! = #win!.addCheckBox("Mark as Complete")
+        #checkbox! = #Win!.addCheckBox("Mark as Complete")
         #checkbox!.addClass("checkbox")
         #checkbox!.setCallback(BBjControl.ON_CHECK_CHANGE, #this!, "onTaskCheck")
         
-        #due! = #win!.addStaticText("")
+        #due! = #Win!.addStaticText("")
         #due!.addClass("dueNotice")
-        #priorityFlag! = #win!.addStaticText(#flagIcon!)
+        #priorityFlag! = #Win!.addStaticText(#flagIcon!)
         #priorityFlag!.addClass("priorityFlag")
         #priorityFlag!.setCallback(BBjControl.ON_POPUP_REQUEST, #this!, "OnShowPriorityPopup")
         
         trashIcon! = "<html><dwc-icon pool='tabler' name='trash' style='width: 25px; height: 25px'></dwc-icon>"
-        #btnDeleteTask! = #win!.addButton(trashIcon!)
+        #btnDeleteTask! = #Win!.addButton(trashIcon!)
         #btnDeleteTask!.addClass("btnDelete")
         #btnDeleteTask!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onDelete")
         #setPriorityFlag()
@@ -75,7 +75,7 @@ class public TaskView
         #checkbox!.setSelected(#task!.getComplete())
         label! = "Mark as Complete"
         if (#task!.getComplete()) then
-            #win!.addClass("complete")
+            #Win!.addClass("complete")
             label! = "Mark as Incomplete"
             
         endif
@@ -100,20 +100,20 @@ class public TaskView
 
     REM /**
     REM  * Sets the visibility of the ChildWindow of the TaskView
-    REM  * Calls setVisible on #win!
+    REM  * Calls setVisible on #Win!
     REM  *
     REM  * @param BBjNumber visible!   BBjNumber acting as a boolean specifying the visibility
     REM  */
     method public void setVisible(BBjNumber visible!)
-        #win!.setVisible(visible!)
+        #Win!.setVisible(visible!)
     methodend
 
     REM /**
     REM  * Removes the style classes for all possible statuses.
     REM  */
     method public void clearStyles()
-        #win!.removeClass("complete incomplete")
-        #win!.removeClass("status-complete")
+        #Win!.removeClass("complete incomplete")
+        #Win!.removeClass("status-complete")
     methodend
 
     REM /**

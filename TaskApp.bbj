@@ -394,7 +394,7 @@ class public TaskApp
         view! = new TaskView(#winTasks!, task!)
 
         #taskViews!.put(task!.getUuid(), view!)
-        view!.getwin().setCallback(BBjControl.ON_CLICK, #this!, "onTaskClick")
+        view!.getWin().setCallback(BBjControl.ON_CLICK, #this!, "onTaskClick")
         methodret view!
     methodend
 
