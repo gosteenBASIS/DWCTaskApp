@@ -7,7 +7,8 @@ REM package TaskApp
 
 REM Test program that creates a task and prints out its details
 declare auto Task t!
-t! = new Task("My First Task")
+t! = new Task()
+t!.setTitle("My first task")
 t!.printDetails()
 end
 
@@ -63,15 +64,6 @@ class public Task
 
     REM Constructors
     REM ========================================
-    REM /**
-    REM  * A Task item's constructor that only takes a title parameter. All other parameters will be set to their default values.
-    REM  *
-    REM  * @param BBjString title!      The task's title string
-    REM  */
-    method public Task(BBjString title!)
-        #init()
-        #Title! = title!
-    methodend
 
     REM /**
     REM  * A Task item's constructor that sets all parameters to their default values.
@@ -101,21 +93,6 @@ class public Task
         endif
     methodend
 
-    REM /**
-    REM  * Create a clone of a task
-    REM  *
-    REM  * @param Task task!    The task to clone.
-    REM  */
-    method public Task(Task task!)
-        #init()
-        #Title! = task!.getTitle()
-        #Description! = task!.getDescription()
-        #Priority! = task!.getPriority()
-        #DueDate! = task!.getDueDate()
-        #Complete! = task!.getComplete()
-        #Uuid! = task!.getUuid()
-        #Created! = task!.getCreated()
-    methodend
 
     REM /**
     REM  * Initializes a Task item and assigns defaults to its properties.
