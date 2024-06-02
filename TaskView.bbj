@@ -40,6 +40,7 @@ class public TaskView
 
         #title! = #Win!.addStaticText("")
         #title!.addClass("textTitle")
+        
         #description! = #Win!.addStaticText("")
         #description!.addClass("textDescription")
         
@@ -49,6 +50,7 @@ class public TaskView
         
         #due! = #Win!.addStaticText("")
         #due!.addClass("dueNotice")
+        
         #priorityFlag! = #Win!.addStaticText(#flagIcon!)
         #priorityFlag!.addClass("priorityFlag")
         #priorityFlag!.setCallback(BBjControl.ON_POPUP_REQUEST, #this!, "OnShowPriorityPopup")
