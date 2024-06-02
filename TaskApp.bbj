@@ -326,7 +326,6 @@ class public TaskApp
         orderedTasks! = #getSortedTasks("priority")
         it! = orderedTasks!.values().iterator()
 
-        REM TASK LIST VIEW: task loop
         while it!.hasNext()
             task! = it!.next()
             if (task!.getComplete() = 0) then
@@ -404,15 +403,12 @@ class public TaskApp
     REM  * @param event!    A BBjClickEvent
     REM  */
     method public void onTaskClick(BBjClickEvent event!)
-        REM Only open window if it doesn't exist, this should be a field variable
-        REM We're not using the click event as a click; it could be more efficient to pass a more useful object
         declare auto Task t!
         if (#taskProperties! = null()) then
             #taskProperties! = new TaskProperties()
         endif
         t! = #tasks!.get(event!.getControl().getAttribute("id"))
         #taskProperties!.loadTask(t!)
-
     methodend
 
     REM /**

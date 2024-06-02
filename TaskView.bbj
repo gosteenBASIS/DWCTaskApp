@@ -78,7 +78,6 @@ class public TaskView
         if (#task!.getComplete()) then
             #Win!.addClass("complete")
             label! = "Mark as Incomplete"
-            
         endif
         #checkbox!.setAttribute("label",label!)
 
