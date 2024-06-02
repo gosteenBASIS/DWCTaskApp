@@ -16,7 +16,7 @@ class public TaskView
     field protected    BBjStaticText   title!
     field protected    BBjStaticText   description!
     field protected    BBjCheckBox     checkbox!
-    field protected    BBjStaticText   due!
+    field protected    BBjStaticText   dueNotice!
     field protected    BBjStaticText   priorityFlag!
     field protected    BBjString       flagIcon! = "<html><dwc-icon pool='tabler' name='flag-2-filled'></dwc-icon>"
     field protected    BBjButton       btnDeleteTask!
@@ -47,8 +47,8 @@ class public TaskView
         #checkbox! = #Win!.addCheckBox("Mark as Complete")
         #checkbox!.setCallback(BBjControl.ON_CHECK_CHANGE, #this!, "onTaskCheck")
         
-        #due! = #Win!.addStaticText("")
-        #due!.addClass("dueNotice")
+        #dueNotice! = #Win!.addStaticText("")
+        #dueNotice!.addClass("dueNotice")
         
         #priorityFlag! = #Win!.addStaticText(#flagIcon!)
         #priorityFlag!.addClass("priorityFlag")
@@ -124,31 +124,31 @@ class public TaskView
     REM  * to "Past Due!"
     REM  */
     method public void setDueNotice()
-        #due!.removeClass("dueToday pastDue complete")
-        due! = ""
+        #dueNotice!.removeClass("dueToday pastDue complete")
+        dueNotice! = ""
         dueDate! = #task!.getDueDate()
         formattedDueDate! = date(#task!.getDueDate():"%Dl, %Ml %D")
-        #due!.addClass("dueNotice")
+        #dueNotice!.addClass("dueNotice")
         if (#task!.getComplete()) then
-            due! = "<html><dwc-icon pool='tabler' name='check'></dwc-icon>&nbsp;Complete"
-            #due!.addClass("complete")
+            dueNotice! = "<html><dwc-icon pool='tabler' name='check'></dwc-icon>&nbsp;Complete"
+            #dueNotice!.addClass("complete")
         else
             if (dueDate! > -1) then
-                due! = "Due " + formattedDueDate!
-                #due!.setToolTipText("Due " + formattedDueDate!)
+                dueNotice! = "Due " + formattedDueDate!
+                #dueNotice!.setToolTipText("Due " + formattedDueDate!)
                 if (dueDate! < jul(date(0))) then
-                    due! = "Past Due!"
-                    #due!.addClass("pastDue")
+                    dueNotice! = "Past Due!"
+                    #dueNotice!.addClass("pastDue")
                 endif
     
                 if (dueDate! = jul(date(0))) then
-                    due! = "Due Today!"
-                    #due!.addClass("dueToday")
+                    dueNotice! = "Due Today!"
+                    #dueNotice!.addClass("dueToday")
                 endif
             endif        
         endif
         
-        #due!.setText(due!)
+        #dueNotice!.setText(dueNotice!)
     methodend
 
     REM /**
