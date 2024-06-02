@@ -18,10 +18,6 @@
     --app-font-weight-task: var(--dwc-font-weight-bold);
     --app-font-size-task: var(--dwc-font-size-m);
     --app-font-spacing-task: normal;
-    --ion-color-primary: var(--app-color-primary);
-    --ion-text-color: var(--dwc-color-body-text);
-    --ion-text-color-rgb: var(--dwc-color-body-text);
-    --ion-font-family: var(--app-font-family);
 }
 
 
