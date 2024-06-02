@@ -14,11 +14,11 @@
 
 /* the windows for the tasks in the cardview */
 .cardView dwc-panel {
-	border: var(--dwc-color-gray-90);
-	border-radius: 2em;
 	flex: 1 1 22em;
 	max-width: 40em;
 	height: auto;
+	border: var(--dwc-color-gray-90);
+	border-radius: 2em;
 	box-shadow: rgba(149, 157, 165, 0.2) 0 .5em 2em;
 	display: grid;
 	grid-template-columns: 1fr 5ch;
