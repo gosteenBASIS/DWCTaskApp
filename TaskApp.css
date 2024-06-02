@@ -269,7 +269,7 @@ dwc-dialog-glass-pane {
     color: var(--dwc-color-white);
 }
 
-.icon-completed-selected dwc-icon {
+.showCompletedTasks dwc-icon {
     opacity: 1.0;
     color: green;
 }

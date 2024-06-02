@@ -389,10 +389,15 @@ class public TaskApp
     REM  * @return TaskView     The view control for the given task
     REM  */
     method public TaskView addTaskView(Task task!)
-        index = 0
+        uuid! = task!.getUuid()
+        view! = #taskViews!.get(uuid!)
+        if (view! <> null()) then
+            #taskViews!.remove(uuid!)
+            view!.getWin().destroy()
+        endif
         view! = new TaskView(#winTasks!, task!)
 
-        #taskViews!.put(task!.getUuid(), view!)
+        #taskViews!.put(uuid!, view!)
         view!.getWin().setCallback(BBjControl.ON_CLICK, #this!, "onTaskClick")
         methodret view!
     methodend
@@ -482,7 +487,6 @@ class public TaskApp
         REM If the UUID is not present in #tasks!, this is a new Task to be added.
         if (#tasks!.containsKey(uuid!) = 0) then
             #addTask(task!)
-            #addTaskView(task!)
         else
             view! = #taskViews!.get(uuid!)
             if (view! <> null()) then view!.refresh()
@@ -491,6 +495,8 @@ class public TaskApp
         if (task!.getDeleted()) then
             #removeTask(task!)
         endif
+
+        #displayTasks()
 
         REM Automatically export the tasks every time a task is updated so that we never lose data
         #exportTasks()
