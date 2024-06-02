@@ -612,19 +612,14 @@ class public TaskApp
         #taskProperties!.loadTask(task!)
     methodend
 
-
-    REM TASK CARD VIEW: different viewing methods
     REM /**
-    REM  * - Toggles visibility of #winTaskCardComplete! which contains all complete task child windows
-    REM  * - When toggle is off, displays #winTaskCardIncomplete! which contains all incomplete task child windows
-    REM  * - Toggles all related classes
-    REM  * - Triggered by #btnCompleteView!
-    REM  *
+    REM  * Toggles showCompletedTasks on #winTasks! and btnShowCompletedTasks!
     REM  * @param BBjButtonPushEvent event! The BBjButtonPushEvent that causes this method to be executed
     REM  */
     method public void onShowCompletedTasks(BBjButtonPushEvent event!)
         btnShowCompletedTasks! = event!.getControl()
-        btnShowCompletedTasks!.toggleClass("icon-completed-selected")
+        btnShowCompletedTasks!.toggleClass("showCompletedTasks")
+        #winTasks!.toggleClass("showCompletedTasks")
     methodend
 
     REM /**

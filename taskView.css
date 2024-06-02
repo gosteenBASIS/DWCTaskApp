@@ -132,3 +132,11 @@ dwc-checkbox:not([checked]):hover::part(checked-icon) {
 	/* Prevent the flags turning black/white when hovering */
 	color: inherit;
 }
+
+dwc-panel.showCompletedTasks .task:not(.complete) {
+	display: none;
+}
+
+dwc-panel:not(.showCompletedTasks) .complete {
+	display: none;
+}
