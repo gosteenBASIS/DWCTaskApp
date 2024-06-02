@@ -9,7 +9,6 @@
 	justify-content: space-evenly;
   	gap: 1em;
   	overflow: scroll;
-  	max-width: fit-content;
   	padding-bottom: 130px;
 }
 
@@ -19,6 +18,7 @@
 	border-radius: 2em;
 	flex: 1 1 22em;
 	max-width: 40em;
+	max-height: 60em;
 	height: auto;
 	box-shadow: rgba(149, 157, 165, 0.2) 0 .5em 2em;
 	display: grid;
