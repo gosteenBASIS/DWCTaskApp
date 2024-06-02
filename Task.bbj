@@ -109,19 +109,6 @@ class public Task
         #Created! = date(jul(date(0)), tim, "%Yz-%Mz-%DzT%hz:%mz")
     methodend
 
-    REM /**
-    REM  * Copy all editable info into this task from source; excluding Uuid and Created timestamp
-    REM  *
-    REM  * @param Task source!  The source Task to copy into this Task object
-    REM  */
-    method public void copyInfo(Task source!)
-        #Title! = source!.getTitle()
-        #Description! = source!.getDescription()
-        #Priority! = source!.getPriority()
-        #DueDate! = source!.getDueDate()
-        #Complete! = source!.getComplete()
-    methodend
-
     REM Setters
     REM ========================================
 
