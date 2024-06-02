@@ -421,7 +421,17 @@ class public TaskApp
     method public void createSampleTasks(BBjNumber numTasks!)
         declare auto BBjString  taskName!
         declare auto Task       task!
-
+        
+        task! = new Task()
+        task!.setTitle("Click the + button at the top or bottom of the screen to create a new task!")
+        task!.setDescription("Click on a task to edit it. You can also adjust the priority by right-clicking the priority flag!")
+        #addTask(task!)
+        
+        task! = new Task()
+        task!.setTitle("Change views by clicking LIST VIEW or CARD VIEW")
+        task!.setDescription("View completed tasks by clicking the checkmark icon in the toolbar.")
+        #addTask(task!)
+        
         for i = 0 to numTasks! - 1
             taskName! = "Task " + str(i)
             task! = new Task()
@@ -843,11 +853,12 @@ class public TaskApp
         else
             Utils.consoleLog("Loaded " + str(#tasks!.size()) + " tasks from browser storage")
         endif
+
         methodret
 
         ERR_MISSING_TASKS_FILE:
         REM If the tasks aren't present in browser storage or a server file, then we create sample tasks
-        #createSampleTasks(5)
+        #createSampleTasks(3)
         Utils.consoleLog("created " + str(#tasks!.size()) + " sample tasks")
         #exportTasks()
     methodend
