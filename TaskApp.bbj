@@ -46,13 +46,6 @@ class public TaskApp
     field protected BBjString           version! = "0.1"
     field protected BBjString           appPath! = dsk("") + dir("")
 
-    REM Some sort of list of tasks.
-    REM ========================================
-    REM It could be a BBjVector or BBjArray of tasks.
-    REM It could also be a Java Collection class like:
-    REM     Set     https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Set.html
-    REM     List    https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html
-    REM     Map     https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html
     REM /**
     REM  * A collection of Task objects in a Java TreeMap
     REM  * Key:   UUID of the Task
@@ -62,7 +55,7 @@ class public TaskApp
     field protected TreeMap tasks!
     field protected TreeMap taskViews!
 
-    REM Constructors
+    REM Constructor
     REM ========================================
     method public TaskApp()
 
