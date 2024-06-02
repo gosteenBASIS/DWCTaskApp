@@ -1,27 +1,29 @@
 /* The CSS file that accompanies the TaskApp DWC application - Card View Layout */
 
+/* The parent window for the tasks in the cardview */
 .cardView {
   	display: flex;
   	padding-top: 30px;
-  	justify-content: space-evenly;
   	flex-direction: row;
   	flex-wrap: wrap;
+	justify-content: space-evenly;
   	gap: 1em;
   	overflow: scroll;
   	max-width: fit-content;
   	padding-bottom: 130px;
 }
 
+/* the windows for the tasks in the cardview */
 .cardView dwc-panel {
 	border: var(--dwc-color-gray-90);
 	border-radius: 2em;
-	max-width: 25em;
-	min-width: 15em;
-	height: 22em;
+	flex: 1 1 22em;
+	max-width: 40em;
+	height: auto;
 	box-shadow: rgba(149, 157, 165, 0.2) 0 .5em 2em;
 	display: grid;
 	grid-template-columns: 1fr 5ch;
-	grid-template-rows: min-content min-content 5em 9.3em 3em;
+	grid-template-rows: min-content min-content auto 3em;
 	padding: 1.4em;
 	transition: all 250ms ease;
 }
@@ -32,55 +34,56 @@
 	cursor: pointer;
 }
 
-.cardView dwc-static-text {
-    font-family: var(--app-font-task);
-    font-weight: 500;
-}
-
 /* Title styling on task-Card-view */
 .cardView .textTitle {
-	grid-column: 1 / 3;
-	grid-row: 3;
+	grid-column: 1 / 2;
+	grid-row: 2;
 	margin-top: 1.5em;
 	justify-self: left;
 	align-items: start;
-	font-size: 18px;
-	/* line-height: 1.4em; */
+	font-size: var(--dwc-font-size-xl);
 	text-wrap: wrap;
-	height: auto;
-	max-height: 3lh;
+	height: min-content;
+}
+
+/* Description styling on task-list-view */
+.cardView .textDescription {
+	grid-row: 3;
+ 	grid-column: 1 / 3;
+   	height: auto;
+    text-overflow: ellipsis;
+	text-wrap: wrap;
 }
 
 /* Indicator flag styling on task-list-view */
 .cardView .priorityFlag {
 	justify-self: right;
-	grid-column-start: 2;
-	grid-row: 1 / span 2;
+	grid-column: 2;
+	grid-row: 1;
 }
 
 .cardView dwc-checkbox {
 	justify-self: right;
-	grid-row: 5;
+	grid-row: 4;
 	margin: auto auto;
 	width: 100%;
 }
 
 .cardView dwc-checkbox::part(label) {
-	padding: 0 10px;
+	padding: var(--dwc-space);
 	border-radius: 10px;
 	border: 1px solid;
 	font-size: var(--dwc-font-size-l);
-	color: var(--dwc-color-primary);
-	background-color: var(--dwc-button-background);
+	color: var(--app-color-primary);
 	box-sizing: border-box;
 	width: 100%;
 	margin: auto;
-	padding: var(--dwc-space);
 	align-self: center;
 	text-align: center;
 	display: block;
 }
 
+/* Hide the checkbox part of the checkbox */
 .cardView dwc-checkbox::part(input-wrapper) {
 	display: none;
 }
@@ -88,7 +91,7 @@
 /* Trash can icon styling on Completed-task-list-view */
 .cardView .btnDelete {
 	justify-self: right;
-	grid-row: 5;
+	grid-row: 4;
 	margin-right: -10px;
 	--dwc-button-background: none;
 	--dwc-button-border-color: transparent;
@@ -107,24 +110,6 @@
 	opacity: 1;
 }
 
-/* Description styling on task-list-view */
-.cardView .textDescription {
-	grid-row-start: 4;
- 	grid-column: 1 / 3;
-   	height: 8.4em;
-  	/* overflow: hidden; */
-	color: hsla(var(--app-color-h), 15%, 50%);
-
-	/* adds ellipsis to end of 6th line of paragraph - no full browser support of this feature yet */
-	display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 6;
-    /* overflow: auto;  */
-    text-overflow: ellipsis;
-	text-wrap: wrap;
-
-	align-self: stretch;
-}
 
 .cardView .dueDate {
 	background-color: lightgray;
@@ -153,7 +138,6 @@
 /* Styling for completed state in light mode */
 .cardView dwc-panel.complete {
 	background-color: hsla(var(--app-color-h), 15%, 75%);
-	border: transparent;
 }
 
 [data-app-theme="dark"] {

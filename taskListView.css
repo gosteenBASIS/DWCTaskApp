@@ -1,11 +1,13 @@
 /* Task Styling                                     */
 /* ================================================ */
 
+/* The parent window for tasks in the listView */
 .listView {
     flex-direction: column;
     align-items: flex-start;
 }
 
+/* The windows for the tasks in the listview */
 .listView dwc-panel {
     flex: 0 0 auto;
 	display: grid;
@@ -20,7 +22,7 @@
     transition: all 250ms ease;
 }
 
-dwc-checkbox {
+.listView dwc-checkbox {
     grid-column: 1;
     grid-row: 1;
 }
@@ -34,20 +36,6 @@ dwc-checkbox {
     padding-right: 0.2em;
 }
 
-.task dwc-static-text {
-    font-size: 1.1em;
-    white-space: nowrap;
-	text-overflow: ellipsis;
-	max-width: 99%;
-    transition: letter-spacing 100ms ease;
-}
-
-.task dwc-static-text.textTitle, .task dwc-static-text.textDescription {
-    font-family: var(--app-font-family-task);
-    font-weight: var(--app-font-weight-task);
-    letter-spacing: var(--app-font-spacing-task);
-}
-
 /* Title styling on task-list-view */
 .listView .textTitle {
     height: auto;
@@ -55,11 +43,9 @@ dwc-checkbox {
 }
 
 /* Description styling on task-list-view */
-.listView  .textDescription {
-    /* opacity: 0.5; */
+.listView .textDescription {
     align-self: start;
     grid-column: 2 / 2;
-    color: hsla(var(--app-color-h), 15%, 50%);
 }
 
 .listView .priorityFlag {
@@ -69,68 +55,15 @@ dwc-checkbox {
     grid-row: 2;
 }
 
-/* Task items that are incomplete */
-.listView dwc-checkbox::part(input-wrapper) {
-    border-color: var(--dwc-color-gray-50);
-    background-color: var(--dwc-color-white);
-}
-
+/* Hide the label part of the checkbox */
 .listView dwc-checkbox::part(label) {
     display: none;
 }
 
-/* Task items that are complete */
-
-dwc-checkbox[checked]::part(input-wrapper) {
-	border-color: var(--app-color-primary);
-	background-color: hsla(var(--app-color-h), 15%, 40%);
-    color: var(--dwc-color-black);
-}
-
-/* Items that are clickable, and hovered over */
-.clickable:hover {
-    /* filter: brightness(80%); */
-    background: var(--dwc-surface-1);
-    transition: all 200ms ease;
-}
-.task:hover dwc-checkbox {
-    animation: pulse 500ms ease-in-out 1 forwards;
-}
-
-
-/* Checkbox styling on task-list-view */
-dwc-checkbox::part(input-wrapper) {
-	border-radius: 100%;
-	color: var(--dwc-color-black);
-	transform: scale3d(1.25, 1.25, 1);
-    justify-content: center;
-    align-self: center;
-}
-
-/* Fades check mark on mouse enter/exit on a checkbox */
-dwc-checkbox::part(checked-icon) {
-    transform: scale(1) translate3d(0px, 0px, 0px);
-    transition: all 250ms ease-in-out;
-    opacity: 0;
-}
-
-dwc-checkbox[checked]::part(checked-icon) {
-    opacity: 1;
-}
-
-dwc-checkbox[checked]:hover::part(checked-icon) {
-    /* Checked, hovering over the checkbox */
-    opacity: 0.75;
-}
-dwc-checkbox:not([checked]):hover::part(checked-icon) {
-    /* Unchecked, hovering over the checkbox */
-    opacity: 0.25;
-}
-
+/* Hide the delete button */
 .listView .btnDelete {
     display: none;
 }
-
 
 @media (width <= 500px) {
 	.listView .dueNotice {

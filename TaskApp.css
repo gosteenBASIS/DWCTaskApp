@@ -201,6 +201,13 @@ dwc-frame.winTaskPropertiesContainer {
     width: 100%;
 }
 
+/* Items that are clickable, and hovered over       */
+/* ================================================ */
+.clickable:hover {
+    /* filter: brightness(80%); */
+    background: var(--dwc-surface-1);
+    transition: all 200ms ease;
+}
 
 
 /* Day and Date headers for TaskList window         */
