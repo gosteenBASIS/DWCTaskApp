@@ -65,7 +65,7 @@ class public TaskApp
         REM Instatiate the WebManager and use it to inject the app's CSS
         #webManager! = BBjAPI().getWebManager()
         
-        REM Inject CSS Files here
+        REM Exercise 1: Modify injectCSSFile and Inject CSS Files here
 
         #initHashPrefs()
         #loadPrefsFromCookie()
@@ -130,6 +130,23 @@ class public TaskApp
         #sysgui! = BBjAPI().openSysGui("X0")
         #createMainWindow()
         process_events
+    methodend
+    
+    REM /**
+    REM  * Injects the CSS file given from the fileName! into the webManager.
+    REM  * Depends on the definitions of #appPath! and #webManager!
+    REM  * Sets the name of the CSS file to taskapp_filename_css.
+    REM  *
+    REM  * @param BBjString fileName!  The name of the CSS file
+    REM  */
+    method public void injectCSSFile(BBjString fileName!)
+        REM Exercise 1:
+        REM Open the file by combining with the #appPath! variable
+        REM https://documentation.basis.cloud/BASISHelp/WebHelp/commands/open_verb.htm
+        REM READ RECORD into a string variable
+        REM https://documentation.basis.cloud/BASISHelp/WebHelp/commands/read_verb.htm
+        REM Use #webManager!.injectStyle 
+        REM https://documentation.basis.cloud/BASISHelp/WebHelp/bui/BBjBuiManager/BBjBuiManager_injectStyle.htm
     methodend
     
     REM /**
@@ -646,21 +663,6 @@ class public TaskApp
         #webManager!.injectStyle(css!, 0, "app_custom_css_property")
     methodend
 
-    REM /**
-    REM  * Injects the CSS file given from the fileName! into the webManager.
-    REM  * Depends on the definitions of #appPath! and #webManager!
-    REM  * Sets the name of the CSS file to taskapp_filename_css.
-    REM  *
-    REM  * @param BBjString fileName!  The name of the CSS file
-    REM  */
-    method public void injectCSSFile(BBjString fileName!)
-        REM Open the file by combining with the #appPath! variable
-        REM https://documentation.basis.cloud/BASISHelp/WebHelp/commands/open_verb.htm
-        REM READ RECORD into a string variable
-        REM https://documentation.basis.cloud/BASISHelp/WebHelp/commands/read_verb.htm
-        REM Use #webManager!.injectStyle 
-        REM https://documentation.basis.cloud/BASISHelp/WebHelp/bui/BBjBuiManager/BBjBuiManager_injectStyle.htm
-    methodend
 
     REM /**
     REM  * Returns the collection of Task objects in a JsonArray.  This is used to
