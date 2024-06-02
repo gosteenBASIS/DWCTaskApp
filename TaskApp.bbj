@@ -340,8 +340,8 @@ class public TaskApp
     REM  * or dueDate+priority+Uuid (when sorted by date).  We're concatenating
     REM  * the three fields and letting the TreeMap object sort the tasks for us
     REM  * based on the constructed key.  This new TreeMap still contains the task
-    REM  * objects in the value, so it can be used to fill the task list view in
-    REM  * a sorted manner.
+    REM  * objects in the value, so it can be used to fill the task view in a
+    REM  * sorted manner. Default sorting type is by priority.
     REM  *
     REM  * @param BBjString sortType!       The desired sorting type for the returned TreeMap.  Values can be "priority" or "date"
     REM  * @return TreeMap                  A TreeMap where the values are the tasks objects and the key is based on the sorting type
@@ -354,26 +354,23 @@ class public TaskApp
             uuid! = it!.next()
             task! = #tasks!.get(uuid!)
 
-            REM If the task's priority is 0, meaning that it's unset, then we'll use priority 9 so that it appears at the end of the sorted list
             priority! = task!.getPriority()
-
             dueDate! = task!.getDueDate()
 
             if (dueDate! > -1) then
                 taskDate! = date(dueDate!:"%Yl-%Mz-%Dz")
             else
-                REM If the due date isn't set, then we'll push it into the distant future for correct sorting
                 taskDate! = "none"
             endif
 
             REM This determines the sort order, which is based on the provide parameter
             if (sortType!.toLowerCase().trim().contains("date")) then
                 REM Sort by the task's due date
-                REM The TreeMap's key will be comprised of the date, then the priority, then the UUID
+                REM The TreeMap's key will be composed of the date, then the priority, then the UUID
                 key! = taskDate! + str(priority!) + uuid!
             else
                 REM Sort by the task's priority
-                REM The TreeMap's key will be comprised of the priority, then the date, then the UUID
+                REM The TreeMap's key will be composed of the priority, then the date, then the UUID
                 key! = str(priority!) + taskDate! + uuid!
             endif
 
