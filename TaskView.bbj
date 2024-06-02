@@ -45,7 +45,6 @@ class public TaskView
         #description!.addClass("textDescription")
         
         #checkbox! = #Win!.addCheckBox("Mark as Complete")
-        #checkbox!.addClass("checkbox")
         #checkbox!.setCallback(BBjControl.ON_CHECK_CHANGE, #this!, "onTaskCheck")
         
         #due! = #Win!.addStaticText("")
