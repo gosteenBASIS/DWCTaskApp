@@ -64,11 +64,8 @@ class public TaskApp
 
         REM Instatiate the WebManager and use it to inject the app's CSS
         #webManager! = BBjAPI().getWebManager()
-        #injectCSSFile("TaskApp.css")
-        #injectCSSFile("taskView.css")
-        #injectCSSFile("taskListView.css")
-        #injectCSSFile("taskCardView.css")
-        #injectCSSFile("Settings.css")
+        
+        REM Inject CSS Files here
 
         #initHashPrefs()
         #loadPrefsFromCookie()
@@ -657,12 +654,12 @@ class public TaskApp
     REM  * @param BBjString fileName!  The name of the CSS file
     REM  */
     method public void injectCSSFile(BBjString fileName!)
-        chan = unt
-        open(chan,isz=-1) #appPath!+fileName!
-        read record(chan,siz=1000000) css$
-        close(chan)
-
-        #webManager!.injectStyle(css$, 0, "name=taskapp_"+fileName!.toLowerCase().replace(".","_"))
+        REM Open the file by combining with the #appPath! variable
+        REM https://documentation.basis.cloud/BASISHelp/WebHelp/commands/open_verb.htm
+        REM READ RECORD into a string variable
+        REM https://documentation.basis.cloud/BASISHelp/WebHelp/commands/read_verb.htm
+        REM Use #webManager!.injectStyle 
+        REM https://documentation.basis.cloud/BASISHelp/WebHelp/bui/BBjBuiManager/BBjBuiManager_injectStyle.htm
     methodend
 
     REM /**
