@@ -699,12 +699,6 @@ class public TaskApp
         #thinClient!.setUserProperty(BBjThinClient.USER_PROPERTIES_STORAGE, #appName!, jsonString!)
 
         Utils.consoleLog("Exported " + str(#tasks!.size()) + " tasks to the client browser's storage")
-        REM chan = unt
-        REM f$ = #appPath! + "tasks.json"
-        REM open(chan, isz=-1, mode="O_TRUNC,O_CREATE") f$
-        REM     write record(chan) jsonString!
-        REM close(chan)
-
     methodend
 
     REM /**
