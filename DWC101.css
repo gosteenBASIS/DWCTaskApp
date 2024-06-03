@@ -1,4 +1,91 @@
+/* Initial Settings */
+.winMain {
+    display: flex;
+    max-height: 100dvh;
+}
+
+.winTaskProperties dwc-window-content > * {
+    width: 100%;
+}
+
+.task {
+    display: grid;
+}
+
+
+/* Exercise: padding on the window */
+/* .winTasks {
+    padding-left: 5%;
+    padding-right: 5%;
+    background-color: bisque;
+    overflow-y: scroll;
+    height: 100%;
+    padding-bottom: 5em;
+} */
+
+/* Exercise: Center content in winTitle */
+.winTitle {
+    display: grid;
+    /* flex-flow: column;
+    align-items: stretch;
+    justify-content: center; */
+}
+
+
+
+
+
 /* Centers dialogs */
 dwc-frame {
     margin: auto;
 }
+
+/* 
+Exercise: font size and weight for labelDay
+- use class .labelDay
+- use DWC custom properties:
+--dwc-font-size-xl, --dwc-font-size-l
+--dwc-font-weight-bold 
+*/
+.labelDay {
+    font-size: var(--dwc-font-size-xl);
+    font-weight:  var(--dwc-font-weight-bold);
+}
+
+/* 
+Exercise: background color for winToolBar
+
+ */
+
+ .winToolBar {
+    max-width: 100%;
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    padding: var(--dwc-space-xs) var(--dwc-space);
+    gap: var(--dwc-space) var(--dwc-space);
+    background: hsl(var(--dwc-color-primary-h), 25%, 90%);
+    width: 100%;
+    justify-content: end;
+}
+
+/*
+Exercise: Inspecting the page
+There is a DWC element that covers the whole screen when the TaskProperties window opens.
+What is it called?
+Create a CSS style targeting that element, and change its background color */
+/* 
+Answer: 
+dwc-dialog-glass-pane {
+    background: var(--dwc-overlay-background);
+} 
+*/
+
+/* 
+Exercise: Media Queries
+Change some aspect of your CSS when the width is below/above a certain size
+
+@media (width <= value) {
+    <css here>
+}
+*/
