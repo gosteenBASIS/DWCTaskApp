@@ -33,7 +33,6 @@ class public TaskApp
     field protected BBjChildWindow      winToolBar!
     field protected BBjChildWindow      winTitle!
     field protected BBjChildWindow      winTasks!
-    field protected BBjWebComponent     segmentChangeView!
 
     REM /** The Settings class that shows the settings window for the application */
     field protected Settings            settings!
@@ -65,7 +64,7 @@ class public TaskApp
         REM Instatiate the WebManager and use it to inject the app's CSS
         #webManager! = BBjAPI().getWebManager()
         
-        REM Exercise 1: Modify injectCSSFile and Inject CSS Files here
+        REM Exercise 1: Modify injectCSSFile method, and Inject CSS Files here
         #injectCSSFile("DWC101.css")
 
         #initHashPrefs()
@@ -94,13 +93,6 @@ class public TaskApp
         #webManager!.injectLinkUrl(url!, 1, "rel=SHORTCUT ICON,type=image/png")
         #webManager!.injectLinkUrl(url!, 1, "rel=apple-touch-icon,type=image/png")
         #webManager!.injectLinkUrl(url!, 1, "rel=icon,type=image/png")
-
-        REM Inject links for Ionic Web Components
-        url! = "https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"
-        #webManager!.injectScriptUrl(url!,1,"type=module")
-
-        url! = "https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"
-        #webManager!.injectScriptUrl(url!,1,"type=module")
 
         REM Create the collection for the tasks
         #tasks! = new TreeMap()
@@ -244,30 +236,6 @@ class public TaskApp
         labelTaskSorting!.addClass("labelTaskSorting")
         labelTaskSorting!.setName("labelTaskSorting")
 
-        REM Create the segment control
-        #segmentChangeView! = cast(BBjWebComponent, winTitle!.addWebComponent("ion-segment"))
-        #segmentChangeView!.setAttribute("value","list")
-        #segmentChangeView!.setAttribute("mode","md")
-
-        REM Create the segment control buttons
-        segmentCardView! = winTitle!.addWebComponent("ion-segment-button")
-        segmentCardView!.setAttribute("value","card")
-        segmentCardView!.setHtml("Card View")
-
-        segmentListView! = winTitle!.addWebComponent("ion-segment-button")
-        segmentListView!.setAttribute("value","list")
-        segmentListView!.setHtml("List View")
-
-        REM Add the segment buttons to the segment control slots
-        #segmentChangeView!.setSlot(segmentListView!)
-        #segmentChangeView!.setSlot(segmentCardView!)
-        
-        REM create eventOptions object so we can get the right information from the Web Component Event
-        eventOptions! = #segmentChangeView!.newEventOptions()
-        eventOptions!.addItem("value","event.target.value")
-
-        #segmentChangeView!.setCallback("ionChange", #this!, "OnChangeLayout", eventOptions!)
-
         methodret winTitle!
     methodend
 
@@ -278,41 +246,42 @@ class public TaskApp
     method public BBjChildWindow createWinToolBar()
         winToolBar! = #winMain!.addChildWindow("ToolBar", $00108800$, #sysgui!.getAvailableContext())
         winToolBar!.addClass("winToolBar")
-
-        btnAddTask! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='plus'></dwc-icon>")
+        
+        REM Exercise: Replace Text labels with Tabler Icons
+        btnAddTask! = winToolBar!.addButton("New Task")
         btnAddTask!.addClass("toolbarIcon")
 
-        btnAddTask!.setAttribute("expanse", "xs")
+        btnAddTask!.setAttribute("expanse", "s")
         btnAddTask!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onAddTask")
 
-        btnShowCompletedTasks! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='checks'></dwc-icon>")
+        btnShowCompletedTasks! = winToolBar!.addButton("Show Completed Tasks")
         btnShowCompletedTasks!.addClass("toolbarIcon icon-completed")
 
-        btnShowCompletedTasks!.setAttribute("expanse", "xs")
+        btnShowCompletedTasks!.setAttribute("expanse", "s")
         btnShowCompletedTasks!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onShowCompletedTasks")
 
-        btnSettings! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='settings'></dwc-icon>")
+        btnSettings! = winToolBar!.addButton("Settings")
         btnSettings!.addClass("toolbarIcon")
 
-        btnSettings!.setAttribute("expanse", "xs")
+        btnSettings!.setAttribute("expanse", "s")
         btnSettings!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onShowSettings")
 
-        btnImport! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='upload'></dwc-icon>")
+        btnImport! = winToolBar!.addButton("Upload Tasks")
         btnImport!.addClass("toolbarIcon")
 
-        btnImport!.setAttribute("expanse", "xs")
+        btnImport!.setAttribute("expanse", "s")
         btnImport!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onImportFromFile")
 
-        btnExport! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='download'></dwc-icon>")
+        btnExport! = winToolBar!.addButton("Download Tasks")
         btnExport!.addClass("toolbarIcon")
 
-        btnExport!.setAttribute("expanse", "xs")
+        btnExport!.setAttribute("expanse", "s")
         btnExport!.setCallback(BBjControl.ON_BUTTON_PUSH,#this!,"onExportToFile")
 
-        btnReload! = winToolBar!.addButton("<html><dwc-icon pool='tabler' name='reload'></dwc-icon>")
+        btnReload! = winToolBar!.addButton("Reload")
         btnReload!.addClass("toolbarIcon iconReload")
 
-        btnReload!.setAttribute("expanse", "xs")
+        btnReload!.setAttribute("expanse", "s")
         btnReload!.setCallback(BBjControl.ON_BUTTON_PUSH, #this!, "onReload")
 
         REM Set tooltips for the buttons based on the user's preference
@@ -550,7 +519,6 @@ class public TaskApp
 
         viewPrefs! = #hashPrefs!.get("prefsTaskView").toString()
         #winTasks!.addClass(viewPrefs! + "View")
-        #segmentChangeView!.setAttribute("value", viewPrefs!)
 
         REM Ensure the preferred font works if it's a Google font
         fontFamilyLink! = "https://fonts.googleapis.com/css2?family=" + #hashPrefs!.get("prefsTaskFontFamily").toString() + "&display=swap"

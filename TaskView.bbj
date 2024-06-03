@@ -36,7 +36,7 @@ class public TaskView
 
         #Win! = parent!.addChildWindow("", $00108000$, #sysgui!.getAvailableContext())
         #Win!.setAttribute("id", #uuid!)
-        #Win!.addClass("task clickable")
+        #Win!.addClass("task")
 
         #title! = #Win!.addStaticText("")
         #title!.addClass("textTitle")
@@ -113,7 +113,6 @@ class public TaskView
     REM  */
     method public void clearStyles()
         #Win!.removeClass("complete incomplete")
-        #Win!.removeClass("status-complete")
     methodend
 
     REM /**
