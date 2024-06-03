@@ -631,7 +631,7 @@ class public TaskApp
     REM /**
     REM  * Utility method that sets a CSS custom property given the property and value.
     REM  * It ensures that the CSS property is properly formatted, then builds a CSS
-    REM  * string from the iformation and adds it to the DOM, thus overriding any
+    REM  * string from the information and adds it to the DOM, thus overriding any
     REM  * previous setting
     REM  *
     REM  * @param BBjString property!   The property name to be set
