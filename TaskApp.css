@@ -114,8 +114,6 @@ dwc-panel {
 
 .winMain dwc-window-content {
     display: grid;
-    width: 100dvw;
-    height: 100dvh;
     grid-template-areas: 'winToolBar' 'winTitle' 'winTasks';
     grid-template-columns: 1fr;
     grid-template-rows: 3em 10em 1fr;

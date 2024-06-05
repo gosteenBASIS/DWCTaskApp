@@ -1,4 +1,17 @@
 /* Initial Settings */
+:root {
+    /* 
+    Exercise: Change DWC Custom Properties values
+    Set the value of a DWC custom property here to affect the styling of your whole application
+    */
+}
+
+/* Ensure that window content under .winMain takes up all available space */
+.winMain dwc-window-content {
+    width: 100dvw;
+    height: 100dvh;
+}
+
 .winMain {
     display: flex;
     max-height: 100dvh;
@@ -10,18 +23,27 @@
 
 .task {
     display: grid;
+    /* 
+    Exercise: Grid layout
+    Create a grid layout for your task views
+    grid-template-columns: <space separated list of sizes indicating number of columns>
+    grid-template-rows: <space separated list of sizes indicating number of rows>
+    Create style classes for the controls that are on the grid, and assign grid: and column: 
+    properties to place them in your grid.
+    */
 }
 
 
 /* Exercise: padding on the window */
-/* .winTasks {
-    padding-left: 5%;
-    padding-right: 5%;
-    background-color: bisque;
+.winTasks {
+    /* ensure that you can scroll the window */
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    gap: 1em;
     overflow-y: scroll;
     height: 100%;
-    padding-bottom: 5em;
-} */
+}
 
 /* Exercise: Center content in winTitle */
 .winTitle {
@@ -89,3 +111,16 @@ Change some aspect of your CSS when the width is below/above a certain size
     <css here>
 }
 */
+
+.task .dueNotice {
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 1s, visibility 1s;
+    transition-delay: 2s;
+}
+
+.task:hover .dueNotice {
+    visibility: visible;
+    opacity: 1;
+    transition-delay: 0s;
+}

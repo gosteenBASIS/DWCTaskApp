@@ -627,15 +627,12 @@ class public TaskApp
     REM  * @param BBjString value!      The value to set the property to
     REM  */
     method public void setCssProperty(BBjString property!, BBjString value!)
-        REM Sanitize the property by ensuring that it starts with '--' and changing all spaces to dashes
-        if !(property!.startsWith("--")) then property! = "--" + property!
-        property! = property!.replaceAll(" ", "-").trim()
-        value! = value!.trim()
-        if (value!.contains(" ")) then value! = "'" + value! + "'"
-
-        REM Build the CSS string for the root element and append it to the DOM's <body> element
-        css! = ":root { " + property! + ": " + value! + "; }"
-        #webManager!.injectStyle(css!, 0, "app_custom_css_property")
+        REM Exercise: Use this method to set CSS Custom Properties
+        REM Create a CSS String to inject as a style:
+        REM :root { property: value; }
+        REM Inject with #webManager!.injectStyle()
+        REM BONUS EXERCISE: Sanitize your property and value strings to ensure correct CSS
+        REM - What happens if the value is a font with spaces in the same, such as Ubuntu Mono?  
     methodend
 
 
