@@ -54,7 +54,7 @@ class public Task
 
     REM /** A constant value that represents the highest allowed priority */
     method public static BBjNumber PRIORITY_HIGH()
-           methodret 1
+        methodret 1
     methodend
 
     REM /** A constant value that represents the lowest allowed priority */
