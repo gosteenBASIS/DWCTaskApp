@@ -6,7 +6,8 @@
     --app-color-h: 15;
     --app-color-s: 75%;
     --app-color-b: 35%;
-    --app-color-primary: hsl(var(--app-color-h), var(--app-color-s), var(--app-color-b));
+    --app-color-a: 0;
+    --app-color-primary: hsla(var(--app-color-h), var(--app-color-s), var(--app-color-b), var(--app-color-a));
     --app-color-window-bg: hsl(0, 0%, 95%);
     --app-color-text-normal-l: 20%;
     --app-color-text-light-l:  40%;
