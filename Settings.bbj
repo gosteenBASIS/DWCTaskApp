@@ -124,7 +124,7 @@ class public Settings
             colorPicker!.setAttribute("theme", "primary")
             hue! = #winSettings!.getComputedStyle("--app-color-h")
             colorPicker!.putClientProperty("value", "hsl(" + hue! + ", 75%, 35%)")
-            colorPicker!.putClientProperty("components", "hue, preview, eyeDropper, input")
+            colorPicker!.putClientProperty("components", "hue")
 
             REM Font Family
             text! = #winSettings!.addStaticText("Font")
