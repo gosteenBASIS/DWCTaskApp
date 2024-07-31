@@ -63,7 +63,7 @@ class public TaskProperties
         #dateDue!.setAttribute("show-weeks","true")
 
         buttonDelete! = #winTaskProperties!.addButton("Delete")
-        buttonDelete!.setAttribute("theme","danger")
+        buttonDelete!.setAttribute("theme","outlined-danger")
         buttonCancel! = #winTaskProperties!.addButton(2, "&Cancel")
         buttonSave!   = #winTaskProperties!.addButton(1, "&Save")
         buttonSave!.setAttribute("theme","primary")
