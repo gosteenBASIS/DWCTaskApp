@@ -64,6 +64,7 @@ dwc-checkbox::part(input-wrapper) {
 	transform: scale3d(1.25, 1.25, 1);
     justify-content: center;
     align-self: center;
+	margin-left: 2px;
 }
 
 /* Fades check mark on mouse enter/exit on a checkbox */
