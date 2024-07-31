@@ -24,7 +24,7 @@ class public TaskProperties
     field protected BBjListButton     listPriority!
     field protected BBjInputD         dateDue!
     field protected Task              task!
-    
+
     REM Constructor
     REM ========================================
     method public TaskProperties()
@@ -42,7 +42,7 @@ class public TaskProperties
         #editTitle!.setAttribute("label", "Title")
         #editTitle!.setPlaceholder("Task Title")
 
-        #editDescription! = #winTaskProperties!.addCEdit("", $0002$)
+        #editDescription! = #winTaskProperties!.addCEdit("", $0102$)
         #editDescription!.setAttribute("label", "Description")
         #editDescription!.setPlaceholder("Task Description")
 
@@ -77,12 +77,11 @@ class public TaskProperties
     REM /**
     REM  * Given a task object, load its properties into the Task Properties window,
     REM  * and make the window visible.
-    REM  * 
+    REM  *
     REM  * @param Task t!   The task to dispaly in the Task Properties window.
     REM  */
     method public void loadTask(Task t!)
         #task! = t!
-        #editTitle!.setAttribute("label", "<html>Title <span style='opacity:0.25;position:absolute;right:0;'>" + #task!.getUuid())
         #editTitle!.setText(#task!.getTitle())
         #editDescription!.setText(#task!.getDescription())
         dueDate! = #task!.getDueDate()
@@ -98,7 +97,7 @@ class public TaskProperties
 
     REM /**
     REM  * Save the information from the current fields into the Task object in the #task! variable
-    REM  * 
+    REM  *
     REM  * @param BBjFormValidationEvent e!     The BBjFormValidationEvent that called this method
     REM  */
     method public void onSave(BBjFormValidationEvent e!)
@@ -147,10 +146,10 @@ class public TaskProperties
 
     REM /**
     REM  * Callback method for cancel button. Sets the window visibility to 0.
-    REM  * 
+    REM  *
     REM  * @param BBjButtonPushEvent e! The BBjButtonPushEvent that called this method.
     REM  */
-    method public void onCancel(BBjButtonPushEvent e!)   
+    method public void onCancel(BBjButtonPushEvent e!)
         #winTaskProperties!.setVisible(0)
         REM Clear fields, set task to null?
     methodend
@@ -158,12 +157,12 @@ class public TaskProperties
     REM /**
     REM  * Activated by the Delete button.
     REM  * Sets the Deleted flag on the task, posts a TASK_UPDATE event, and hides the TaskProperties window.
-    REM  * 
+    REM  *
     REM  * @param BBjButtonPushEvent event!     The BBjButtonPushEvent that called this method
     REM  */
     method public void onDelete(BBjButtonPushEvent event!)
         confirmDeleteTask! = msgbox("Are you sure you want to delete this task?", BBjSysGui.MSGBOX_BUTTONS_YES_NO + BBjSysGui.MSGBOX_ICON_EXCLAMATION, "Delete Task")
-        
+
         if (confirmDeleteTask! = 6) then
             #task!.setDeleted(1)
             BBjAPI().postCustomEvent("TASK_UPDATE",#task!)
