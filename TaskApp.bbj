@@ -327,16 +327,18 @@ class public TaskApp
         declare auto Task task!
 
         REM Get a sorted TreeMap of the tasks
-        #winTitle!.getControl("labelTaskSorting").setText("<html><span class='labelSortingIndicator'>" + str(#tasks!.size()) + " Tasks Sorted by Priority")
         orderedTasks! = #getSortedTasks("priority")
         it! = orderedTasks!.values().iterator()
-
         while it!.hasNext()
             task! = it!.next()
             if (task!.getComplete() = 0) then
                 view! = #addTaskView(task!)
             endif
         wend
+
+        taskStats! = "<html><span class='labelSortingIndicator'>" + str(#tasks!.size() - #taskViews!.size()) + " Completed Tasks</span>"
+        taskStats! = taskStats! + "<br><span class='labelSortingIndicator'>" + str(#taskViews!.size()) + " Incomplete Tasks Sorted by Priority</span>"
+        #winTitle!.getControl("labelTaskSorting").setText(taskStats!)
     methodend
 
     REM /**
