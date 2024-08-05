@@ -3,7 +3,7 @@
 /* The TaskApp's CSS custom properties              */
 /* ================================================ */
 :root {
-    --app-color-h: 15;
+    --app-color-h: 265;
     --app-color-s: 75%;
     --app-color-b: 35%;
     --app-color-a: 0;
@@ -23,6 +23,14 @@
     --ion-text-color: var(--dwc-color-body-text);
     --ion-text-color-rgb: var(--dwc-color-body-text);
     --ion-font-family: var(--app-font-family);
+
+    --app-color-priority-6: hsla(0, 0%, 0%, 0.1);
+    --app-color-priority-5: hsla(210, 66%, 50%, 1.0);
+    --app-color-priority-4: hsla(105.74, 52%, 38%, 1.0);
+    --app-color-priority-3: hsla(55.06, 98%, 48%, 1.0);
+    --app-color-priority-2: hsla(32.1, 98%, 48%, 1.0);
+    --app-color-priority-1: hsla(0, 98%, 48%, 1.0);
+    --app-color-priority-transparent: hsla(0, 0%, 0%, 0);
 }
 
 
@@ -222,12 +230,14 @@ dwc-frame.winTaskPropertiesContainer {
     font-size: 1.1em;
     font-weight: var(--dwc-font-weight-semibold);
 }
-.labelSortingIndicator {
+.labelSortingIndicator:nth-of-type(1) {
     color: var(--app-color-text-light);
-    font-size: 0.80em;
-    font-weight: normal;
+    font-size: 0.9em;
 }
-
+.labelSortingIndicator:nth-of-type(2) {
+    color: var(--app-color-text-light);
+    font-size: 0.8em;
+}
 
 
 /* Glasspane for modal dialog windows               */
