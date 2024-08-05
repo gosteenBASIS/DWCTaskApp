@@ -90,37 +90,31 @@ dwc-checkbox:not([checked]):hover::part(checked-icon) {
 /*  Priority flags and popup menus                  */
 /* ================================================ */
 .priority-6 {
-    color: var(--dwc-color-black);
-	opacity: .1;
+    color: var(--app-color-priority-6);
 }
 
 .priority-5 {
-    color: #2c80d4;
-	opacity: 1;
+    color: var(--app-color-priority-5);
 }
 
 .priority-4 {
-	color: #47942f;
-	opacity: 1;
+	color: var(--app-color-priority-4);
 }
 
 .priority-3 {
-	color: #f5e102;
-	opacity: 1;
+	color: var(--app-color-priority-3);
 }
 
 .priority-2 {
-	color: #f58402;
-	opacity: 1;
+	color: var(--app-color-priority-2);
 }
 
 .priority-1 {
-	color: #f50202;
-	opacity: 1;
+	color: var(--app-color-priority-1);
 }
 
 .priority-transparent {
-	color: transparent;
+	color: var(--app-color-priority-transparent);
 }
 
 /* Indicator flag styling on task-list-view */
