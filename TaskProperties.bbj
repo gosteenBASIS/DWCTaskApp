@@ -49,18 +49,19 @@ class public TaskProperties
         #listPriority! = #winTaskProperties!.addListButton("")
         #listPriority!.setAttribute("label", "Priority")
         for i = Task.PRIORITY_HIGH() to Task.PRIORITY_LOW()
-            if (i = 6) then
-                #listPriority!.addItem("No Priority")
+            priorityFlagHtml! = "<html><dwc-icon pool='tabler' name='flag-2-filled' style='color:var(--app-color-priority-" + str(i) + ");'></dwc-icon> "
+            if (i = Task.PRIORITY_LOW()) then
+                #listPriority!.addItem(priorityFlagHtml! + "No Priority")
             else
-                #listPriority!.addItem("Priority " + str(i))
+                #listPriority!.addItem(priorityFlagHtml! + "Priority " + str(i))
             endif
         next i
 
         #dateDue! = #winTaskProperties!.addInputD()
         #dateDue!.setAttribute("label", "Due Date")
         #dateDue!.setText("")
-        #dateDue!.setAttribute("visible-calendar-icon","true")
-        #dateDue!.setAttribute("show-weeks","true")
+        #dateDue!.setAttribute("calendar-icon-visible", "true")
+        #dateDue!.setAttribute("show-weeks", "true")
 
         buttonDelete! = #winTaskProperties!.addButton("Delete")
         buttonDelete!.setAttribute("theme","outlined-danger")
