@@ -336,8 +336,8 @@ class public TaskApp
             endif
         wend
 
-        taskStats! = "<html><span class='labelSortingIndicator'>" + str(#tasks!.size() - #taskViews!.size()) + " Completed Tasks</span>"
-        taskStats! = taskStats! + "<br><span class='labelSortingIndicator'>" + str(#taskViews!.size()) + " Incomplete Tasks Sorted by Priority</span>"
+        taskStats! = "<html><span class='labelSortingIndicator'>" + str(#taskViews!.size()) + " Incomplete Tasks Sorted by Priority</span>"
+        taskStats! = taskStats! + "<br><span class='labelSortingIndicator'>" + str(#tasks!.size() - #taskViews!.size()) + " Completed Tasks</span>"
         #winTitle!.getControl("labelTaskSorting").setText(taskStats!)
     methodend
 
