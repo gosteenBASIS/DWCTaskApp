@@ -16,6 +16,7 @@
 .cardView dwc-panel {
 	flex: 1 1 22em;
 	max-width: 40em;
+	max-height: 22em;
 	height: auto;
 	border: var(--dwc-color-gray-90);
 	border-radius: 2em;
@@ -145,4 +146,3 @@
 		border: transparent;
 	}
 }
-
