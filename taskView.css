@@ -54,7 +54,7 @@ dwc-checkbox:not([checked])::part(input-wrapper) {
 dwc-checkbox[checked]::part(input-wrapper) {
 	border-color: var(--app-color-primary);
 	background-color: hsla(var(--app-color-h), 15%, 40%);
-    color: var(--dwc-color-black);
+    color: var(--dwc-color-white);
 }
 
 /* Checkbox styling  */
