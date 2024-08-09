@@ -141,6 +141,13 @@ dwc-panel {
     padding-right: 5%;
 }
 
+/* When the screen is wider than 1300px, add horizontal padding so that the tasks won't get too wide */
+@media only screen and (min-width: 1300px) {
+    .winToolBar, .winTitle, .winTasks {
+        padding: 0 calc((100% - (1300px * 0.9)) / 2);
+    }
+}
+
 .winToolBar {
     grid-area: winToolBar;
     max-width: 100%;
