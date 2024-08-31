@@ -108,9 +108,6 @@ class public TaskApp
         url! = "https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"
         #webManager!.injectScriptUrl(url!,1,"type=module")
 
-        url! = "https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"
-        #webManager!.injectScriptUrl(url!,1,"type=module")
-
         REM Create the collection for the tasks
         #tasks! = new TreeMap()
         #taskViews! = new TreeMap()
@@ -241,13 +238,14 @@ class public TaskApp
         #segmentChangeView!.setAttribute("mode","md")
 
         REM Create the segment control buttons
-        segmentCardView! = winTitle!.addWebComponent("ion-segment-button")
-        segmentCardView!.setAttribute("value","card")
-        segmentCardView!.setHtml("Card View")
-
+        REM Note that we're 'hiding' the <ion-app> element in the button's title, as it must be present in the DOM to get the ripple effect.
         segmentListView! = winTitle!.addWebComponent("ion-segment-button")
         segmentListView!.setAttribute("value","list")
-        segmentListView!.setHtml("List View")
+        segmentListView!.setHtml("<ion-app>List View</ion-app>")
+
+        segmentCardView! = winTitle!.addWebComponent("ion-segment-button")
+        segmentCardView!.setAttribute("value","card")
+        segmentCardView!.setHtml("<ion-app>Card View</ion-app>")
 
         REM Add the segment buttons to the segment control slots
         #segmentChangeView!.setSlot(segmentListView!)
@@ -331,13 +329,16 @@ class public TaskApp
         it! = orderedTasks!.values().iterator()
         while it!.hasNext()
             task! = it!.next()
-            if (task!.getComplete() = 0) then
-                view! = #addTaskView(task!)
+            view! = #addTaskView(task!)
+            if (task!.getComplete() = 1) then
+                completedTasks = completedTasks + 1
+            else
+                incompleteTasks = incompleteTasks + 1
             endif
         wend
 
-        taskStats! = "<html><span class='labelSortingIndicator'>" + str(#taskViews!.size()) + " Incomplete Tasks Sorted by Priority</span>"
-        taskStats! = taskStats! + "<br><span class='labelSortingIndicator'>" + str(#tasks!.size() - #taskViews!.size()) + " Completed Tasks</span>"
+        taskStats! = "<html><span class='labelSortingIndicator'>" + str(incompleteTasks) + " Incomplete Tasks Sorted by Priority</span>"
+        taskStats! = taskStats! + "<br><span class='labelSortingIndicator'>" + str(completedTasks) + " Completed Tasks</span>"
         #winTitle!.getControl("labelTaskSorting").setText(taskStats!)
     methodend
 
