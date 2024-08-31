@@ -40,20 +40,20 @@ class public TaskView
 
         #title! = #Win!.addStaticText("")
         #title!.addClass("textTitle")
-        
+
         #description! = #Win!.addStaticText("")
         #description!.addClass("textDescription")
-        
+
         #checkbox! = #Win!.addCheckBox("Mark as Complete")
         #checkbox!.setCallback(BBjControl.ON_CHECK_CHANGE, #this!, "onTaskCheck")
-        
+
         #dueNotice! = #Win!.addStaticText("")
         #dueNotice!.addClass("dueNotice")
-        
+
         #priorityFlag! = #Win!.addStaticText(#flagIcon!)
         #priorityFlag!.addClass("priorityFlag")
         #priorityFlag!.setCallback(BBjControl.ON_POPUP_REQUEST, #this!, "OnShowPriorityPopup")
-        
+
         trashIcon! = "<html><dwc-icon pool='tabler' name='trash' style='width: 25px; height: 25px'></dwc-icon>"
         #btnDeleteTask! = #Win!.addButton(trashIcon!)
         #btnDeleteTask!.addClass("btnDelete")
@@ -93,7 +93,7 @@ class public TaskView
                 endif
             next i
         endif
-        
+
         #description!.setToolTipText(#task!.getDescription())
         #title!.setToolTipText(#task!.getTitle())
     methodend
@@ -139,14 +139,14 @@ class public TaskView
                     dueNotice! = "Past Due!"
                     #dueNotice!.addClass("pastDue")
                 endif
-    
+
                 if (dueDate! = jul(date(0))) then
                     dueNotice! = "Due Today!"
                     #dueNotice!.addClass("dueToday")
                 endif
-            endif        
+            endif
         endif
-        
+
         #dueNotice!.setText(dueNotice!)
     methodend
 
@@ -200,7 +200,7 @@ class public TaskView
     REM  */
     method public void onDelete(BBjButtonPushEvent e!)
         confirmDeleteTask! = msgbox("Are you sure you want to delete this task?", BBjSysGui.MSGBOX_BUTTONS_YES_NO + BBjSysGui.MSGBOX_ICON_EXCLAMATION, "Delete Task")
-    
+
         if (confirmDeleteTask! = 6) then
             #task!.setDeleted(1)
             BBjAPI().postCustomEvent("TASK_UPDATE",#task!)
